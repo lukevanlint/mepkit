@@ -12,48 +12,87 @@
   <link rel="stylesheet" href="/styles.css">
 
   <style>
-    .page-header h1 {
-      font-size: 48px;
+    .result-box {
+      padding: 24px;
     }
 
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      padding: 14px 16px;
-      border-radius: 10px;
+    .result-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .result-value-main {
+      font-size: 30px;
+      line-height: 1.1;
+      font-weight: 700;
+      color: var(--mechanical);
+      margin-bottom: 8px;
+    }
+
+    .result-value-secondary {
       font-size: 16px;
+      line-height: 1.4;
+      color: var(--muted-2);
     }
 
-    .calc-button {
+    .button-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .button-row .calc-button {
+      margin-bottom: 0;
+    }
+
+    .secondary-button {
+      width: 100%;
       padding: 14px 18px;
       border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--panel-soft);
+      color: white;
       font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
     }
 
-    .result-box p,
-    .content-card p {
+    .secondary-button:hover {
+      background: var(--hover);
+      border-color: #374151;
+    }
+
+    .method-list,
+    .reference-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted-2);
+      line-height: 1.7;
       font-size: 15px;
     }
 
-    @media (max-width: 900px) {
-      .page-header h1 {
-        font-size: 40px;
-      }
+    .method-list li,
+    .reference-list li {
+      margin-bottom: 8px;
     }
 
-    @media (max-width: 600px) {
-      .page-header h1 {
-        font-size: 34px;
+    .method-list li:last-child,
+    .reference-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 700px) {
+      .button-row {
+        flex-direction: column;
       }
 
-      .form-group label,
-      .form-group input,
-      .form-group select,
-      .form-group textarea,
-      .result-box p,
-      .content-card p,
-      .calc-button {
-        font-size: 15px;
+      .result-value-main {
+        font-size: 24px;
       }
     }
   </style>
@@ -78,7 +117,7 @@
 
           <div class="form-group">
             <label for="load">Heat Load (kW)</label>
-            <input type="number" id="load" value="50" step="0.1">
+            <input type="number" id="load" value="50" step="0.1" autofocus>
           </div>
 
           <div class="form-group">
@@ -86,34 +125,37 @@
             <input type="number" id="deltaT" value="20" step="0.1">
           </div>
 
-          <button class="calc-button" onclick="calculateFlow()">Calculate</button>
+          <div class="button-row">
+            <button class="calc-button" onclick="calculateFlow()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
 
           <h2 class="section-title">Result</h2>
           <div class="result-box" id="result">
-            <p><strong>Flow Rate:</strong> -</p>
+            <div class="result-label">Flow Rate</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
           </div>
         </section>
 
         <section class="content-card">
           <h2 class="section-title">Method</h2>
           <div id="method">
-            <p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
-            <p>Flow Rate = -</p>
+            <ul class="method-list">
+              <li>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</li>
+              <li>Flow Rate = -</li>
+            </ul>
           </div>
         </section>
 
         <section class="content-card">
           <h2 class="section-title">Reference</h2>
-          <p>
-            This calculator uses the standard heating water relationship:
-            <strong>Flow Rate (L/s) = Heat Load ÷ (4.18 × ΔT)</strong>.
-            The constant <strong>4.18</strong> represents the specific heat capacity of water at typical heating system temperatures.
-            This relationship is widely used in building services engineering to estimate water flow rates for low temperature hot water systems.
-          </p>
-          <p style="margin-top: 12px;">
-            <strong>Scope note:</strong> this calculator determines flow rate only.
-            Final system design should also consider pipe velocity, pressure drop, pump head, controls strategy and project-specific design requirements.
-          </p>
+          <ul class="reference-list">
+            <li>This calculator uses the standard heating water relationship: <strong>Flow Rate (L/s) = Heat Load ÷ (4.18 × ΔT)</strong>.</li>
+            <li>The constant <strong>4.18</strong> represents the specific heat capacity of water at typical heating system temperatures.</li>
+            <li>This relationship is widely used in building services engineering to estimate water flow rates for low temperature hot water systems.</li>
+            <li><strong>Scope note:</strong> this calculator determines flow rate only. Final system design should also consider pipe velocity, pressure drop, pump head, controls strategy and project-specific design requirements.</li>
+          </ul>
         </section>
 
         <section class="content-card">
@@ -139,10 +181,17 @@
       const methodBox = document.getElementById("method");
 
       if (isNaN(load) || isNaN(deltaT) || load <= 0 || deltaT <= 0) {
-        resultBox.innerHTML = "<p>Please enter valid numbers.</p>";
+        resultBox.innerHTML = `
+          <div class="result-label">Flow Rate</div>
+          <div class="result-value-main">-</div>
+          <div class="result-value-secondary">Please enter valid positive values.</div>
+        `;
+
         methodBox.innerHTML = `
-          <p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
-          <p>Flow Rate = -</p>
+          <ul class="method-list">
+            <li>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</li>
+            <li>Flow Rate = -</li>
+          </ul>
         `;
         return;
       }
@@ -151,16 +200,39 @@
       const flowM3h = flowLs * 3.6;
 
       resultBox.innerHTML = `
-        <p><strong>Flow Rate:</strong> <span class="result-value">${flowLs.toFixed(2)} L/s</span></p>
-        <p><strong>Flow Rate:</strong> <span class="result-value">${flowM3h.toFixed(2)} m³/h</span></p>
+        <div class="result-label">Flow Rate</div>
+        <div class="result-value-main">${flowLs.toFixed(2)} L/s</div>
+        <div class="result-value-secondary">${flowM3h.toFixed(2)} m³/h</div>
       `;
 
       methodBox.innerHTML = `
-        <p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
-        <p>Flow Rate = ${load} ÷ (4.18 × ${deltaT})</p>
-        <p>Flow Rate = <strong>${flowLs.toFixed(2)} L/s</strong></p>
-        <p>Flow Rate = <strong>${flowM3h.toFixed(2)} m³/h</strong></p>
+        <ul class="method-list">
+          <li>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</li>
+          <li>Flow Rate = ${load} ÷ (4.18 × ${deltaT})</li>
+          <li>Flow Rate = <strong>${flowLs.toFixed(2)} L/s</strong></li>
+          <li>Flow Rate = <strong>${flowM3h.toFixed(2)} m³/h</strong></li>
+        </ul>
       `;
+    }
+
+    function resetCalc() {
+      document.getElementById("load").value = "50";
+      document.getElementById("deltaT").value = "20";
+
+      document.getElementById("result").innerHTML = `
+        <div class="result-label">Flow Rate</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+      `;
+
+      document.getElementById("method").innerHTML = `
+        <ul class="method-list">
+          <li>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</li>
+          <li>Flow Rate = -</li>
+        </ul>
+      `;
+
+      document.getElementById("load").focus();
     }
 
     document.addEventListener("keypress", function (event) {
