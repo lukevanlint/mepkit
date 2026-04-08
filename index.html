@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MEPkit</title>
+
+  <title>MEPkit | UK MEP Engineering Calculators</title>
+  <meta
+    name="description"
+    content="MEPkit is a lightweight toolkit of UK MEP engineering calculators for building services design, with clear methods, practical assumptions, and references to relevant CIBSE guidance, British Standards, and Building Regulations."
+  >
+  <meta
+    name="keywords"
+    content="MEP calculator, building services calculator, UK MEP tools, LTHW flow rate calculator, pipe sizing calculator, pump head calculator, duct sizing calculator, fan power calculator, voltage drop calculator, water storage tank calculator"
+  >
+
   <link rel="icon" type="image/png" href="favicon1.png">
   <link rel="stylesheet" href="styles.css">
 
@@ -45,7 +55,7 @@
     }
 
     .sidebar {
-      width: 290px;
+      width: 300px;
       background: var(--panel-soft);
       border-right: 1px solid var(--border);
       padding: 28px 20px 32px;
@@ -122,12 +132,14 @@
       gap: 6px;
     }
 
-    .nav-links a {
+    .nav-links a,
+    .nav-links span {
       display: block;
       padding: 10px 12px;
       border-radius: 10px;
       color: var(--muted-2);
       font-size: 15px;
+      line-height: 1.35;
       transition: background 0.2s ease, color 0.2s ease;
     }
 
@@ -136,7 +148,7 @@
       color: white;
     }
 
-    .nav-links a.coming-soon {
+    .coming-soon {
       opacity: 0.65;
       cursor: default;
     }
@@ -215,7 +227,7 @@
       background: var(--panel);
       font-size: 14px;
       color: white;
-      transition: background 0.2s ease, border-color 0.2s ease;
+      transition: background 0.2s ease;
     }
 
     .hero-actions a:hover {
@@ -322,11 +334,11 @@
       margin-bottom: 0;
     }
 
-    .discipline-card a {
+    .discipline-card a,
+    .discipline-card span {
       color: white;
       font-size: 15px;
       line-height: 1.4;
-      transition: opacity 0.2s ease;
     }
 
     .discipline-card a:hover {
@@ -343,11 +355,6 @@
 
     .discipline-card.public-health h3 {
       color: var(--public-health);
-    }
-
-    .discipline-card .coming-soon {
-      color: var(--muted-2);
-      opacity: 0.75;
     }
 
     .site-note {
@@ -437,7 +444,7 @@
         <img src="MEPkitlogocolour.png" alt="MEPkit logo" class="sidebar-logo">
         <div class="sidebar-brand-text">
           <h1>MEPkit</h1>
-          <p>Engineering toolkit</p>
+          <p>UK MEP engineering toolkit</p>
         </div>
       </div>
 
@@ -457,27 +464,27 @@
           <a href="expansion-vessel-calc.html">Expansion Vessel Calculator</a>
           <a href="ventilation-rate-calc.html">Ventilation Rate Calculator</a>
           <a href="duct-sizing-calc.html">Duct Sizing Calculator</a>
-          <a href="system-sfp-calc.html">System Fan Power Calculator</a>
+          <a href="system-sfp-calc.html">Fan Power Calculator</a>
         </div>
       </div>
 
       <div class="nav-group electrical">
         <h2>Electrical</h2>
         <div class="nav-links">
-          <a href="#" class="coming-soon">Voltage Drop Calculator</a>
-          <a href="#" class="coming-soon">Cable Sizing Calculator</a>
-          <a href="#" class="coming-soon">Load Current Calculator</a>
-          <a href="#" class="coming-soon">Power Factor Calculator</a>
+          <span class="coming-soon">Voltage Drop Calculator</span>
+          <span class="coming-soon">Cable Sizing Calculator</span>
+          <span class="coming-soon">Load Current Calculator</span>
+          <span class="coming-soon">Power Factor Calculator</span>
         </div>
       </div>
 
       <div class="nav-group public-health">
         <h2>Public Health</h2>
         <div class="nav-links">
-          <a href="#" class="coming-soon">Water Flow Rate Calculator</a>
-          <a href="#" class="coming-soon">Cold Water Pipe Size Calculator</a>
-          <a href="#" class="coming-soon">Hot Water Recovery Calculator</a>
-          <a href="#" class="coming-soon">Storage Tank Sizing Calculator</a>
+          <span class="coming-soon">Water Flow Rate Calculator</span>
+          <span class="coming-soon">Domestic Water Pipe Calculator</span>
+          <span class="coming-soon">Hot Water Recovery Calculator</span>
+          <span class="coming-soon">Water Storage Tank Calculator</span>
         </div>
       </div>
     </aside>
@@ -514,19 +521,19 @@
             <a href="heating-flow.html" class="feature-card mechanical">
               <span class="tag">Mechanical</span>
               <h3>LTHW Flow Rate Calculator</h3>
-              <p>Quickly determine water flow rates from heating load and design temperature difference.</p>
+              <p>Calculate LTHW water flow rate from heating load and design temperature difference.</p>
             </a>
 
             <a href="duct-sizing-calc.html" class="feature-card mechanical">
               <span class="tag">Mechanical</span>
               <h3>Duct Sizing Calculator</h3>
-              <p>Size ductwork from airflow and target air velocity for typical ventilation design checks.</p>
+              <p>Size ventilation ductwork from airflow rate and target air velocity for typical design checks.</p>
             </a>
 
             <a href="system-sfp-calc.html" class="feature-card mechanical">
               <span class="tag">Mechanical</span>
-              <h3>System Specific Fan Power Calculator</h3>
-              <p>Estimate SFP values for ventilation systems using simple transparent engineering inputs.</p>
+              <h3>Fan Power Calculator</h3>
+              <p>Estimate fan power and system SFP values using simple transparent engineering inputs.</p>
             </a>
           </div>
         </section>
@@ -544,7 +551,7 @@
                 <li><a href="expansion-vessel-calc.html">Expansion Vessel Calculator</a></li>
                 <li><a href="ventilation-rate-calc.html">Ventilation Rate Calculator</a></li>
                 <li><a href="duct-sizing-calc.html">Duct Sizing Calculator</a></li>
-                <li><a href="system-sfp-calc.html">System Fan Power Calculator</a></li>
+                <li><a href="system-sfp-calc.html">Fan Power Calculator</a></li>
               </ul>
             </div>
 
@@ -564,9 +571,9 @@
               <p>Water demand, storage and pipe sizing calculators for public health engineering design work.</p>
               <ul>
                 <li><span class="coming-soon">Water Flow Rate Calculator</span></li>
-                <li><span class="coming-soon">Cold Water Pipe Size Calculator</span></li>
+                <li><span class="coming-soon">Domestic Water Pipe Calculator</span></li>
                 <li><span class="coming-soon">Hot Water Recovery Calculator</span></li>
-                <li><span class="coming-soon">Storage Tank Size Calculator</span></li>
+                <li><span class="coming-soon">Water Storage Tank Calculator</span></li>
               </ul>
             </div>
           </div>
