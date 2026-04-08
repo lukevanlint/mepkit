@@ -16,6 +16,29 @@
 
   <link rel="icon" type="image/png" href="/assets/favicon1.png">
   <link rel="stylesheet" href="/styles.css">
+
+  <style>
+    .hero {
+      padding: 34px 34px;
+    }
+
+    .discipline-card p {
+      margin: 0 0 14px 0;
+    }
+
+    .site-footer {
+      margin-top: 28px;
+      padding: 18px 4px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .site-footer p {
+      margin: 0;
+    }
+  </style>
 </head>
 
 <body>
@@ -28,24 +51,29 @@
           <div class="hero-top">
             <img src="/assets/MEPkitlogocolour.png" alt="MEPkit logo" class="hero-logo">
             <div class="hero-title-wrap">
-              <h2>MEPkit</h2>
+              <h1>MEPkit</h1>
               <p>Lightweight web-based toolkit for MEP engineers</p>
             </div>
           </div>
 
           <p class="hero-tagline">
-            Practical engineering calculators for UK building services design.
+            Practical MEP engineering calculators for UK building services design.
           </p>
 
           <p class="hero-support">
             Reliable day-to-day MEP tools with clear methods, practical assumptions, and references to relevant CIBSE guidance, British Standards, and Building Regulations where applicable.
           </p>
 
+          <div class="hero-actions">
+            <a href="#mechanical-tools">Browse Mechanical</a>
+            <a href="#electrical-tools">Browse Electrical</a>
+            <a href="#public-health-tools">Browse Public Health</a>
           </div>
         </section>
 
         <section class="section">
           <p class="section-title">Browse by Discipline</p>
+
           <div class="discipline-grid">
             <div class="discipline-card mechanical" id="mechanical-tools">
               <h3>Mechanical</h3>
@@ -88,6 +116,10 @@
         <div class="site-note">
           MEPkit provides indicative engineering tools for preliminary design, feasibility checks and day-to-day calculation support. Final design should always consider project-specific requirements, full system parameters, manufacturer data, and applicable standards.
         </div>
+
+        <footer class="site-footer">
+          <p>© MEPkit — Building services engineering calculators for UK MEP design.</p>
+        </footer>
       </div>
     </main>
   </div>
