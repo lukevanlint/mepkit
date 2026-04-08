@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pipe Sizing Calculator - MEPkit</title>
+  <title>Pipe Sizing Tool - MEPkit</title>
   <link rel="icon" type="image/png" href="favicon1.png">
   <link rel="stylesheet" href="styles.css">
 
@@ -144,13 +144,6 @@
       color: white;
     }
 
-    .note {
-      margin-top: 14px;
-      font-size: 13px;
-      line-height: 1.6;
-      color: #bdbdbd;
-    }
-
     .back {
       display: inline-block;
       margin-top: 28px;
@@ -202,7 +195,8 @@
           <strong>Flow Rate:</strong> -<br>
           <strong>Material:</strong> -<br>
           <strong>Recommended Pipe Size:</strong> -<br>
-          <strong>Actual Velocity:</strong> -
+          <strong>Actual Velocity:</strong> -<br>
+          <strong>Velocity Guidance:</strong> -
         </div>
       </div>
 
@@ -222,7 +216,8 @@
           <p><strong>Flow Rate (L/s) = Heat Load ÷ (4.18 × ΔT)</strong></p>
           <p>The calculated flow rate is then checked against a material-specific pipe size table to find the smallest pipe size that keeps velocity within the selected limit.</p>
           <p><strong>Note:</strong> standard copper and steel pipe sizes differ, so the recommended size depends on the selected material.</p>
-          <p>Results are indicative only and should be checked against final pressure drop, noise criteria, manufacturer data and project standards.</p>
+          <p><strong>Velocity guidance:</strong> the velocity commentary shown in the result is indicative only. It is based on traditional accepted design norms for closed water systems, not hard absolute rules.</p>
+          <p>Final selection should also consider pressure drop, noise, erosion risk, water quality, pipe material, manufacturer data and project standards.</p>
         </div>
       </div>
     </div>
@@ -231,6 +226,20 @@
   </div>
 
   <script>
+    function getVelocityGuidance(actualVelocity) {
+      if (actualVelocity < 0.5) {
+        return 'Low velocity – review';
+      } else if (actualVelocity < 1.0) {
+        return 'Conservative / quiet range';
+      } else if (actualVelocity < 1.5) {
+        return 'Typical design range';
+      } else if (actualVelocity <= 3.0) {
+        return 'High velocity – check noise and pressure drop';
+      } else {
+        return 'Generally too high – review pipe size';
+      }
+    }
+
     function calculatePipe() {
       const material = document.getElementById('material').value;
       const load = parseFloat(document.getElementById('load').value);
@@ -297,31 +306,36 @@
       }
 
       if (selectedPipe) {
+        const guidance = getVelocityGuidance(selectedVelocity);
+
         resultBox.innerHTML = `
           <strong>Flow Rate:</strong> ${flowLs.toFixed(2)} L/s<br>
           <strong>Material:</strong> ${materialLabel}<br>
           <strong>Recommended Pipe Size:</strong> ${selectedPipe.label}<br>
-          <strong>Actual Velocity:</strong> ${selectedVelocity.toFixed(2)} m/s
+          <strong>Actual Velocity:</strong> ${selectedVelocity.toFixed(2)} m/s<br>
+          <strong>Velocity Guidance:</strong> ${guidance}
         `;
 
         methodBox.innerHTML = `
           <p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
           <p>Flow Rate = ${load} ÷ (4.18 × ${deltaT})</p>
           <p>Flow Rate = ${flowLs.toFixed(2)} L/s</p>
-          <p>Flow converted to m³/s = ${(flowM3s).toFixed(4)} m³/s</p>
+          <p>Flow converted to m³/s = ${flowM3s.toFixed(4)} m³/s</p>
           <p>Required Pipe Area = ${flowM3s.toFixed(4)} ÷ ${velocity}</p>
           <p>Required Pipe Area = ${requiredArea.toExponential(3)} m²</p>
           <p>Using ${materialLabel.toLowerCase()} pipe size table</p>
           <p>Selected smallest pipe size with velocity ≤ ${velocity} m/s</p>
           <p>Recommended Pipe Size = ${selectedPipe.label}</p>
           <p>Actual Velocity = ${selectedVelocity.toFixed(2)} m/s</p>
+          <p>Velocity Guidance = ${guidance}</p>
         `;
       } else {
         resultBox.innerHTML = `
           <strong>Flow Rate:</strong> ${flowLs.toFixed(2)} L/s<br>
           <strong>Material:</strong> ${materialLabel}<br>
           <strong>Recommended Pipe Size:</strong> No suitable size found<br>
-          <strong>Actual Velocity:</strong> -
+          <strong>Actual Velocity:</strong> -<br>
+          <strong>Velocity Guidance:</strong> Review assumptions
         `;
 
         methodBox.innerHTML = `
