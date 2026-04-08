@@ -1,72 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEPkit</title>
   <link rel="icon" type="image/png" href="favicon1.png">
   <link rel="stylesheet" href="styles.css">
 
   <style>
     .home-container {
-      max-width: 700px;
+      max-width: 760px;
       margin: 0 auto;
-      padding: 60px 20px;
+      padding: 50px 20px 70px;
+      text-align: center;
     }
 
     .home-logo {
-      width: 200px;
-      margin-bottom: 10px;
+      width: 190px;
+      margin-bottom: 24px;
     }
 
     .home-tagline {
       color: #d4d4d4;
-      margin-bottom: 50px;
       font-size: 18px;
+      line-height: 1.5;
+      margin: 0 0 52px 0;
     }
 
-    .tools {
-      margin-top: 20px;
+    .tool-group {
+      margin-top: 42px;
+    }
+
+    .tool-group:first-of-type {
+      margin-top: 0;
+    }
+
+    .tool-group h2 {
+      font-size: 24px;
+      margin: 0 0 18px 0;
+      font-weight: 700;
+    }
+
+    .mechanical h2 {
+      color: #60a5fa;
+    }
+
+    .electrical h2 {
+      color: #4ade80;
+    }
+
+    .public-health h2 {
+      color: #f28b82;
+    }
+
+    .tool-group a {
+      display: inline-block;
+      margin-bottom: 10px;
       font-size: 18px;
-      line-height: 2;
+      color: white;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .tool-group a:hover {
+      opacity: 0.7;
+    }
+
+    .tool-note {
+      margin-top: 50px;
+      font-size: 14px;
+      color: #9ca3af;
+      line-height: 1.6;
     }
   </style>
 </head>
 
 <body>
   <div class="home-container">
-    <img src="MEPkitlogocolour.png" class="home-logo">
+    <img src="MEPkitlogo.png" alt="MEPkit logo" class="home-logo">
 
-    <p class="home-tagline">Engineering calculation tools for MEP engineers.</p>
+    <p class="home-tagline">
+      Engineering calculation tools for MEP engineers.
+    </p>
 
-<div class="tools">
+    <div class="tool-group mechanical">
+      <h2>Mechanical</h2>
+      <a href="heating-flow.html">Heating Flow Rate Calculator</a><br>
+      <a href="#">Pipe Sizing Tool</a><br>
+      <a href="#">Pump Head Calculator</a><br>
+      <a href="#">Expansion Vessel Calculator</a><br>
+      <a href="#">Radiator Output Calculator</a><br>
+      <a href="#">Ventilation Rate Checker</a><br>
+      <a href="#">Cooling Load Quick Check</a><br>
+      <a href="#">Duct Sizing Tool</a><br>
+      <a href="#">Heat Exchanger Sizing</a><br>
+      <a href="#">Fan Power Calculator</a>
+    </div>
 
-  <div class="tool-group">
-    <h2>Mechanical</h2>
-    <a href="heating-flow.html">Heating Flow Rate Calculator</a><br>
-    <a href="#">Pipe Sizing Tool</a><br>
-    <a href="#">Pump Head Calculator</a><br>
-    <a href="#">Expansion Vessel Calculator</a><br>
-    <a href="#">Radiator Output Calculator</a><br>
-    <a href="#">Ventilation Rate Checker</a><br>
-    <a href="#">Cooling Load Quick Check</a><br>
-    <a href="#">Duct Sizing Tool</a><br>
-    <a href="#">Heat Exchanger Sizing</a><br>
-    <a href="#">Fan Power Calculator</a>
-  </div>
+    <div class="tool-group electrical">
+      <h2>Electrical</h2>
+      <a href="#">Voltage Drop Calculator</a><br>
+      <a href="#">Cable Sizing Tool</a><br>
+      <a href="#">Load Current Calculator</a><br>
+      <a href="#">Power Factor Calculator</a>
+    </div>
 
-  <div class="tool-group">
-    <h2>Electrical</h2>
-    <a href="#">Voltage Drop Calculator</a><br>
-    <a href="#">Cable Sizing Tool</a><br>
-    <a href="#">Load Current Calculator</a>
-  </div>
+    <div class="tool-group public-health">
+      <h2>Public Health</h2>
+      <a href="#">Water Flow Rate Calculator</a><br>
+      <a href="#">Cold Water Pipe Sizing</a><br>
+      <a href="#">Hot Water Recovery Calculator</a><br>
+      <a href="#">Storage Tank Sizing</a>
+    </div>
 
-  <div class="tool-group">
-    <h2>Public Health</h2>
-    <a href="#">Water Flow Rate Calculator</a><br>
-    <a href="#">Cold Water Pipe Sizing</a><br>
-    <a href="#">Hot Water Recovery Calculator</a>
-  </div>
-
-</div>
+    <p class="tool-note">
+      More calculators coming soon.
+    </p>
   </div>
 </body>
 </html>
