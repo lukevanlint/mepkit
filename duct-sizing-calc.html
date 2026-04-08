@@ -97,6 +97,18 @@
       color: #bdbdbd;
     }
 
+    .preset-note {
+      margin-top: -10px;
+      margin-bottom: 20px;
+      padding: 12px 14px;
+      background: #141414;
+      border: 1px solid #333;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #d4d4d4;
+    }
+
     .hidden {
       display: none;
     }
@@ -207,9 +219,21 @@
         <input type="number" id="flow" value="1000" step="0.1">
 
         <div id="sizeMode">
+          <label for="ductPreset">Duct Classification / Velocity Preset</label>
+          <select id="ductPreset" onchange="applyDuctPreset()">
+            <option value="terminal">Terminal Branch</option>
+            <option value="secondary" selected>Branch / Secondary Duct</option>
+            <option value="main">Main Distribution Duct</option>
+            <option value="custom">Custom</option>
+          </select>
+
+          <div class="preset-note" id="presetNote">
+            <strong>Terminal Branch:</strong> lower velocities are commonly preferred near occupied spaces to help control noise and draft risk.
+          </div>
+
           <label for="targetVelocity">Target Velocity (m/s)</label>
           <input type="number" id="targetVelocity" value="4.0" step="0.1">
-          <small class="input-note">Velocity targets are indicative only and should be confirmed against noise criteria, pressure drop and duct routing.</small>
+          <small class="input-note">Preset values are indicative only. Final velocity should be confirmed against project noise criteria, pressure drop, available space and duct routing.</small>
 
           <div id="sizeRectangular" class="hidden">
             <label for="aspectRatio">Aspect Ratio (W:H)</label>
@@ -275,7 +299,11 @@
 
           <p>An air density of <strong>1.2 kg/m³</strong> is assumed for the velocity pressure check.</p>
 
-          <p>Duct sizing and ductwork performance are commonly checked against <strong>CIBSE Guide B2</strong>, <strong>CIBSE Guide C</strong> and <strong>CIBSE Guide C4</strong> data and methods.</p>
+          <p>Duct sizing and ductwork design are commonly checked against the CIBSE ductwork guidance family, including <strong>Guide B2: Ventilation and ductwork</strong> and <strong>Guide C: Reference data</strong>. In practice, engineers also commonly use <strong>Guide C4</strong> style duct sizing data and methods for sizing and checking airflow, velocity and pressure effects. :contentReference[oaicite:2]{index=2}</p>
+
+          <p>The velocity presets in this calculator are <strong>indicative design conventions only</strong>. They are intended as practical starting points rather than fixed regulatory limits. Final design should be checked against project-specific noise criteria, pressure drop allowances and coordination constraints. :contentReference[oaicite:3]{index=3}</p>
+
+          <p><strong>Regulatory note:</strong> ventilation compliance in England is generally demonstrated against <strong>Approved Document F</strong>, which is split into <strong>Volume 1 for dwellings</strong> and <strong>Volume 2 for buildings other than dwellings</strong>. This calculator does not itself demonstrate Part F compliance. :contentReference[oaicite:4]{index=4}</p>
 
           <p><strong>Scope note:</strong> this calculator is an indicative sizing tool only. Final design should also consider pressure drop, noise criteria, aspect ratio limits, available space, fan selection, balancing and project-specific ductwork standards.</p>
         </div>
@@ -327,6 +355,31 @@
       }
     }
 
+    function applyDuctPreset() {
+      const preset = document.getElementById('ductPreset').value;
+      const targetVelocity = document.getElementById('targetVelocity');
+      const presetNote = document.getElementById('presetNote');
+
+      if (preset === 'terminal') {
+        targetVelocity.value = 2.5;
+        presetNote.innerHTML = '<strong>Terminal Branch:</strong> lower velocities are commonly preferred near occupied spaces to help control noise and draft risk.';
+      }
+
+      if (preset === 'secondary') {
+        targetVelocity.value = 4.0;
+        presetNote.innerHTML = '<strong>Branch / Secondary Duct:</strong> a moderate velocity is often used to balance duct size, noise and pressure drop through general distribution runs.';
+      }
+
+      if (preset === 'main') {
+        targetVelocity.value = 6.0;
+        presetNote.innerHTML = '<strong>Main Distribution Duct:</strong> higher velocities may be acceptable on mains where space is limited, but noise and pressure drop should be checked carefully.';
+      }
+
+      if (preset === 'custom') {
+        presetNote.innerHTML = '<strong>Custom:</strong> enter a project-specific design velocity to suit the duct location, acoustic criteria and allowable pressure drop.';
+      }
+    }
+
     function getFlowM3s(value, unit) {
       if (unit === 'ls') return value / 1000;
       if (unit === 'm3h') return value / 3600;
@@ -343,7 +396,7 @@
 
     function getVelocityGuidance(v) {
       if (v < 2) {
-        return 'Low velocity – review duct size and space allowance';
+        return 'Low velocity – review duct size and coordination efficiency';
       } else if (v < 4) {
         return 'Typical lower range – often suitable for quieter branch distribution';
       } else if (v < 6) {
@@ -522,6 +575,7 @@
 
     toggleMode();
     toggleShape();
+    applyDuctPreset();
   </script>
 </body>
 </html>
