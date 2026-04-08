@@ -75,7 +75,8 @@
       color: #e5e5e5;
     }
 
-    input {
+    input,
+    select {
       width: 100%;
       padding: 12px;
       margin-bottom: 20px;
@@ -113,9 +114,13 @@
     }
 
     .result {
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.6;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #ffffff;
+    }
+
+    .result strong {
+      color: white;
     }
 
     .method,
@@ -137,6 +142,13 @@
 
     .reference strong {
       color: white;
+    }
+
+    .note {
+      margin-top: 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #bdbdbd;
     }
 
     .back {
@@ -166,6 +178,12 @@
       <div class="section-block">
         <div class="section-title">Inputs</div>
 
+        <label for="material">Pipe Material</label>
+        <select id="material">
+          <option value="copper">Copper</option>
+          <option value="steel">Steel</option>
+        </select>
+
         <label for="load">Heat Load (kW)</label>
         <input type="number" id="load" value="50">
 
@@ -181,8 +199,10 @@
       <div class="section-block">
         <div class="section-title">Result</div>
         <div class="result" id="result">
-          Flow Rate = -<br>
-          Recommended Pipe Size = -
+          <strong>Flow Rate:</strong> -<br>
+          <strong>Material:</strong> -<br>
+          <strong>Recommended Pipe Size:</strong> -<br>
+          <strong>Actual Velocity:</strong> -
         </div>
       </div>
 
@@ -198,10 +218,11 @@
       <div class="section-block">
         <div class="section-title">Reference</div>
         <div class="reference">
-          <p>This calculator uses the standard LTHW water flow relationship:</p>
+          <p>This calculator uses the standard LTHW relationship:</p>
           <p><strong>Flow Rate (L/s) = Heat Load ÷ (4.18 × ΔT)</strong></p>
-          <p>It then estimates the minimum pipe internal diameter required to keep water velocity within the selected limit.</p>
-          <p>Pipe sizes are indicative only and should be checked against final pressure drop, noise criteria, manufacturer data and project standards.</p>
+          <p>The calculated flow rate is then checked against a material-specific pipe size table to find the smallest pipe size that keeps velocity within the selected limit.</p>
+          <p><strong>Note:</strong> standard copper and steel pipe sizes differ, so the recommended size depends on the selected material.</p>
+          <p>Results are indicative only and should be checked against final pressure drop, noise criteria, manufacturer data and project standards.</p>
         </div>
       </div>
     </div>
@@ -211,6 +232,7 @@
 
   <script>
     function calculatePipe() {
+      const material = document.getElementById('material').value;
       const load = parseFloat(document.getElementById('load').value);
       const deltaT = parseFloat(document.getElementById('deltaT').value);
       const velocity = parseFloat(document.getElementById('velocity').value);
@@ -218,7 +240,34 @@
       const resultBox = document.getElementById('result');
       const methodBox = document.getElementById('method');
 
-      if (isNaN(load) || isNaN(deltaT) || isNaN(velocity) || deltaT <= 0 || velocity <= 0) {
+      const copperSizes = [
+        { label: '15 mm', internalDiameter: 13.6 },
+        { label: '22 mm', internalDiameter: 20.2 },
+        { label: '28 mm', internalDiameter: 25.6 },
+        { label: '35 mm', internalDiameter: 32.0 },
+        { label: '42 mm', internalDiameter: 38.0 },
+        { label: '54 mm', internalDiameter: 50.0 },
+        { label: '67 mm', internalDiameter: 62.0 },
+        { label: '76 mm', internalDiameter: 72.0 },
+        { label: '108 mm', internalDiameter: 102.0 }
+      ];
+
+      const steelSizes = [
+        { label: '15 mm NB', internalDiameter: 16.0 },
+        { label: '20 mm NB', internalDiameter: 21.7 },
+        { label: '25 mm NB', internalDiameter: 27.3 },
+        { label: '32 mm NB', internalDiameter: 36.0 },
+        { label: '40 mm NB', internalDiameter: 41.9 },
+        { label: '50 mm NB', internalDiameter: 53.1 },
+        { label: '65 mm NB', internalDiameter: 68.9 },
+        { label: '80 mm NB', internalDiameter: 80.8 },
+        { label: '100 mm NB', internalDiameter: 105.3 }
+      ];
+
+      const pipeSizes = material === 'copper' ? copperSizes : steelSizes;
+      const materialLabel = material === 'copper' ? 'Copper' : 'Steel';
+
+      if (isNaN(load) || isNaN(deltaT) || isNaN(velocity) || load <= 0 || deltaT <= 0 || velocity <= 0) {
         resultBox.innerHTML = 'Please enter valid numbers';
         methodBox.innerHTML = `
           <p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
@@ -231,18 +280,6 @@
       const flowLs = load / (4.18 * deltaT);
       const flowM3s = flowLs / 1000;
       const requiredArea = flowM3s / velocity;
-
-      const pipeSizes = [
-        { label: '15 mm', internalDiameter: 13.6 },
-        { label: '22 mm', internalDiameter: 20.2 },
-        { label: '28 mm', internalDiameter: 25.6 },
-        { label: '35 mm', internalDiameter: 32.0 },
-        { label: '42 mm', internalDiameter: 38.0 },
-        { label: '54 mm', internalDiameter: 50.0 },
-        { label: '67 mm', internalDiameter: 62.0 },
-        { label: '76 mm', internalDiameter: 72.0 },
-        { label: '108 mm', internalDiameter: 102.0 }
-      ];
 
       let selectedPipe = null;
       let selectedVelocity = null;
@@ -261,30 +298,37 @@
 
       if (selectedPipe) {
         resultBox.innerHTML = `
-          Flow Rate = ${flowLs.toFixed(2)} L/s<br>
-          Recommended Pipe Size = ${selectedPipe.label}<br>
-          Actual Velocity = ${selectedVelocity.toFixed(2)} m/s
+          <strong>Flow Rate:</strong> ${flowLs.toFixed(2)} L/s<br>
+          <strong>Material:</strong> ${materialLabel}<br>
+          <strong>Recommended Pipe Size:</strong> ${selectedPipe.label}<br>
+          <strong>Actual Velocity:</strong> ${selectedVelocity.toFixed(2)} m/s
         `;
 
         methodBox.innerHTML = `
           <p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
           <p>Flow Rate = ${load} ÷ (4.18 × ${deltaT})</p>
           <p>Flow Rate = ${flowLs.toFixed(2)} L/s</p>
-          <p>Required Pipe Area = ${(flowM3s).toExponential(3)} ÷ ${velocity}</p>
+          <p>Flow converted to m³/s = ${(flowM3s).toFixed(4)} m³/s</p>
+          <p>Required Pipe Area = ${flowM3s.toFixed(4)} ÷ ${velocity}</p>
+          <p>Required Pipe Area = ${requiredArea.toExponential(3)} m²</p>
+          <p>Using ${materialLabel.toLowerCase()} pipe size table</p>
           <p>Selected smallest pipe size with velocity ≤ ${velocity} m/s</p>
           <p>Recommended Pipe Size = ${selectedPipe.label}</p>
           <p>Actual Velocity = ${selectedVelocity.toFixed(2)} m/s</p>
         `;
       } else {
         resultBox.innerHTML = `
-          Flow Rate = ${flowLs.toFixed(2)} L/s<br>
-          No suitable pipe size found
+          <strong>Flow Rate:</strong> ${flowLs.toFixed(2)} L/s<br>
+          <strong>Material:</strong> ${materialLabel}<br>
+          <strong>Recommended Pipe Size:</strong> No suitable size found<br>
+          <strong>Actual Velocity:</strong> -
         `;
 
         methodBox.innerHTML = `
           <p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
           <p>Flow Rate = ${load} ÷ (4.18 × ${deltaT})</p>
           <p>Flow Rate = ${flowLs.toFixed(2)} L/s</p>
+          <p>Using ${materialLabel.toLowerCase()} pipe size table</p>
           <p>No pipe size in the current lookup table satisfies the selected velocity limit.</p>
         `;
       }
