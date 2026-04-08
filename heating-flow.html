@@ -1,31 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Heating Flow Rate Calculator - MEPkit</title>
   <link rel="icon" type="image/png" href="favicon1.png">
   <link rel="stylesheet" href="styles.css">
 
   <style>
-   .container {
-  max-width: 520px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 40px 20px;
-}
+    body {
+      padding: 40px 20px 60px;
+    }
+
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+    }
 
     .calculator-logo {
-      width: 180px;
-      margin-bottom: 24px;
+      width: 160px;
+      margin-bottom: 20px;
     }
 
     h1 {
       font-size: 36px;
-      margin-bottom: 12px;
+      line-height: 1.2;
+      margin: 0 0 12px 0;
     }
 
     .subtitle {
       color: #d4d4d4;
-      margin-bottom: 32px;
+      margin: 0 0 32px 0;
+      font-size: 16px;
+      line-height: 1.5;
     }
 
     .card {
@@ -35,17 +42,21 @@
       text-align: left;
     }
 
+    .section-block {
+      margin-top: 24px;
+    }
+
+    .section-block:first-of-type {
+      margin-top: 0;
+    }
+
     .section-title {
-      font-size: 14px;
-      font-weight: bold;
+      font-size: 13px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: #bdbdbd;
-      margin-bottom: 16px;
-    }
-
-    .section-block {
-      margin-top: 24px;
+      margin-bottom: 14px;
     }
 
     label {
@@ -67,6 +78,10 @@
       box-sizing: border-box;
     }
 
+    input:last-of-type {
+      margin-bottom: 22px;
+    }
+
     button {
       width: 100%;
       padding: 14px;
@@ -75,8 +90,9 @@
       border: none;
       border-radius: 8px;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 700;
       cursor: pointer;
+      transition: opacity 0.2s ease;
     }
 
     button:hover {
@@ -86,15 +102,14 @@
     .result,
     .method,
     .reference {
-      margin-top: 16px;
       padding: 18px;
       background: #181818;
       border-radius: 10px;
     }
 
     .result {
-      font-size: 20px;
-      font-weight: bold;
+      font-size: 22px;
+      font-weight: 700;
       text-align: center;
     }
 
@@ -115,12 +130,17 @@
       margin-bottom: 0;
     }
 
+    .reference strong {
+      color: white;
+    }
+
     .back {
       display: inline-block;
       margin-top: 28px;
       color: white;
       text-decoration: none;
       opacity: 0.8;
+      font-size: 15px;
     }
 
     .back:hover {
@@ -131,27 +151,27 @@
 
 <body>
   <div class="container">
-    <img src="MEPkitlogo.png" class="calculator-logo">
+    <img src="MEPkitlogo.png" alt="MEPkit logo" class="calculator-logo">
 
     <h1>Heating Flow Rate Calculator</h1>
     <p class="subtitle">Calculate LTHW flow rate from heat load and temperature difference.</p>
 
     <div class="card">
-      <div class="section-title">Inputs</div>
+      <div class="section-block">
+        <div class="section-title">Inputs</div>
 
-      <label for="load">Heat Load (kW)</label>
-      <input type="number" id="load" value="50">
+        <label for="load">Heat Load (kW)</label>
+        <input type="number" id="load" value="50">
 
-      <label for="deltaT">Delta T (°C)</label>
-      <input type="number" id="deltaT" value="11">
+        <label for="deltaT">Delta T (°C)</label>
+        <input type="number" id="deltaT" value="11">
 
-      <button onclick="calculateFlow()">Calculate</button>
+        <button onclick="calculateFlow()">Calculate</button>
+      </div>
 
       <div class="section-block">
         <div class="section-title">Result</div>
-        <div class="result" id="result">
-          Flow Rate = -
-        </div>
+        <div class="result" id="result">Flow Rate = -</div>
       </div>
 
       <div class="section-block">
@@ -184,7 +204,7 @@
       const resultBox = document.getElementById('result');
       const methodBox = document.getElementById('method');
 
-      if (isNaN(load) || isNaN(deltaT) || deltaT === 0) {
+      if (isNaN(load) || isNaN(deltaT) || deltaT <= 0) {
         resultBox.innerHTML = 'Please enter valid numbers';
         methodBox.innerHTML = `
           <p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
@@ -204,8 +224,8 @@
       `;
     }
 
-    document.addEventListener("keypress", function(event) {
-      if (event.key === "Enter") {
+    document.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
         calculateFlow();
       }
     });
