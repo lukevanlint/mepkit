@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LTHW Pipe Sizing Tool - MEPkit</title>
+  <title>LTHW Pipe Sizing Calculator - MEPkit</title>
   <link rel="icon" type="image/png" href="favicon1.png">
   <link rel="stylesheet" href="styles.css">
 
@@ -160,74 +160,99 @@
 </head>
 
 <body>
-  <div class="container">
-    <img src="logo-mechanical.png" alt="MEPkit Mechanical logo" class="calculator-logo">
 
-    <div class="category-tag">Mechanical</div>
-    <h1>LTHW Pipe Sizing Tool</h1>
-    <p class="subtitle">Estimate LTHW pipe size from heat load, temperature difference and target velocity.</p>
+<div class="container">
 
-    <div class="card">
+<img src="logo-mechanical.png" alt="MEPkit Mechanical logo" class="calculator-logo">
 
-      <div class="section-block">
-        <div class="section-title">Inputs</div>
+<div class="category-tag">Mechanical</div>
 
-        <label for="material">Pipe Material</label>
-        <select id="material">
-          <option value="copper">Copper</option>
-          <option value="steel">Steel</option>
-        </select>
+<h1>LTHW Pipe Sizing Calculator</h1>
 
-        <label for="load">Heat Load (kW)</label>
-        <input type="number" id="load" value="50">
+<p class="subtitle">
+Estimate LTHW pipe size from heat load, temperature difference and target velocity.
+</p>
 
-        <label for="deltaT">Delta T (°C)</label>
-        <input type="number" id="deltaT" value="11">
+<div class="card">
 
-        <label for="velocity">Target Max Velocity (m/s)</label>
-        <input type="number" id="velocity" value="1.0" step="0.1">
+<div class="section-block">
 
-        <button onclick="calculatePipe()">Calculate</button>
-      </div>
+<div class="section-title">Inputs</div>
 
-      <div class="section-block">
-        <div class="section-title">Result</div>
-        <div class="result" id="result">
-          <strong>Flow Rate:</strong> -<br>
-          <strong>Recommended Pipe Size:</strong> -<br>
-          <strong>Actual Velocity:</strong> -<br>
-          <strong>Velocity Guidance:</strong> -
-        </div>
-      </div>
+<label for="material">Pipe Material</label>
+<select id="material">
+<option value="copper">Copper</option>
+<option value="steel">Steel</option>
+</select>
 
-      <div class="section-block">
-        <div class="section-title">Method</div>
-        <div class="method" id="method">
-          <p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
-          <p>Required Pipe Area = Flow (m³/s) ÷ Velocity (m/s)</p>
-        </div>
-      </div>
+<label for="load">Heat Load (kW)</label>
+<input type="number" id="load" value="50">
 
-      <div class="section-block">
-        <div class="section-title">Reference</div>
-        <div class="reference">
-          <p>This tool uses the standard LTHW relationship:</p>
-          <p><strong>Flow Rate (L/s) = Heat Load ÷ (4.18 × ΔT)</strong></p>
+<label for="deltaT">Delta T (°C)</label>
+<input type="number" id="deltaT" value="11">
 
-          <p>The calculated flow rate is then checked against a material-specific pipe size table to find the smallest pipe size that keeps velocity within the selected limit.</p>
+<label for="velocity">Target Max Velocity (m/s)</label>
+<input type="number" id="velocity" value="1.0" step="0.1">
 
-          <p><strong>Note:</strong> standard copper and steel pipe sizes differ, so the recommended size depends on the selected material.</p>
+<button onclick="calculatePipe()">Calculate</button>
 
-          <p><strong>Velocity guidance:</strong> the velocity commentary shown in the result is indicative only. It reflects traditional accepted design norms for closed water systems described in CIBSE guidance, rather than fixed absolute limits.</p>
+</div>
 
-          <p><strong>Scope note:</strong> sizing is based on velocity only. Final pipe selection should also consider pressure drop, pump head, noise, erosion risk, water quality, manufacturer data and project standards.</p>
-        </div>
-      </div>
+<div class="section-block">
 
-    </div>
+<div class="section-title">Result</div>
 
-    <a class="back" href="index.html">← Back to homepage</a>
-  </div>
+<div class="result" id="result">
+
+<strong>Flow Rate:</strong> -<br>
+<strong>Recommended Pipe Size:</strong> -<br>
+<strong>Actual Velocity:</strong> -<br>
+<strong>Velocity Guidance:</strong> -
+
+</div>
+
+</div>
+
+<div class="section-block">
+
+<div class="section-title">Method</div>
+
+<div class="method" id="method">
+
+<p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
+<p>Velocity = Flow ÷ Pipe Area</p>
+
+</div>
+
+</div>
+
+<div class="section-block">
+
+<div class="section-title">Reference</div>
+
+<div class="reference">
+
+<p>This calculator uses the standard heating water relationship:</p>
+
+<p><strong>Flow Rate (L/s) = Heat Load ÷ (4.18 × ΔT)</strong></p>
+
+<p>The calculated flow rate is then compared against standard pipe sizes to identify the smallest pipe that maintains velocity within the selected limit.</p>
+
+<p><strong>Note:</strong> copper and steel pipe systems use different standard size series, so the recommended pipe size depends on the selected material.</p>
+
+<p><strong>Velocity guidance:</strong> commentary shown in the result reflects traditional accepted design norms described in CIBSE guidance for closed water systems rather than fixed absolute limits.</p>
+
+<p><strong>Scope note:</strong> sizing is based on velocity only. Final pipe selection should also consider pressure drop, pump head, noise, erosion risk, manufacturer data and project standards.</p>
+
+</div>
+
+</div>
+
+</div>
+
+<a class="back" href="index.html">← Back to homepage</a>
+
+</div>
 
 <script>
 
@@ -248,95 +273,56 @@ return "Generally too high – review pipe size";
 function calculatePipe(){
 
 const material = document.getElementById('material').value;
-
 const load = parseFloat(document.getElementById('load').value);
-
 const deltaT = parseFloat(document.getElementById('deltaT').value);
-
 const velocity = parseFloat(document.getElementById('velocity').value);
 
 const resultBox = document.getElementById('result');
-
 const methodBox = document.getElementById('method');
 
 const copperSizes = [
-
 { label:'15 mm', internalDiameter:13.6 },
-
 { label:'22 mm', internalDiameter:20.2 },
-
 { label:'28 mm', internalDiameter:25.6 },
-
 { label:'35 mm', internalDiameter:32.0 },
-
 { label:'42 mm', internalDiameter:38.0 },
-
 { label:'54 mm', internalDiameter:50.0 },
-
 { label:'67 mm', internalDiameter:62.0 },
-
 { label:'76 mm', internalDiameter:72.0 },
-
 { label:'108 mm', internalDiameter:102.0 }
-
 ];
 
 const steelSizes = [
-
 { label:'DN15', internalDiameter:16.0 },
-
 { label:'DN20', internalDiameter:21.7 },
-
 { label:'DN25', internalDiameter:27.3 },
-
 { label:'DN32', internalDiameter:36.0 },
-
 { label:'DN40', internalDiameter:41.9 },
-
 { label:'DN50', internalDiameter:53.1 },
-
 { label:'DN65', internalDiameter:68.9 },
-
 { label:'DN80', internalDiameter:80.8 },
-
 { label:'DN100', internalDiameter:105.3 }
-
 ];
 
 const pipeSizes = material === "copper" ? copperSizes : steelSizes;
-
 const materialLabel = material === "copper" ? "Copper" : "Steel";
 
-if(isNaN(load)||isNaN(deltaT)||isNaN(velocity)||load<=0||deltaT<=0||velocity<=0){
-
-resultBox.innerHTML="Please enter valid numbers";
-
-return;
-
-}
-
 const flowLs = load/(4.18*deltaT);
-
 const flowM3s = flowLs/1000;
 
 let selectedPipe=null;
-
 let selectedVelocity=null;
 
 for(let p of pipeSizes){
 
 const d = p.internalDiameter/1000;
-
 const area = Math.PI*d*d/4;
-
 const v = flowM3s/area;
 
 if(v <= velocity){
 
 selectedPipe = p;
-
 selectedVelocity = v;
-
 break;
 
 }
@@ -358,8 +344,7 @@ methodBox.innerHTML =
 
 `<p>Flow Rate = ${load} ÷ (4.18 × ${deltaT})</p>
 <p>Flow Rate = ${flowLs.toFixed(2)} L/s</p>
-<p>Flow converted to m³/s = ${flowM3s.toFixed(4)}</p>
-<p>Selected smallest pipe size with velocity ≤ ${velocity} m/s</p>
+<p>Selected smallest pipe with velocity ≤ ${velocity} m/s</p>
 <p>Actual Velocity = ${selectedVelocity.toFixed(2)} m/s</p>`;
 
 }
