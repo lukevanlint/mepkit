@@ -406,13 +406,25 @@ a {
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 14px 16px;
+  padding: 16px 18px;
   border-radius: 10px;
   border: 1px solid #3a404d;
   background: #111318;
   color: white;
   font-size: 16px;
   outline: none;
+}
+
+/* Remove default number input spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .form-group input:focus,
@@ -456,6 +468,76 @@ a {
 .result-value {
   color: var(--mechanical);
   font-weight: 700;
+}
+
+.result-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.result-value-main {
+  font-size: 34px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--mechanical);
+  margin-bottom: 8px;
+}
+
+.result-value-secondary {
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--muted-2);
+}
+
+.button-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.button-row .calc-button {
+  margin-bottom: 0;
+}
+
+.secondary-button {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel-soft);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.secondary-button:hover {
+  background: var(--hover);
+  border-color: #374151;
+}
+
+.method-list,
+.reference-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted-2);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.method-list li,
+.reference-list li {
+  margin-bottom: 8px;
+}
+
+.method-list li:last-child,
+.reference-list li:last-child {
+  margin-bottom: 0;
 }
 
 .related-links {
@@ -528,6 +610,16 @@ a {
   }
 }
 
+@media (max-width: 700px) {
+  .button-row {
+    flex-direction: column;
+  }
+
+  .result-value-main {
+    font-size: 26px;
+  }
+}
+
 @media (max-width: 600px) {
   .hero-top {
     flex-direction: column;
@@ -560,7 +652,8 @@ a {
   .form-group select,
   .form-group textarea,
   .result-box p,
-  .calc-button {
+  .calc-button,
+  .secondary-button {
     font-size: 15px;
   }
 }
