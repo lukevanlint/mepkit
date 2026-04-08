@@ -98,6 +98,10 @@ a:hover {
   margin-bottom: 26px;
 }
 
+.sidebar-search::placeholder {
+  color: var(--muted);
+}
+
 .nav-group {
   margin-bottom: 26px;
 }
@@ -169,7 +173,7 @@ a:hover {
   background: linear-gradient(180deg, #171a21 0%, #13161c 100%);
   border: 1px solid var(--border);
   border-radius: 24px;
-  padding: 44px 38px;
+  padding: 34px 34px;
   margin-bottom: 28px;
 }
 
@@ -186,7 +190,7 @@ a:hover {
   flex-shrink: 0;
 }
 
-.hero-title-wrap h2 {
+.hero-title-wrap h1 {
   margin: 0 0 8px 0;
   font-size: 42px;
   line-height: 1;
@@ -250,51 +254,10 @@ a:hover {
   font-weight: 700;
 }
 
-.featured-grid,
 .discipline-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
-}
-
-.feature-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 20px;
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-}
-
-.feature-card:hover {
-  transform: translateY(-2px);
-  border-color: #374151;
-  background: #1a1f28;
-}
-
-.feature-card .tag {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 12px;
-}
-
-.feature-card.mechanical .tag {
-  color: var(--mechanical);
-}
-
-.feature-card h3 {
-  margin: 0 0 8px 0;
-  font-size: 20px;
-  line-height: 1.3;
-}
-
-.feature-card p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.6;
 }
 
 .discipline-card {
@@ -311,7 +274,7 @@ a:hover {
 }
 
 .discipline-card p {
-  margin: 0 0 18px 0;
+  margin: 0 0 14px 0;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.6;
@@ -366,6 +329,19 @@ a:hover {
   line-height: 1.7;
 }
 
+.site-footer {
+  margin-top: 28px;
+  padding: 18px 4px 0;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
 .page-header {
   margin-bottom: 28px;
 }
@@ -392,7 +368,7 @@ a:hover {
 
 .page-header h1 {
   margin: 0 0 16px 0;
-  font-size: 56px;
+  font-size: 48px;
   line-height: 1.05;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -426,7 +402,7 @@ a:hover {
 
 .content-card p {
   margin: 0;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.7;
   color: var(--muted-2);
 }
@@ -451,12 +427,12 @@ a:hover {
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 18px 20px;
-  border-radius: 14px;
+  padding: 14px 16px;
+  border-radius: 10px;
   border: 1px solid #3a404d;
   background: #111318;
   color: white;
-  font-size: 18px;
+  font-size: 16px;
   outline: none;
 }
 
@@ -468,12 +444,12 @@ a:hover {
 
 .calc-button {
   width: 100%;
-  padding: 18px 22px;
+  padding: 14px 18px;
   border: none;
-  border-radius: 14px;
+  border-radius: 10px;
   background: #f3f4f6;
   color: #111318;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: opacity 0.2s ease;
@@ -494,7 +470,7 @@ a:hover {
 
 .result-box p {
   margin: 0;
-  font-size: 18px;
+  font-size: 15px;
   line-height: 1.6;
 }
 
@@ -543,7 +519,6 @@ a:hover {
 }
 
 @media (max-width: 1100px) {
-  .featured-grid,
   .discipline-grid {
     grid-template-columns: 1fr;
   }
@@ -578,7 +553,7 @@ a:hover {
     align-items: flex-start;
   }
 
-  .hero-title-wrap h2 {
+  .hero-title-wrap h1 {
     font-size: 34px;
   }
 
@@ -600,7 +575,7 @@ a:hover {
     width: 72px;
   }
 
-  .hero-title-wrap h2 {
+  .hero-title-wrap h1 {
     font-size: 30px;
   }
 
@@ -624,6 +599,6 @@ a:hover {
   .form-group textarea,
   .result-box p,
   .calc-button {
-    font-size: 17px;
+    font-size: 15px;
   }
 }
