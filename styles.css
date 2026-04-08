@@ -1,9 +1,22 @@
+:root {
+  --bg: #0f1115;
+  --panel: #171a21;
+  --panel-soft: #13161c;
+  --border: #262b36;
+
+  --text: #f3f4f6;
+  --muted: #9ca3af;
+
+  --mechanical: #60a5fa;
+  --electrical: #39ab63;
+  --public-health: #f28b82;
+}
+
 body {
   font-family: Arial, sans-serif;
-  background: #1f1f1f;
-  color: white;
+  background: var(--bg);
+  color: var(--text);
   margin: 0;
-  text-align: center;
 }
 
 a {
@@ -12,20 +25,22 @@ a {
 }
 
 a:hover {
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
-.tools {
-  margin-top: 60px;
-  font-size: 18px;
-  line-height: 34px;
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 20px;
 }
 
-a {
-  color: white;
-  text-decoration: none;
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
 }
 
-a:hover {
-  opacity: 0.7;
+.muted {
+  color: var(--muted);
 }
