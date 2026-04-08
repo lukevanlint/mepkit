@@ -8,10 +8,18 @@
     name="description"
     content="Calculate LTHW flow rate from heat load and design temperature difference for UK building services design."
   >
-  <link rel="icon" type="image/png" href="/assets/favicon1.png">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
 
   <style>
+    .intro-note {
+      margin-top: 14px;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
     .result-box {
       padding: 24px;
     }
@@ -26,7 +34,7 @@
     }
 
     .result-value-main {
-      font-size: 30px;
+      font-size: 34px;
       line-height: 1.1;
       font-weight: 700;
       color: var(--mechanical);
@@ -86,13 +94,35 @@
       margin-bottom: 0;
     }
 
+    .formula-block {
+      margin: 14px 0 18px;
+      padding: 16px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #111318;
+      font-size: 17px;
+      line-height: 1.6;
+      color: white;
+    }
+
+    .design-note {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--panel-soft);
+      color: var(--muted-2);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
     @media (max-width: 700px) {
       .button-row {
         flex-direction: column;
       }
 
       .result-value-main {
-        font-size: 24px;
+        font-size: 26px;
       }
     }
   </style>
@@ -110,6 +140,10 @@
           <p class="page-description">
             Calculate LTHW flow rate from heat load and design temperature difference.
           </p>
+          <p class="intro-note">
+            Use this calculator for quick LTHW heating design checks where heat load and design ΔT are known.
+            Based on standard building services engineering relationships commonly used in UK practice.
+          </p>
         </section>
 
         <section class="calc-card">
@@ -117,12 +151,12 @@
 
           <div class="form-group">
             <label for="load">Heat Load (kW)</label>
-            <input type="number" id="load" value="50" step="10" autofocus>
+            <input type="number" id="load" value="50" step="10" min="0" autofocus>
           </div>
 
           <div class="form-group">
             <label for="deltaT">Delta T (°C)</label>
-            <input type="number" id="deltaT" value="20" step="5">
+            <input type="number" id="deltaT" value="20" step="5" min="0">
           </div>
 
           <div class="button-row">
@@ -140,10 +174,29 @@
 
         <section class="content-card">
           <h2 class="section-title">Method</h2>
+
+          <p>
+            The heating flow rate is derived from the standard heat transfer relationship:
+          </p>
+
+          <div class="formula-block">
+            Q = ṁ × Cp × ΔT
+          </div>
+
+          <p>
+            Rearranged for LTHW volumetric flow rate:
+          </p>
+
+          <div class="formula-block">
+            Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)
+          </div>
+
           <div id="method">
             <ul class="method-list">
-              <li>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</li>
-              <li>Flow Rate = -</li>
+              <li><strong>Q</strong> = heat load (kW)</li>
+              <li><strong>Cp</strong> = specific heat capacity of water, taken as 4.18 kJ/kg·K</li>
+              <li><strong>ΔT</strong> = temperature difference between flow and return water (°C)</li>
+              <li>Calculated flow rate = -</li>
             </ul>
           </div>
         </section>
@@ -151,26 +204,29 @@
         <section class="content-card">
           <h2 class="section-title">Reference</h2>
           <ul class="reference-list">
-            <li>This calculator uses the standard heating water relationship: <strong>Flow Rate (L/s) = Heat Load ÷ (4.18 × ΔT)</strong>.</li>
-            <li>The constant <strong>4.18</strong> represents the specific heat capacity of water at typical heating system temperatures.</li>
-            <li>This relationship is widely used in building services engineering to estimate water flow rates for low temperature hot water systems.</li>
-            <li><strong>Scope note:</strong> this calculator determines flow rate only. Final system design should also consider pipe velocity, pressure drop, pump head, controls strategy and project-specific design requirements.</li>
+            <li>Typical calculation method used in LTHW heating system design.</li>
+            <li>Commonly aligned with standard building services engineering practice and CIBSE-based heating design methodology.</li>
+            <li>Relevant references may include CIBSE Guide B and CIBSE Guide C for heating and pipework design principles.</li>
           </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator provides indicative results only. Final system design should consider pipe sizing, velocity, pressure loss, pump head, control strategy, diversity, water properties, and project-specific design criteria.
+          </div>
         </section>
 
         <section class="content-card">
           <h2 class="section-title">Related Calculators</h2>
           <div class="related-links">
-            <a href="/calculators/lthw-pipe-sizing.html">LTHW Pipe Sizing Calculator</a>
-            <a href="/calculators/lthw-pump-head.html">LTHW Pump Head Calculator</a>
-            <a href="/calculators/expansion-vessel-calc.html">Expansion Vessel Calculator</a>
+            <a href="lthw-pipe-sizing.html">LTHW Pipe Sizing Calculator</a>
+            <a href="lthw-pump-head.html">LTHW Pump Head Calculator</a>
+            <a href="expansion-vessel-calc.html">Expansion Vessel Calculator</a>
           </div>
         </section>
       </div>
     </main>
   </div>
 
-  <script src="/script.js"></script>
+  <script src="../script.js"></script>
 
   <script>
     function calculateFlow() {
@@ -189,8 +245,10 @@
 
         methodBox.innerHTML = `
           <ul class="method-list">
-            <li>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</li>
-            <li>Flow Rate = -</li>
+            <li><strong>Q</strong> = heat load (kW)</li>
+            <li><strong>Cp</strong> = specific heat capacity of water, taken as 4.18 kJ/kg·K</li>
+            <li><strong>ΔT</strong> = temperature difference between flow and return water (°C)</li>
+            <li>Calculated flow rate = -</li>
           </ul>
         `;
         return;
@@ -207,10 +265,11 @@
 
       methodBox.innerHTML = `
         <ul class="method-list">
-          <li>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</li>
+          <li><strong>Q</strong> = heat load (kW)</li>
+          <li><strong>Cp</strong> = specific heat capacity of water, taken as 4.18 kJ/kg·K</li>
+          <li><strong>ΔT</strong> = temperature difference between flow and return water (°C)</li>
           <li>Flow Rate = ${load} ÷ (4.18 × ${deltaT})</li>
-          <li>Flow Rate = <strong>${flowLs.toFixed(2)} L/s</strong></li>
-          <li>Flow Rate = <strong>${flowM3h.toFixed(2)} m³/h</strong></li>
+          <li>Calculated flow rate = <strong>${flowLs.toFixed(2)} L/s</strong> (${flowM3h.toFixed(2)} m³/h)</li>
         </ul>
       `;
     }
@@ -227,8 +286,10 @@
 
       document.getElementById("method").innerHTML = `
         <ul class="method-list">
-          <li>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</li>
-          <li>Flow Rate = -</li>
+          <li><strong>Q</strong> = heat load (kW)</li>
+          <li><strong>Cp</strong> = specific heat capacity of water, taken as 4.18 kJ/kg·K</li>
+          <li><strong>ΔT</strong> = temperature difference between flow and return water (°C)</li>
+          <li>Calculated flow rate = -</li>
         </ul>
       `;
 
