@@ -113,9 +113,13 @@
     }
 
     .result {
-      font-size: 22px;
-      font-weight: 700;
-      text-align: center;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #ffffff;
+    }
+
+    .result strong {
+      color: white;
     }
 
     .method,
@@ -155,86 +159,141 @@
 </head>
 
 <body>
-  <div class="container">
-    <img src="logo-mechanical.png" alt="MEPkit Mechanical logo" class="calculator-logo">
 
-    <div class="category-tag">Mechanical</div>
-    <h1>Heating Flow Rate Calculator</h1>
-    <p class="subtitle">Calculate LTHW flow rate from heat load and temperature difference.</p>
+<div class="container">
 
-    <div class="card">
-      <div class="section-block">
-        <div class="section-title">Inputs</div>
+<img src="logo-mechanical.png" alt="MEPkit Mechanical logo" class="calculator-logo">
 
-        <label for="load">Heat Load (kW)</label>
-        <input type="number" id="load" value="50">
+<div class="category-tag">Mechanical</div>
 
-        <label for="deltaT">Delta T (°C)</label>
-        <input type="number" id="deltaT" value="11">
+<h1>Heating Flow Rate Calculator</h1>
 
-        <button onclick="calculateFlow()">Calculate</button>
-      </div>
+<p class="subtitle">
+Calculate LTHW flow rate from heat load and temperature difference.
+</p>
 
-      <div class="section-block">
-        <div class="section-title">Result</div>
-        <div class="result" id="result">Flow Rate = -</div>
-      </div>
+<div class="card">
 
-      <div class="section-block">
-        <div class="section-title">Method</div>
-        <div class="method" id="method">
-          <p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
-          <p>Flow Rate = -</p>
-        </div>
-      </div>
+<div class="section-block">
 
-      <div class="section-block">
-        <div class="section-title">Reference</div>
-        <div class="reference">
-          <p>This uses the standard water flow relationship for LTHW systems:</p>
-          <p><strong>Flow Rate = Heat Load ÷ (4.18 × ΔT)</strong></p>
-          <p>Where 4.18 represents the specific heat capacity of water.</p>
-          <p>This is commonly used for heating water flow calculations in building services design.</p>
-        </div>
-      </div>
-    </div>
+<div class="section-title">Inputs</div>
 
-    <a class="back" href="index.html">← Back to homepage</a>
-  </div>
+<label for="load">Heat Load (kW)</label>
+<input type="number" id="load" value="50">
 
-  <script>
-    function calculateFlow() {
-      const load = parseFloat(document.getElementById('load').value);
-      const deltaT = parseFloat(document.getElementById('deltaT').value);
+<label for="deltaT">Delta T (°C)</label>
+<input type="number" id="deltaT" value="11">
 
-      const resultBox = document.getElementById('result');
-      const methodBox = document.getElementById('method');
+<button onclick="calculateFlow()">Calculate</button>
 
-      if (isNaN(load) || isNaN(deltaT) || deltaT <= 0) {
-        resultBox.innerHTML = 'Please enter valid numbers';
-        methodBox.innerHTML = `
-          <p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
-          <p>Flow Rate = -</p>
-        `;
-        return;
-      }
+</div>
 
-      const flow = load / (4.18 * deltaT);
+<div class="section-block">
 
-      resultBox.innerHTML = 'Flow Rate = ' + flow.toFixed(2) + ' L/s';
+<div class="section-title">Result</div>
 
-      methodBox.innerHTML = `
-        <p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
-        <p>Flow Rate = ${load} ÷ (4.18 × ${deltaT})</p>
-        <p>Flow Rate = ${flow.toFixed(2)} L/s</p>
-      `;
-    }
+<div class="result" id="result">
 
-    document.addEventListener('keypress', function(event) {
-      if (event.key === 'Enter') {
-        calculateFlow();
-      }
-    });
-  </script>
+<strong>Flow Rate:</strong> -
+
+</div>
+
+</div>
+
+<div class="section-block">
+
+<div class="section-title">Method</div>
+
+<div class="method" id="method">
+
+<p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
+
+<p>Flow Rate = -</p>
+
+</div>
+
+</div>
+
+<div class="section-block">
+
+<div class="section-title">Reference</div>
+
+<div class="reference">
+
+<p>This calculator uses the standard heating water relationship:</p>
+
+<p><strong>Flow Rate (L/s) = Heat Load ÷ (4.18 × ΔT)</strong></p>
+
+<p>The constant <strong>4.18</strong> represents the specific heat capacity of water (kJ/kg·K) at typical heating system temperatures.</p>
+
+<p>This relationship is widely used in building services engineering to estimate water flow rates for low temperature hot water (LTHW) systems.</p>
+
+<p><strong>Scope note:</strong> this calculator determines flow rate only. Final system design should also consider pipe velocity, pressure drop, pump head and project standards.</p>
+
+</div>
+
+</div>
+
+</div>
+
+<a class="back" href="index.html">← Back to homepage</a>
+
+</div>
+
+<script>
+
+function calculateFlow(){
+
+const load = parseFloat(document.getElementById('load').value);
+
+const deltaT = parseFloat(document.getElementById('deltaT').value);
+
+const resultBox = document.getElementById('result');
+
+const methodBox = document.getElementById('method');
+
+if(isNaN(load) || isNaN(deltaT) || load <= 0 || deltaT <= 0){
+
+resultBox.innerHTML = "Please enter valid numbers";
+
+methodBox.innerHTML = `
+<p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
+<p>Flow Rate = -</p>
+`;
+
+return;
+
+}
+
+const flowLs = load / (4.18 * deltaT);
+
+const flowM3h = flowLs * 3.6;
+
+resultBox.innerHTML = `
+<strong>Flow Rate:</strong> ${flowLs.toFixed(2)} L/s<br>
+<strong>Flow Rate:</strong> ${flowM3h.toFixed(2)} m³/h
+`;
+
+methodBox.innerHTML = `
+<p>Flow Rate (L/s) = Heat Load (kW) ÷ (4.18 × ΔT)</p>
+<p>Flow Rate = ${load} ÷ (4.18 × ${deltaT})</p>
+<p>Flow Rate = ${flowLs.toFixed(2)} L/s</p>
+<p>Flow Rate = ${flowM3h.toFixed(2)} m³/h</p>
+`;
+
+}
+
+document.addEventListener('keypress',function(event){
+
+if(event.key === "Enter"){
+
+calculateFlow();
+
+}
+
+});
+
+</script>
+
 </body>
 </html>
