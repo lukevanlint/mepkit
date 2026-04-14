@@ -34,4 +34,258 @@
     <main class="main">
       <div class="main-inner">
         <section class="page-header">
-          <p class="discipline-label mechanical">Mechanical</
+          <p class="discipline-label mechanical">Mechanical</p>
+          <h1>LTHW Pump Head Calculator</h1>
+          <p class="page-description">
+            Estimate heating pump head from pipe length, fittings allowance, pressure drop and terminal losses.
+          </p>
+          <p class="intro-note">
+            Use this calculator for preliminary pump head checks where flow rate, index pipe length, indicative pipe pressure drop and terminal or equipment losses are known.
+            It is intended for early-stage heating system sizing and pump duty estimates rather than final pump selection.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="form-group">
+            <label for="flow">Flow Rate (L/s)</label>
+            <input type="number" id="flow" value="1.09" step="0.01" min="0" autofocus>
+          </div>
+
+          <div class="form-group">
+            <label for="length">Straight Pipe Length (m)</label>
+            <input type="number" id="length" value="120" step="0.1" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="fittings">Fittings Allowance (%)</label>
+            <input type="number" id="fittings" value="30" step="1" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="pressureDrop">Pipe Pressure Drop (Pa/m)</label>
+            <input type="number" id="pressureDrop" value="300" step="1" min="0">
+          </div>
+
+          <p class="unit-note">
+            Typical heating design values are often in the order of 100–300 Pa/m, depending on system type, pipe material and design objectives.
+          </p>
+
+          <div class="form-group">
+            <label for="terminalLoss">Terminal / Equipment Allowance (kPa)</label>
+            <input type="number" id="terminalLoss" value="10" step="0.1" min="0">
+          </div>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculatePumpHead()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Pump Head</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Total equivalent length is estimated by applying a fittings allowance to the straight pipe length:
+          </p>
+
+          <div class="formula-block">
+            Lₑ = L × (1 + F ÷ 100)
+          </div>
+
+          <p>
+            Pipe friction loss is then estimated from equivalent length and pipe pressure drop:
+          </p>
+
+          <div class="formula-block">
+            ΔPₚ = Lₑ × R
+          </div>
+
+          <p>
+            Total pressure loss is taken as pipe friction loss plus terminal or equipment allowance:
+          </p>
+
+          <div class="formula-block">
+            ΔPₜ = ΔPₚ + ΔPₑ
+          </div>
+
+          <p>
+            Pump head is then estimated from:
+          </p>
+
+          <div class="formula-block">
+            H = ΔPₜ ÷ 9810
+          </div>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>Lₑ</strong> = equivalent pipe length (m)</li>
+              <li><strong>L</strong> = straight pipe length (m)</li>
+              <li><strong>F</strong> = fittings allowance (%)</li>
+              <li><strong>R</strong> = pipe pressure drop (Pa/m)</li>
+              <li><strong>ΔPₚ</strong> = pipe friction loss (Pa)</li>
+              <li><strong>ΔPₑ</strong> = terminal / equipment allowance (Pa)</li>
+              <li><strong>ΔPₜ</strong> = total pressure loss (Pa)</li>
+              <li><strong>H</strong> = pump head (m)</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator estimates pump head using an assumed pipe pressure drop per metre together with allowances for fittings and terminal losses.</li>
+            <li>Indicative heating pipe pressure drops are commonly used during early-stage design to estimate hydraulic resistance before full detailed loss calculations are undertaken.</li>
+            <li>Relevant guidance may include CIBSE Guide C and CIBSE Guide B for fluid flow, pipe sizing and hydraulic system design considerations.</li>
+            <li>Where applicable, final design should also align with relevant British Standards, project specifications and manufacturer requirements.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator provides an indicative estimate only. Final pump selection should be based on the system index run and confirmed equipment losses including coils, heat exchangers, control valves, strainers and any project-specific hydraulic requirements.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="flow-rate-calculator.html">Flow Rate Calculator</a>
+            <a href="pipe-sizing-calculator.html">Pipe Sizing Calculator</a>
+            <a href="pipe-pressure-drop-calculator.html">Pipe Pressure Drop Calculator</a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Pump Head</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Pump Head</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>Lₑ</strong> = equivalent pipe length (m)</li>
+          <li><strong>L</strong> = straight pipe length (m)</li>
+          <li><strong>F</strong> = fittings allowance (%)</li>
+          <li><strong>R</strong> = pipe pressure drop (Pa/m)</li>
+          <li><strong>ΔPₚ</strong> = pipe friction loss (Pa)</li>
+          <li><strong>ΔPₑ</strong> = terminal / equipment allowance (Pa)</li>
+          <li><strong>ΔPₜ</strong> = total pressure loss (Pa)</li>
+          <li><strong>H</strong> = pump head (m)</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function calculatePumpHead() {
+      const flow = parseFloat(document.getElementById("flow").value);
+      const length = parseFloat(document.getElementById("length").value);
+      const fittings = parseFloat(document.getElementById("fittings").value);
+      const pressureDrop = parseFloat(document.getElementById("pressureDrop").value);
+      const terminalLoss = parseFloat(document.getElementById("terminalLoss").value);
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      if (
+        isNaN(flow) ||
+        isNaN(length) ||
+        isNaN(fittings) ||
+        isNaN(pressureDrop) ||
+        isNaN(terminalLoss) ||
+        flow <= 0 ||
+        length < 0 ||
+        fittings < 0 ||
+        pressureDrop < 0 ||
+        terminalLoss < 0
+      ) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      const equivalentLength = length * (1 + (fittings / 100));
+      const pipeFrictionLossPa = equivalentLength * pressureDrop;
+      const terminalLossPa = terminalLoss * 1000;
+      const totalPressureLossPa = pipeFrictionLossPa + terminalLossPa;
+      const totalPressureLossKpa = totalPressureLossPa / 1000;
+      const pumpHeadM = totalPressureLossPa / 9810;
+
+      resultBox.innerHTML = `
+        <div class="result-label">Pump Head</div>
+        <div class="result-value-main">${pumpHeadM.toFixed(2)} m</div>
+        <div class="result-value-secondary">${totalPressureLossPa.toFixed(0)} Pa total (${totalPressureLossKpa.toFixed(2)} kPa)</div>
+        <div class="result-extra">
+          Flow Rate: <strong>${flow.toFixed(2)} L/s</strong><br>
+          Equivalent Length: <strong>${equivalentLength.toFixed(1)} m</strong><br>
+          Pipe Friction Loss: <strong>${pipeFrictionLossPa.toFixed(0)} Pa</strong><br>
+          Terminal / Equipment Allowance: <strong>${terminalLoss.toFixed(2)} kPa</strong>
+        </div>
+      `;
+
+      methodBox.innerHTML = `
+        <ul class="method-list">
+          <li><strong>Lₑ</strong> = equivalent pipe length (m)</li>
+          <li><strong>L</strong> = straight pipe length (m)</li>
+          <li><strong>F</strong> = fittings allowance (%)</li>
+          <li><strong>R</strong> = pipe pressure drop (Pa/m)</li>
+          <li><strong>ΔPₚ</strong> = pipe friction loss (Pa)</li>
+          <li><strong>ΔPₑ</strong> = terminal / equipment allowance (Pa)</li>
+          <li><strong>ΔPₜ</strong> = total pressure loss (Pa)</li>
+          <li><strong>H</strong> = pump head (m)</li>
+          <li>Equivalent Length = ${length.toFixed(1)} × (1 + ${fittings.toFixed(0)} ÷ 100) = <span class="method-result">${equivalentLength.toFixed(1)} m</span></li>
+          <li>Pipe Friction Loss = ${equivalentLength.toFixed(1)} × ${pressureDrop.toFixed(0)} = <span class="method-result">${pipeFrictionLossPa.toFixed(0)} Pa</span></li>
+          <li>Terminal / Equipment Allowance = <span class="method-result">${terminalLoss.toFixed(2)} kPa</span> = ${terminalLossPa.toFixed(0)} Pa</li>
+          <li>Total Pressure Loss = ${pipeFrictionLossPa.toFixed(0)} + ${terminalLossPa.toFixed(0)} = <span class="method-result">${totalPressureLossPa.toFixed(0)} Pa</span></li>
+          <li>Pump Head = ${totalPressureLossPa.toFixed(0)} ÷ 9810 = <span class="method-result">${pumpHeadM.toFixed(2)} m</span></li>
+        </ul>
+      `;
+    }
+
+    function resetCalc() {
+      document.getElementById("flow").value = "1.09";
+      document.getElementById("length").value = "120";
+      document.getElementById("fittings").value = "30";
+      document.getElementById("pressureDrop").value = "300";
+      document.getElementById("terminalLoss").value = "10";
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("flow").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculatePumpHead();
+      }
+    });
+  </script>
+</body>
+</html>
