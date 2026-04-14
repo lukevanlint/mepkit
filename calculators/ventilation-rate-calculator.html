@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ventilation Rate Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Estimate ventilation rates for dwellings, non-dwellings and schools using common compliance-based methods for UK building services design."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+      <div class="main-inner">
+        <section class="page-header">
+          <p class="discipline-label mechanical">Mechanical</p>
+          <h1>Ventilation Rate Calculator</h1>
+          <p class="page-description">
+            Estimate ventilation rates for dwellings, non-dwellings and schools using common compliance-based methods.
+          </p>
+          <p class="intro-note">
+            Use this calculator for early-stage ventilation checks based on common UK compliance and design approaches.
+            It includes dwelling, non-dwelling and school routes, with occupancy and ACH-based options where appropriate.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="form-group">
+            <label for="buildingType">Building Type</label>
+            <select id="buildingType" onchange="toggleBuildingType()">
+              <option value="dwelling">Dwelling</option>
+              <option value="nondwelling">Non-dwelling</option>
+              <option value="school">School</option>
+            </select>
+          </div>
+
+          <div id="dwellingMode">
+            <div class="form-group">
+              <label for="dwellingArea">Internal Floor Area (m²)</label>
+              <input type="number" id="dwellingArea" value="85" step="0.1" min="0" autofocus>
+            </div>
+
+            <div class="form-group">
+              <label for="bedrooms">Number of Bedrooms</label>
+              <input type="number" id="bedrooms" value="3" step="1" min="0">
+            </div>
+
+            <small class="input-note">
+              Whole-dwelling ventilation is taken as the higher of the floor-area rate and the bedroom-based minimum rate.
+            </small>
+          </div>
+
+          <div id="nondwellingMode" class="hidden">
+            <div class="form-group">
+              <label for="nonDwellingMethod">Method</label>
+              <select id="nonDwellingMethod" onchange="toggleNonDwellingMethod()">
+                <option value="office">Office</option>
+                <option value="occupancy">Generic Occupancy-Based</option>
+                <option value="ach">Air Changes per Hour</option>
+              </select>
+            </div>
+
+            <div id="officeMode">
+              <div class="form-group">
+                <label for="officeOccupants">Number of Occupants</label>
+                <input type="number" id="officeOccupants" value="10" step="1" min="0">
+              </div>
+
+              <div class="form-group">
+                <label for="officeArea">Floor Area (m²)</label>
+                <input type="number" id="officeArea" value="100" step="0.1" min="0">
+              </div>
+
+              <small class="input-note">
+                Office ventilation is based on the higher of 10 L/s per person or 1 L/s per m².
+              </small>
+            </div>
+
+            <div id="occupancyMode" class="hidden">
+              <div class="form-group">
+                <label for="genericOccupants">Number of Occupants</label>
+                <input type="number" id="genericOccupants" value="10" step="1" min="0">
+              </div>
+
+              <div class="form-group">
+                <label for="genericLsPerPerson">Outdoor Air Rate (L/s per person)</label>
+                <input type="number" id="genericLsPerPerson" value="10" step="0.1" min="0">
+              </div>
+            </div>
+
+            <div id="achMode" class="hidden">
+              <div class="form-group">
+                <label for="length">Room Length (m)</label>
+                <input type="number" id="length" value="8" step="0.1" min="0">
+              </div>
+
+              <div class="form-group">
+                <label for="width">Room Width (m)</label>
+                <input type="number" id="width" value="6" step="0.1" min="0">
+              </div>
+
+              <div class="form-group">
+                <label for="height">Room Height (m)</label>
+                <input type="number" id="height" value="3" step="0.1" min="0">
+              </div>
+
+              <div class="form-group">
+                <label for="ach">Air Changes per Hour (ACH)</label>
+                <input type="number" id="ach" value="4" step="0.1" min="0">
+              </div>
+            </div>
+          </div>
+
+          <div id="schoolMode" class="hidden">
+            <div class="form-group">
+              <label for="schoolOccupants">Number of Occupants</label>
+              <input type="number" id="schoolOccupants" value="30" step="1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="schoolRate">Outdoor Air Rate (L/s per person)</label>
+              <input type="number" id="schoolRate" value="8" step="0.1" min="0">
+            </div>
+
+            <small class="input-note">
+              School ventilation should be checked against BB 101 and the project-specific school brief. This input is therefore user-defined rather than treated as a universal statutory preset.
+            </small>
+          </div>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculateVentilation()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Ventilation Rate</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Different building types and design routes use different methods to establish the required outdoor air rate.
+          </p>
+
+          <div class="formula-block">
+            Ventilation Rate = Occupants × Outdoor Air Rate
+          </div>
+
+          <p>
+            Where an ACH method is used:
+          </p>
+
+          <div class="formula-block">
+            Ventilation Rate (m³/h) = Room Volume × ACH
+          </div>
+
+          <p>
+            Conversion between units:
+          </p>
+
+          <div class="formula-block">
+            Ventilation Rate (L/s) = m³/h ÷ 3.6
+          </div>
+
+          <div id="method">
+            <ul class="method-list">
+              <li>Dwelling: use the higher of bedroom-based minimum rate and 0.3 L/s per m² of internal floor area.</li>
+              <li>Non-dwelling office: use the higher of 10 L/s per person or 1 L/s per m².</li>
+              <li>Occupancy method: ventilation rate = occupants × L/s per person.</li>
+              <li>ACH method: ventilation rate (m³/h) = room volume × air changes per hour.</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator provides an indicative ventilation rate based on the selected building type and calculation route.</li>
+            <li>For dwellings, relevant guidance may include Approved Document F Volume 1.</li>
+            <li>For buildings other than dwellings, relevant guidance may include Approved Document F Volume 2.</li>
+            <li>For schools, final ventilation requirements should be checked against BB 101 and the project-specific school brief.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator is an early-stage estimating tool only. Final requirements may also depend on building use, pollutant loads, extract strategy, ventilation effectiveness, thermal comfort, project-specific criteria and the agreed compliance strategy with the design team and building control body.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="duct-sizing-calculator.html">Duct Sizing Calculator</a>
+            <a href="specific-fan-power-calculator.html">Specific Fan Power Calculator</a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    function getDwellingBedroomRate(bedrooms) {
+      const b = Math.max(1, Math.floor(bedrooms));
+      return 13 + ((b - 1) * 6);
+    }
+
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Ventilation Rate</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Ventilation Rate</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li>Dwelling: use the higher of bedroom-based minimum rate and 0.3 L/s per m² of internal floor area.</li>
+          <li>Non-dwelling office: use the higher of 10 L/s per person or 1 L/s per m².</li>
+          <li>Occupancy method: ventilation rate = occupants × L/s per person.</li>
+          <li>ACH method: ventilation rate (m³/h) = room volume × air changes per hour.</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function toggleBuildingType() {
+      const buildingType = document.getElementById("buildingType").value;
+
+      document.getElementById("dwellingMode").classList.add("hidden");
+      document.getElementById("nondwellingMode").classList.add("hidden");
+      document.getElementById("schoolMode").classList.add("hidden");
+
+      if (buildingType === "dwelling") {
+        document.getElementById("dwellingMode").classList.remove("hidden");
+      }
+
+      if (buildingType === "nondwelling") {
+        document.getElementById("nondwellingMode").classList.remove("hidden");
+        toggleNonDwellingMethod();
+      }
+
+      if (buildingType === "school") {
+        document.getElementById("schoolMode").classList.remove("hidden");
+      }
+    }
+
+    function toggleNonDwellingMethod() {
+      const method = document.getElementById("nonDwellingMethod").value;
+
+      document.getElementById("officeMode").classList.add("hidden");
+      document.getElementById("occupancyMode").classList.add("hidden");
+      document.getElementById("achMode").classList.add("hidden");
+
+      if (method === "office") {
+        document.getElementById("officeMode").classList.remove("hidden");
+      }
+
+      if (method === "occupancy") {
+        document.getElementById("occupancyMode").classList.remove("hidden");
+      }
+
+      if (method === "ach") {
+        document.getElementById("achMode").classList.remove("hidden");
+      }
+    }
+
+    function calculateVentilation() {
+      const buildingType = document.getElementById("buildingType").value;
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      if (buildingType === "dwelling") {
+        const area = parseFloat(document.getElementById("dwellingArea").value);
+        const bedrooms = parseFloat(document.getElementById("bedrooms").value);
+
+        if (isNaN(area) || isNaN(bedrooms) || area <= 0 || bedrooms <= 0) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        const areaRate = area * 0.3;
+        const bedroomRate = getDwellingBedroomRate(bedrooms);
+        const finalRateLs = Math.max(areaRate, bedroomRate);
+        const finalRateM3h = finalRateLs * 3.6;
+
+        resultBox.innerHTML = `
+          <div class="result-label">Ventilation Rate</div>
+          <div class="result-value-main">${finalRateLs.toFixed(1)} L/s</div>
+          <div class="result-value-secondary">${finalRateM3h.toFixed(1)} m³/h</div>
+          <div class="result-extra">
+            Basis: <strong>Higher of ${areaRate.toFixed(1)} L/s</strong> (0.3 L/s·m²) and <strong>${bedroomRate.toFixed(1)} L/s</strong> (bedroom-based minimum)
+          </div>
+        `;
+
+        methodBox.innerHTML = `
+          <ul class="method-list">
+            <li>Floor Area Rate = ${area.toFixed(1)} × 0.3 = <span class="method-result">${areaRate.toFixed(1)} L/s</span></li>
+            <li>Bedroom-Based Minimum Rate = 13 + ((${Math.floor(bedrooms)} - 1) × 6) = <span class="method-result">${bedroomRate.toFixed(1)} L/s</span></li>
+            <li>Selected Ventilation Rate = <span class="method-result">${finalRateLs.toFixed(1)} L/s</span></li>
+            <li>Ventilation Rate = ${finalRateLs.toFixed(1)} × 3.6 = <span class="method-result">${finalRateM3h.toFixed(1)} m³/h</span></li>
+          </ul>
+        `;
+        return;
+      }
+
+      if (buildingType === "nondwelling") {
+        const method = document.getElementById("nonDwellingMethod").value;
+
+        if (method === "office") {
+          const occupants = parseFloat(document.getElementById("officeOccupants").value);
+          const area = parseFloat(document.getElementById("officeArea").value);
+
+          if (isNaN(occupants) || isNaN(area) || occupants <= 0 || area <= 0) {
+            resultBox.innerHTML = getInvalidResultHtml();
+            methodBox.innerHTML = getDefaultMethodHtml();
+            return;
+          }
+
+          const peopleRate = occupants * 10;
+          const areaRate = area * 1.0;
+          const finalRateLs = Math.max(peopleRate, areaRate);
+          const finalRateM3h = finalRateLs * 3.6;
+
+          resultBox.innerHTML = `
+            <div class="result-label">Ventilation Rate</div>
+            <div class="result-value-main">${finalRateLs.toFixed(1)} L/s</div>
+            <div class="result-value-secondary">${finalRateM3h.toFixed(1)} m³/h</div>
+            <div class="result-extra">
+              Basis: <strong>Higher of ${peopleRate.toFixed(1)} L/s</strong> (10 L/s per person) and <strong>${areaRate.toFixed(1)} L/s</strong> (1 L/s·m²)
+            </div>
+          `;
+
+          methodBox.innerHTML = `
+            <ul class="method-list">
+              <li>Occupancy Rate = ${occupants.toFixed(0)} × 10 = <span class="method-result">${peopleRate.toFixed(1)} L/s</span></li>
+              <li>Area Rate = ${area.toFixed(1)} × 1.0 = <span class="method-result">${areaRate.toFixed(1)} L/s</span></li>
+              <li>Selected Ventilation Rate = <span class="method-result">${finalRateLs.toFixed(1)} L/s</span></li>
+              <li>Ventilation Rate = ${finalRateLs.toFixed(1)} × 3.6 = <span class="method-result">${finalRateM3h.toFixed(1)} m³/h</span></li>
+            </ul>
+          `;
+          return;
+        }
+
+        if (method === "occupancy") {
+          const occupants = parseFloat(document.getElementById("genericOccupants").value);
+          const lsPerPerson = parseFloat(document.getElementById("genericLsPerPerson").value);
+
+          if (isNaN(occupants) || isNaN(lsPerPerson) || occupants <= 0 || lsPerPerson <= 0) {
+            resultBox.innerHTML = getInvalidResultHtml();
+            methodBox.innerHTML = getDefaultMethodHtml();
+            return;
+          }
+
+          const finalRateLs = occupants * lsPerPerson;
+          const finalRateM3h = finalRateLs * 3.6;
+
+          resultBox.innerHTML = `
+            <div class="result-label">Ventilation Rate</div>
+            <div class="result-value-main">${finalRateLs.toFixed(1)} L/s</div>
+            <div class="result-value-secondary">${finalRateM3h.toFixed(1)} m³/h</div>
+            <div class="result-extra">
+              Basis: <strong>${occupants.toFixed(0)} occupants</strong> at <strong>${lsPerPerson.toFixed(1)} L/s per person</strong>
+            </div>
+          `;
+
+          methodBox.innerHTML = `
+            <ul class="method-list">
+              <li>Ventilation Rate = ${occupants.toFixed(0)} × ${lsPerPerson.toFixed(1)} = <span class="method-result">${finalRateLs.toFixed(1)} L/s</span></li>
+              <li>Ventilation Rate = ${finalRateLs.toFixed(1)} × 3.6 = <span class="method-result">${finalRateM3h.toFixed(1)} m³/h</span></li>
+            </ul>
+          `;
+          return;
+        }
+
+        if (method === "ach") {
+          const length = parseFloat(document.getElementById("length").value);
+          const width = parseFloat(document.getElementById("width").value);
+          const height = parseFloat(document.getElementById("height").value);
+          const ach = parseFloat(document.getElementById("ach").value);
+
+          if (
+            isNaN(length) ||
+            isNaN(width) ||
+            isNaN(height) ||
+            isNaN(ach) ||
+            length <= 0 ||
+            width <= 0 ||
+            height <= 0 ||
+            ach <= 0
+          ) {
+            resultBox.innerHTML = getInvalidResultHtml();
+            methodBox.innerHTML = getDefaultMethodHtml();
+            return;
+          }
+
+          const volume = length * width * height;
+          const finalRateM3h = volume * ach;
+          const finalRateLs = finalRateM3h / 3.6;
+
+          resultBox.innerHTML = `
+            <div class="result-label">Ventilation Rate</div>
+            <div class="result-value-main">${finalRateLs.toFixed(1)} L/s</div>
+            <div class="result-value-secondary">${finalRateM3h.toFixed(1)} m³/h</div>
+            <div class="result-extra">
+              Basis: <strong>${ach.toFixed(1)} ACH</strong> applied to <strong>${volume.toFixed(1)} m³</strong> room volume
+            </div>
+          `;
+
+          methodBox.innerHTML = `
+            <ul class="method-list">
+              <li>Room Volume = ${length.toFixed(1)} × ${width.toFixed(1)} × ${height.toFixed(1)} = <span class="method-result">${volume.toFixed(1)} m³</span></li>
+              <li>Ventilation Rate = ${volume.toFixed(1)} × ${ach.toFixed(1)} = <span class="method-result">${finalRateM3h.toFixed(1)} m³/h</span></li>
+              <li>Ventilation Rate = ${finalRateM3h.toFixed(1)} ÷ 3.6 = <span class="method-result">${finalRateLs.toFixed(1)} L/s</span></li>
+            </ul>
+          `;
+          return;
+        }
+      }
+
+      if (buildingType === "school") {
+        const occupants = parseFloat(document.getElementById("schoolOccupants").value);
+        const rate = parseFloat(document.getElementById("schoolRate").value);
+
+        if (isNaN(occupants) || isNaN(rate) || occupants <= 0 || rate <= 0) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        const finalRateLs = occupants * rate;
+        const finalRateM3h = finalRateLs * 3.6;
+
+        resultBox.innerHTML = `
+          <div class="result-label">Ventilation Rate</div>
+          <div class="result-value-main">${finalRateLs.toFixed(1)} L/s</div>
+          <div class="result-value-secondary">${finalRateM3h.toFixed(1)} m³/h</div>
+          <div class="result-extra">
+            Basis: <strong>${occupants.toFixed(0)} occupants</strong> at <strong>${rate.toFixed(1)} L/s per person</strong> (user-defined school design rate)
+          </div>
+        `;
+
+        methodBox.innerHTML = `
+          <ul class="method-list">
+            <li>Ventilation Rate = ${occupants.toFixed(0)} × ${rate.toFixed(1)} = <span class="method-result">${finalRateLs.toFixed(1)} L/s</span></li>
+            <li>Ventilation Rate = ${finalRateLs.toFixed(1)} × 3.6 = <span class="method-result">${finalRateM3h.toFixed(1)} m³/h</span></li>
+            <li>School projects should be checked against BB 101 and the project-specific brief.</li>
+          </ul>
+        `;
+      }
+    }
+
+    function resetCalc() {
+      document.getElementById("buildingType").value = "dwelling";
+
+      document.getElementById("dwellingArea").value = "85";
+      document.getElementById("bedrooms").value = "3";
+
+      document.getElementById("nonDwellingMethod").value = "office";
+      document.getElementById("officeOccupants").value = "10";
+      document.getElementById("officeArea").value = "100";
+
+      document.getElementById("genericOccupants").value = "10";
+      document.getElementById("genericLsPerPerson").value = "10";
+
+      document.getElementById("length").value = "8";
+      document.getElementById("width").value = "6";
+      document.getElementById("height").value = "3";
+      document.getElementById("ach").value = "4";
+
+      document.getElementById("schoolOccupants").value = "30";
+      document.getElementById("schoolRate").value = "8";
+
+      toggleBuildingType();
+      toggleNonDwellingMethod();
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("dwellingArea").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculateVentilation();
+      }
+    });
+
+    toggleBuildingType();
+    toggleNonDwellingMethod();
+  </script>
+</body>
+</html>
