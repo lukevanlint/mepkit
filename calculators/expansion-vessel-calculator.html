@@ -3,89 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Expansion Vessel Calculator - MEPkit</title>
-  <link rel="icon" type="image/png" href="favicon1.png">
-  <link rel="stylesheet" href="styles.css">
+  <title>Expansion Vessel Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Estimate expansion vessel size for sealed heating systems from system volume, water expansion and working pressures for UK building services design."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
 
   <style>
-    body {
-      padding: 36px 20px 60px;
-    }
-
-    .container {
-      max-width: 560px;
-      margin: 0 auto;
-    }
-
-    .calculator-logo {
-      width: 120px;
-      margin-bottom: 18px;
-    }
-
-    .category-tag {
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #60a5fa;
-      margin-bottom: 14px;
-    }
-
-    h1 {
-      font-size: 36px;
-      line-height: 1.15;
-      margin: 0 0 12px 0;
-    }
-
-    .subtitle {
-      color: #d4d4d4;
-      margin: 0 0 30px 0;
-      font-size: 16px;
-      line-height: 1.5;
-    }
-
-    .card {
-      background: #2a2a2a;
-      border-radius: 12px;
-      padding: 24px;
-      text-align: left;
-    }
-
-    .section-block {
-      margin-top: 24px;
-    }
-
-    .section-block:first-child {
-      margin-top: 0;
-    }
-
-    .section-title {
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #bdbdbd;
-      margin-bottom: 14px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
+    .result-extra {
       font-size: 15px;
-      color: #e5e5e5;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 20px;
-      border: 1px solid #444;
-      border-radius: 8px;
-      background: #181818;
-      color: white;
-      font-size: 16px;
-      box-sizing: border-box;
+      line-height: 1.6;
+      color: var(--muted-2);
     }
 
     .input-note {
@@ -94,190 +24,204 @@
       margin-bottom: 20px;
       font-size: 13px;
       line-height: 1.5;
-      color: #bdbdbd;
+      color: var(--muted);
     }
 
     .hidden {
       display: none;
     }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      background: white;
-      color: black;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity 0.2s ease;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .result,
-    .method,
-    .reference {
-      padding: 18px;
-      background: #181818;
-      border-radius: 10px;
-    }
-
-    .result {
-      font-size: 15px;
-      line-height: 1.8;
-      color: #ffffff;
-    }
-
-    .result strong {
-      color: white;
-    }
-
-    .method,
-    .reference {
-      font-size: 14px;
-      line-height: 1.7;
-      color: #d4d4d4;
-    }
-
-    .method p,
-    .reference p {
-      margin: 0 0 10px 0;
-    }
-
-    .method p:last-child,
-    .reference p:last-child {
-      margin-bottom: 0;
-    }
-
-    .reference strong {
-      color: white;
-    }
-
-    .back {
-      display: inline-block;
-      margin-top: 28px;
-      color: white;
-      text-decoration: none;
-      opacity: 0.8;
-      font-size: 15px;
-    }
-
-    .back:hover {
-      opacity: 1;
-    }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <img src="logo-mechanical.png" alt="MEPkit Mechanical logo" class="calculator-logo">
+  <div class="layout">
+    <div id="sidebar-container"></div>
 
-    <div class="category-tag">Mechanical</div>
-    <h1>Expansion Vessel Calculator</h1>
-    <p class="subtitle">Estimate expansion vessel size for sealed LTHW systems from system volume, water expansion and working pressures.</p>
+    <main class="main">
+      <div class="main-inner">
+        <section class="page-header">
+          <p class="discipline-label mechanical">Mechanical</p>
+          <h1>Expansion Vessel Calculator</h1>
+          <p class="page-description">
+            Estimate expansion vessel size for sealed heating systems from system volume, water expansion and working pressures.
+          </p>
+          <p class="intro-note">
+            Use this calculator for preliminary sealed system checks where system water content and operating pressure range are known.
+            The expansion factor can either be entered manually or estimated from cold fill temperature and maximum system temperature.
+          </p>
+        </section>
 
-    <div class="card">
-      <div class="section-block">
-        <div class="section-title">Inputs</div>
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
 
-        <label for="systemVolume">System Water Volume (L)</label>
-        <input type="number" id="systemVolume" value="1500" step="1">
+          <div class="form-group">
+            <label for="systemVolume">System Water Volume (L)</label>
+            <input type="number" id="systemVolume" value="1500" step="1" min="0" autofocus>
+          </div>
 
-        <label for="factorMode">Expansion Factor Input Method</label>
-        <select id="factorMode" onchange="toggleExpansionMode()">
-          <option value="manual">Manual Expansion Factor</option>
-          <option value="auto">Derive from Temperatures</option>
-        </select>
+          <div class="form-group">
+            <label for="factorMode">Expansion Factor Input Method</label>
+            <select id="factorMode" onchange="toggleExpansionMode()">
+              <option value="manual">Manual Expansion Factor</option>
+              <option value="auto">Derive from Temperatures</option>
+            </select>
+          </div>
 
-        <div id="manualMode">
-          <label for="expansionFactor">Water Expansion Factor (%)</label>
-          <input type="number" id="expansionFactor" value="3.5" step="0.1">
-          <small class="input-note">Enter the estimated volumetric expansion of the system water across the operating temperature range.</small>
-        </div>
+          <div id="manualMode">
+            <div class="form-group">
+              <label for="expansionFactor">Water Expansion Factor (%)</label>
+              <input type="number" id="expansionFactor" value="3.5" step="0.1" min="0">
+            </div>
+            <small class="input-note">
+              Enter the estimated volumetric expansion of the system water across the operating temperature range.
+            </small>
+          </div>
 
-        <div id="autoMode" class="hidden">
-          <label for="fillTemp">Fill / Cold Water Temperature (°C)</label>
-          <input type="number" id="fillTemp" value="10" step="1">
+          <div id="autoMode" class="hidden">
+            <div class="form-group">
+              <label for="fillTemp">Fill / Cold Water Temperature (°C)</label>
+              <input type="number" id="fillTemp" value="10" step="1" min="0">
+            </div>
 
-          <label for="maxTemp">Maximum System Temperature (°C)</label>
-          <input type="number" id="maxTemp" value="82" step="1">
+            <div class="form-group">
+              <label for="maxTemp">Maximum System Temperature (°C)</label>
+              <input type="number" id="maxTemp" value="82" step="1" min="0">
+            </div>
 
-          <small class="input-note">The calculator estimates expansion factor from the change in water density between fill temperature and maximum system temperature.</small>
-        </div>
+            <small class="input-note">
+              The calculator estimates expansion factor from the change in water density between fill temperature and maximum system temperature.
+            </small>
+          </div>
 
-        <label for="minPressure">Minimum System Pressure at Vessel (bar g)</label>
-        <input type="number" id="minPressure" value="1.5" step="0.1">
-        <small class="input-note">This should be established from static head, vapour pressure and safety margin in accordance with project design.</small>
+          <div class="form-group">
+            <label for="minPressure">Minimum System Pressure at Vessel (bar g)</label>
+            <input type="number" id="minPressure" value="1.5" step="0.1" min="0">
+          </div>
+          <small class="input-note">
+            This should be established from static head, vapour pressure and safety margin in accordance with project design.
+          </small>
 
-        <label for="maxPressure">Maximum System Pressure (bar g)</label>
-        <input type="number" id="maxPressure" value="3.0" step="0.1">
-        <small class="input-note">Typically based on the allowable working pressure / safety valve setting and selected operating range.</small>
+          <div class="form-group">
+            <label for="maxPressure">Maximum System Pressure (bar g)</label>
+            <input type="number" id="maxPressure" value="3.0" step="0.1" min="0">
+          </div>
+          <small class="input-note">
+            Typically based on the allowable working pressure, safety valve setting and selected operating range.
+          </small>
 
-        <button onclick="calculateVessel()">Calculate</button>
+          <div class="button-row">
+            <button class="calc-button" onclick="calculateVessel()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Expansion Vessel Size</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Expansion volume is estimated from the system water content and selected expansion factor:
+          </p>
+
+          <div class="formula-block">
+            Vₑ = Vₛ × e
+          </div>
+
+          <p>
+            A reserve volume is then added:
+          </p>
+
+          <div class="formula-block">
+            Vᵣ = max(0.5% of Vₛ, 3 L)
+          </div>
+
+          <p>
+            Total acceptance volume is:
+          </p>
+
+          <div class="formula-block">
+            Vₐ = Vₑ + Vᵣ
+          </div>
+
+          <p>
+            The vessel acceptance factor is estimated from the pressure range:
+          </p>
+
+          <div class="formula-block">
+            a = (Pmax - Pmin) ÷ (Pmax + 1)
+          </div>
+
+          <p>
+            Minimum vessel size is then:
+          </p>
+
+          <div class="formula-block">
+            Vv = Vₐ ÷ a
+          </div>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>Vₛ</strong> = system water volume (L)</li>
+              <li><strong>e</strong> = water expansion factor</li>
+              <li><strong>Vₑ</strong> = expansion volume (L)</li>
+              <li><strong>Vᵣ</strong> = reserve volume (L)</li>
+              <li><strong>Vₐ</strong> = total acceptance volume (L)</li>
+              <li><strong>a</strong> = vessel acceptance factor</li>
+              <li><strong>Vv</strong> = minimum vessel size (L)</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator estimates nominal expansion vessel volume from system water content, thermal expansion and the selected working pressure range.</li>
+            <li>Relevant guidance may include BS EN 12828 for heating system design and CIBSE AM14 for expansion and pressurisation vessel sizing principles.</li>
+            <li>The reserve allowance shown reflects commonly adopted building services practice for sealed heating systems.</li>
+            <li>Where applicable, final design should also align with project specifications, manufacturer requirements and selected pressurisation equipment arrangements.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator is an indicative estimating tool only. In auto mode, the expansion factor is estimated from water density change between fill temperature and maximum temperature. Final design should confirm the correct system pressures, operating temperatures, reserve allowance and selected vessel against project requirements and manufacturer data.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="flow-rate-calculator.html">Flow Rate Calculator</a>
+            <a href="pipe-sizing-calculator.html">Pipe Sizing Calculator</a>
+            <a href="pump-head-calculator.html">Pump Head Calculator</a>
+          </div>
+        </section>
       </div>
-
-      <div class="section-block">
-        <div class="section-title">Result</div>
-        <div class="result" id="result">
-          <strong>Expansion Factor:</strong> -<br>
-          <strong>Expansion Volume:</strong> -<br>
-          <strong>Reserve Volume:</strong> -<br>
-          <strong>Total Acceptance Volume:</strong> -<br>
-          <strong>Acceptance Factor:</strong> -<br>
-          <strong>Minimum Vessel Size:</strong> -
-        </div>
-      </div>
-
-      <div class="section-block">
-        <div class="section-title">Method</div>
-        <div class="method" id="method">
-          <p>Expansion Volume = System Volume × Expansion Factor</p>
-          <p>Reserve Volume = max(0.5% of System Volume, 3L)</p>
-          <p>Total Acceptance Volume = Expansion Volume + Reserve Volume</p>
-          <p>Acceptance Factor = (Pmax - Pmin) ÷ (Pmax + 1)</p>
-          <p>Minimum Vessel Size = Total Acceptance Volume ÷ Acceptance Factor</p>
-        </div>
-      </div>
-
-      <div class="section-block">
-        <div class="section-title">Reference</div>
-        <div class="reference">
-          <p>This calculator estimates the required nominal expansion vessel volume from system water content, estimated thermal expansion and the working pressure range of the system.</p>
-
-          <p><strong>Key relationships used:</strong></p>
-          <p><strong>Expansion Volume = System Volume × Expansion Factor</strong></p>
-          <p><strong>Reserve Volume = max(0.5% of System Volume, 3L)</strong></p>
-          <p><strong>Acceptance Factor = (Pmax - Pmin) ÷ (Pmax + 1)</strong></p>
-          <p><strong>Minimum Vessel Size = Total Acceptance Volume ÷ Acceptance Factor</strong></p>
-
-          <p>CIBSE guidance notes that expansion vessel sizing should be carried out in accordance with <strong>BS EN 12828</strong>, with worked examples available in <strong>CIBSE AM14</strong>.</p>
-
-          <p>CIBSE also notes that vessels greater than 15 litres should include a reserve of at least <strong>0.5% of total system water content</strong>, with a minimum of <strong>3 litres</strong>.</p>
-
-          <p><strong>Scope note:</strong> this calculator is an indicative estimating tool. In auto mode, the expansion factor is estimated from water density change between fill temperature and maximum temperature. Final design should confirm the correct system pressures, operating temperatures, reserve allowance and selected vessel against project requirements and manufacturer data.</p>
-        </div>
-      </div>
-    </div>
-
-    <a class="back" href="index.html">← Back to homepage</a>
+    </main>
   </div>
+
+  <script src="../script.js"></script>
 
   <script>
     function toggleExpansionMode() {
-      const mode = document.getElementById('factorMode').value;
-      const manualMode = document.getElementById('manualMode');
-      const autoMode = document.getElementById('autoMode');
+      const mode = document.getElementById("factorMode").value;
+      const manualMode = document.getElementById("manualMode");
+      const autoMode = document.getElementById("autoMode");
 
-      if (mode === 'manual') {
-        manualMode.classList.remove('hidden');
-        autoMode.classList.add('hidden');
+      if (mode === "manual") {
+        manualMode.classList.remove("hidden");
+        autoMode.classList.add("hidden");
+        document.getElementById("expansionFactor").focus();
       } else {
-        manualMode.classList.add('hidden');
-        autoMode.classList.remove('hidden');
+        manualMode.classList.add("hidden");
+        autoMode.classList.remove("hidden");
+        document.getElementById("fillTemp").focus();
       }
     }
 
@@ -302,6 +246,7 @@
       for (let i = 0; i < table.length - 1; i++) {
         const a = table[i];
         const b = table[i + 1];
+
         if (tempC >= a.t && tempC <= b.t) {
           const fraction = (tempC - a.t) / (b.t - a.t);
           return a.rho + fraction * (b.rho - a.rho);
@@ -309,49 +254,101 @@
       }
     }
 
-    function calculateVessel() {
-      const systemVolume = parseFloat(document.getElementById('systemVolume').value);
-      const factorMode = document.getElementById('factorMode').value;
-      const expansionFactorPercentManual = parseFloat(document.getElementById('expansionFactor').value);
-      const fillTemp = parseFloat(document.getElementById('fillTemp').value);
-      const maxTemp = parseFloat(document.getElementById('maxTemp').value);
-      const minPressure = parseFloat(document.getElementById('minPressure').value);
-      const maxPressure = parseFloat(document.getElementById('maxPressure').value);
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Expansion Vessel Size</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
 
-      const resultBox = document.getElementById('result');
-      const methodBox = document.getElementById('method');
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Expansion Vessel Size</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getPressureErrorHtml() {
+      return `
+        <div class="result-label">Expansion Vessel Size</div>
+        <div class="result-value-main">Check pressures</div>
+        <div class="result-value-secondary">Maximum system pressure must be greater than minimum system pressure.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>Vₛ</strong> = system water volume (L)</li>
+          <li><strong>e</strong> = water expansion factor</li>
+          <li><strong>Vₑ</strong> = expansion volume (L)</li>
+          <li><strong>Vᵣ</strong> = reserve volume (L)</li>
+          <li><strong>Vₐ</strong> = total acceptance volume (L)</li>
+          <li><strong>a</strong> = vessel acceptance factor</li>
+          <li><strong>Vv</strong> = minimum vessel size (L)</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function calculateVessel() {
+      const systemVolume = parseFloat(document.getElementById("systemVolume").value);
+      const factorMode = document.getElementById("factorMode").value;
+      const expansionFactorPercentManual = parseFloat(document.getElementById("expansionFactor").value);
+      const fillTemp = parseFloat(document.getElementById("fillTemp").value);
+      const maxTemp = parseFloat(document.getElementById("maxTemp").value);
+      const minPressure = parseFloat(document.getElementById("minPressure").value);
+      const maxPressure = parseFloat(document.getElementById("maxPressure").value);
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
 
       if (
-        isNaN(systemVolume) || isNaN(minPressure) || isNaN(maxPressure) ||
-        systemVolume <= 0 || minPressure < 0 || maxPressure <= 0 || maxPressure <= minPressure
+        isNaN(systemVolume) ||
+        isNaN(minPressure) ||
+        isNaN(maxPressure) ||
+        systemVolume <= 0 ||
+        minPressure < 0 ||
+        maxPressure <= 0
       ) {
-        resultBox.innerHTML = 'Please enter valid numbers';
-        methodBox.innerHTML = `
-          <p>Expansion Volume = System Volume × Expansion Factor</p>
-          <p>Reserve Volume = max(0.5% of System Volume, 3L)</p>
-          <p>Total Acceptance Volume = Expansion Volume + Reserve Volume</p>
-          <p>Acceptance Factor = (Pmax - Pmin) ÷ (Pmax + 1)</p>
-          <p>Minimum Vessel Size = Total Acceptance Volume ÷ Acceptance Factor</p>
-        `;
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      if (maxPressure <= minPressure) {
+        resultBox.innerHTML = getPressureErrorHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
         return;
       }
 
       let expansionFactorPercent;
-      let factorMethodText = '';
+      let factorMethodSummary = "";
 
-      if (factorMode === 'manual') {
+      if (factorMode === "manual") {
         if (isNaN(expansionFactorPercentManual) || expansionFactorPercentManual <= 0) {
-          resultBox.innerHTML = 'Please enter valid numbers';
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
           return;
         }
+
         expansionFactorPercent = expansionFactorPercentManual;
-        factorMethodText = `Expansion Factor entered manually = ${expansionFactorPercent.toFixed(2)}%`;
+        factorMethodSummary = `Expansion factor entered manually = <span class="method-result">${expansionFactorPercent.toFixed(2)}%</span>`;
       } else {
         if (
-          isNaN(fillTemp) || isNaN(maxTemp) ||
-          fillTemp < 0 || maxTemp <= fillTemp || maxTemp > 100
+          isNaN(fillTemp) ||
+          isNaN(maxTemp) ||
+          fillTemp < 0 ||
+          maxTemp <= fillTemp ||
+          maxTemp > 100
         ) {
-          resultBox.innerHTML = 'Please enter valid numbers';
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
           return;
         }
 
@@ -360,10 +357,10 @@
 
         expansionFactorPercent = ((rhoFill / rhoMax) - 1) * 100;
 
-        factorMethodText = `
-          Water density at ${fillTemp}°C = ${rhoFill.toFixed(2)} kg/m³<br>
-          Water density at ${maxTemp}°C = ${rhoMax.toFixed(2)} kg/m³<br>
-          Expansion Factor = (ρcold ÷ ρhot - 1) × 100 = ${expansionFactorPercent.toFixed(2)}%
+        factorMethodSummary = `
+          Water density at ${fillTemp.toFixed(0)}°C = ${rhoFill.toFixed(2)} kg/m³<br>
+          Water density at ${maxTemp.toFixed(0)}°C = ${rhoMax.toFixed(2)} kg/m³<br>
+          Expansion factor = (ρcold ÷ ρhot - 1) × 100 = <span class="method-result">${expansionFactorPercent.toFixed(2)}%</span>
         `;
       }
 
@@ -374,48 +371,62 @@
       const acceptanceFactor = (maxPressure - minPressure) / (maxPressure + 1);
 
       if (acceptanceFactor <= 0) {
-        resultBox.innerHTML = 'Check pressure inputs';
-        methodBox.innerHTML = `
-          <p>The acceptance factor must be greater than zero.</p>
-          <p>Please check the minimum and maximum pressure values entered.</p>
-        `;
+        resultBox.innerHTML = getPressureErrorHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
         return;
       }
 
       const vesselSize = acceptanceVolume / acceptanceFactor;
 
       resultBox.innerHTML = `
-        <strong>Expansion Factor:</strong> ${expansionFactorPercent.toFixed(2)} %<br>
-        <strong>Expansion Volume:</strong> ${expansionVolume.toFixed(1)} L<br>
-        <strong>Reserve Volume:</strong> ${reserveVolume.toFixed(1)} L<br>
-        <strong>Total Acceptance Volume:</strong> ${acceptanceVolume.toFixed(1)} L<br>
-        <strong>Acceptance Factor:</strong> ${acceptanceFactor.toFixed(3)}<br>
-        <strong>Minimum Vessel Size:</strong> ${vesselSize.toFixed(1)} L
+        <div class="result-label">Expansion Vessel Size</div>
+        <div class="result-value-main">${vesselSize.toFixed(1)} L</div>
+        <div class="result-value-secondary">${acceptanceVolume.toFixed(1)} L total acceptance volume required</div>
+        <div class="result-extra">
+          Expansion Factor: <strong>${expansionFactorPercent.toFixed(2)}%</strong><br>
+          Expansion Volume: <strong>${expansionVolume.toFixed(1)} L</strong><br>
+          Reserve Volume: <strong>${reserveVolume.toFixed(1)} L</strong><br>
+          Acceptance Factor: <strong>${acceptanceFactor.toFixed(3)}</strong>
+        </div>
       `;
 
       methodBox.innerHTML = `
-        <p>${factorMethodText}</p>
-
-        <p>Expansion Volume = ${systemVolume} × (${expansionFactorPercent.toFixed(2)} ÷ 100)</p>
-        <p>Expansion Volume = ${expansionVolume.toFixed(1)} L</p>
-
-        <p>Reserve Volume = max(0.5% of ${systemVolume}, 3)</p>
-        <p>Reserve Volume = max(${(systemVolume * 0.005).toFixed(1)}, 3)</p>
-        <p>Reserve Volume = ${reserveVolume.toFixed(1)} L</p>
-
-        <p>Total Acceptance Volume = ${expansionVolume.toFixed(1)} + ${reserveVolume.toFixed(1)}</p>
-        <p>Total Acceptance Volume = ${acceptanceVolume.toFixed(1)} L</p>
-
-        <p>Acceptance Factor = (${maxPressure} - ${minPressure}) ÷ (${maxPressure} + 1)</p>
-        <p>Acceptance Factor = ${acceptanceFactor.toFixed(3)}</p>
-
-        <p>Minimum Vessel Size = ${acceptanceVolume.toFixed(1)} ÷ ${acceptanceFactor.toFixed(3)}</p>
-        <p>Minimum Vessel Size = ${vesselSize.toFixed(1)} L</p>
+        <ul class="method-list">
+          <li><strong>Vₛ</strong> = system water volume (L)</li>
+          <li><strong>e</strong> = water expansion factor</li>
+          <li><strong>Vₑ</strong> = expansion volume (L)</li>
+          <li><strong>Vᵣ</strong> = reserve volume (L)</li>
+          <li><strong>Vₐ</strong> = total acceptance volume (L)</li>
+          <li><strong>a</strong> = vessel acceptance factor</li>
+          <li><strong>Vv</strong> = minimum vessel size (L)</li>
+          <li>${factorMethodSummary}</li>
+          <li>Expansion Volume = ${systemVolume.toFixed(1)} × (${expansionFactorPercent.toFixed(2)} ÷ 100) = <span class="method-result">${expansionVolume.toFixed(1)} L</span></li>
+          <li>Reserve Volume = max(0.5% of ${systemVolume.toFixed(1)}, 3) = <span class="method-result">${reserveVolume.toFixed(1)} L</span></li>
+          <li>Total Acceptance Volume = ${expansionVolume.toFixed(1)} + ${reserveVolume.toFixed(1)} = <span class="method-result">${acceptanceVolume.toFixed(1)} L</span></li>
+          <li>Acceptance Factor = (${maxPressure.toFixed(1)} - ${minPressure.toFixed(1)}) ÷ (${maxPressure.toFixed(1)} + 1) = <span class="method-result">${acceptanceFactor.toFixed(3)}</span></li>
+          <li>Minimum Vessel Size = ${acceptanceVolume.toFixed(1)} ÷ ${acceptanceFactor.toFixed(3)} = <span class="method-result">${vesselSize.toFixed(1)} L</span></li>
+        </ul>
       `;
     }
 
-    document.addEventListener('keypress', function(event) {
-      if (event.key === 'Enter') {
+    function resetCalc() {
+      document.getElementById("systemVolume").value = "1500";
+      document.getElementById("factorMode").value = "manual";
+      document.getElementById("expansionFactor").value = "3.5";
+      document.getElementById("fillTemp").value = "10";
+      document.getElementById("maxTemp").value = "82";
+      document.getElementById("minPressure").value = "1.5";
+      document.getElementById("maxPressure").value = "3.0";
+
+      toggleExpansionMode();
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("systemVolume").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
         calculateVessel();
       }
     });
