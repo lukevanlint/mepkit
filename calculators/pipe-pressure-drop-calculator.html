@@ -37,10 +37,10 @@
           <p class="discipline-label mechanical">Mechanical</p>
           <h1>Pipe Pressure Drop Calculator</h1>
           <p class="page-description">
-            Calculate indicative pipe pressure drop, velocity and head loss from flow rate, pipe size and length.
+            Calculate indicative pipe pressure drop, velocity and head loss from flow rate, selected pipe size and equivalent length.
           </p>
           <p class="intro-note">
-            Use this calculator for preliminary closed water system checks where design flow rate, internal pipe diameter and equivalent pipe length are known.
+            Use this calculator for preliminary closed water system checks where design flow rate, selected pipe size and equivalent pipe length are known.
             Based on a Darcy-Weisbach style pressure loss calculation using typical water properties and pragmatic pipe roughness assumptions.
           </p>
         </section>
@@ -50,20 +50,20 @@
 
           <div class="form-group">
             <label for="material">Pipe Material</label>
-            <select id="material">
+            <select id="material" onchange="updatePipeSizeOptions()">
               <option value="copper">Copper</option>
               <option value="steel">Steel</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="flowRate">Flow Rate (L/s)</label>
-            <input type="number" id="flowRate" value="0.60" step="0.01" min="0" autofocus>
+            <label for="pipeSize">Pipe Size</label>
+            <select id="pipeSize"></select>
           </div>
 
           <div class="form-group">
-            <label for="diameter">Internal Diameter (mm)</label>
-            <input type="number" id="diameter" value="20" step="1" min="1">
+            <label for="flowRate">Flow Rate (L/s)</label>
+            <input type="number" id="flowRate" value="0.60" step="0.01" min="0" autofocus>
           </div>
 
           <div class="form-group">
@@ -164,6 +164,66 @@
   <script src="../script.js"></script>
 
   <script>
+    const copperSizes = [
+      { label: "15 mm", internalDiameter: 13.6 },
+      { label: "22 mm", internalDiameter: 20.2 },
+      { label: "28 mm", internalDiameter: 25.6 },
+      { label: "35 mm", internalDiameter: 32.0 },
+      { label: "42 mm", internalDiameter: 38.0 },
+      { label: "54 mm", internalDiameter: 50.0 },
+      { label: "67 mm", internalDiameter: 62.0 },
+      { label: "76 mm", internalDiameter: 72.0 },
+      { label: "108 mm", internalDiameter: 102.0 }
+    ];
+
+    const steelSizes = [
+      { label: "DN15", internalDiameter: 16.0 },
+      { label: "DN20", internalDiameter: 21.7 },
+      { label: "DN25", internalDiameter: 27.3 },
+      { label: "DN32", internalDiameter: 36.0 },
+      { label: "DN40", internalDiameter: 41.9 },
+      { label: "DN50", internalDiameter: 53.1 },
+      { label: "DN65", internalDiameter: 68.9 },
+      { label: "DN80", internalDiameter: 80.8 },
+      { label: "DN100", internalDiameter: 105.3 }
+    ];
+
+    function getPipeOptions(material) {
+      return material === "steel" ? steelSizes : copperSizes;
+    }
+
+    function updatePipeSizeOptions(selectedLabel = null) {
+      const material = document.getElementById("material").value;
+      const pipeSizeSelect = document.getElementById("pipeSize");
+      const options = getPipeOptions(material);
+
+      pipeSizeSelect.innerHTML = "";
+
+      options.forEach((pipe, index) => {
+        const option = document.createElement("option");
+        option.value = pipe.internalDiameter;
+        option.textContent = pipe.label;
+
+        if (selectedLabel && pipe.label === selectedLabel) {
+          option.selected = true;
+        } else if (!selectedLabel && index === 1 && material === "copper") {
+          option.selected = true;
+        } else if (!selectedLabel && index === 2 && material === "steel") {
+          option.selected = true;
+        }
+
+        pipeSizeSelect.appendChild(option);
+      });
+    }
+
+    function getSelectedPipe() {
+      const material = document.getElementById("material").value;
+      const selectedDiameter = parseFloat(document.getElementById("pipeSize").value);
+      const options = getPipeOptions(material);
+
+      return options.find(pipe => pipe.internalDiameter === selectedDiameter);
+    }
+
     function getWaterDensity(tempC) {
       return 1000 - ((tempC - 4) * 0.3);
     }
@@ -217,7 +277,7 @@
     function calculatePressureDrop() {
       const material = document.getElementById("material").value;
       const flowRateLs = parseFloat(document.getElementById("flowRate").value);
-      const diameterMm = parseFloat(document.getElementById("diameter").value);
+      const diameterMm = parseFloat(document.getElementById("pipeSize").value);
       const lengthM = parseFloat(document.getElementById("length").value);
       const temperatureC = parseFloat(document.getElementById("temperature").value);
 
@@ -238,6 +298,7 @@
         return;
       }
 
+      const selectedPipe = getSelectedPipe();
       const flowRateM3s = flowRateLs / 1000;
       const diameterM = diameterMm / 1000;
       const area = Math.PI * Math.pow(diameterM, 2) / 4;
@@ -269,6 +330,8 @@
         <div class="result-value-main">${pressureDropPaPerM.toFixed(0)} Pa/m</div>
         <div class="result-value-secondary">${pressureDropPa.toFixed(0)} Pa total (${pressureDropKpa.toFixed(2)} kPa)</div>
         <div class="result-extra">
+          Pipe Size: <strong>${selectedPipe.label} ${material}</strong><br>
+          Internal Diameter Used: <strong>${selectedPipe.internalDiameter.toFixed(1)} mm</strong><br>
           Velocity: <strong>${velocity.toFixed(2)} m/s</strong><br>
           Head Loss: <strong>${headLossM.toFixed(2)} m</strong><br>
           Reynolds Number: <strong>${Math.round(reynolds)}</strong>
@@ -284,6 +347,7 @@
           <li><strong>L</strong> = equivalent pipe length (m)</li>
           <li><strong>D</strong> = internal pipe diameter (m)</li>
           <li><strong>ρ</strong> = fluid density (kg/m³)</li>
+          <li>Selected pipe size = <span class="method-result">${selectedPipe.label} ${material}</span> (${selectedPipe.internalDiameter.toFixed(1)} mm internal diameter)</li>
           <li>Flow Rate = <span class="method-result">${flowRateLs.toFixed(2)} L/s</span> = ${flowRateM3s.toFixed(4)} m³/s</li>
           <li>Velocity = ${flowRateM3s.toFixed(4)} ÷ ${area.toFixed(6)} = <span class="method-result">${velocity.toFixed(2)} m/s</span></li>
           <li>Reynolds Number = <span class="method-result">${Math.round(reynolds)}</span></li>
@@ -295,8 +359,8 @@
 
     function resetCalc() {
       document.getElementById("material").value = "copper";
+      updatePipeSizeOptions("22 mm");
       document.getElementById("flowRate").value = "0.60";
-      document.getElementById("diameter").value = "20";
       document.getElementById("length").value = "100";
       document.getElementById("temperature").value = "60";
 
@@ -310,6 +374,8 @@
         calculatePressureDrop();
       }
     });
+
+    updatePipeSizeOptions();
   </script>
 </body>
 </html>
