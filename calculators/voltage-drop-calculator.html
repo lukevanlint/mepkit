@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voltage Drop Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Calculate voltage drop from current, cable length and tabulated voltage drop values for single-phase and three-phase circuits."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+      <div class="main-inner">
+
+        <section class="page-header">
+          <p class="discipline-label electrical">Electrical</p>
+          <h1>Voltage Drop Calculator</h1>
+          <p class="page-description">
+            Calculate voltage drop from current, cable length and tabulated voltage drop values.
+          </p>
+          <p class="intro-note">
+            Use this calculator for quick cable voltage drop checks for single-phase and three-phase circuits.
+            It is intended for preliminary circuit design using tabulated millivolt-per-amp-per-metre values.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="form-group">
+            <label for="phase">System Type</label>
+            <select id="phase" onchange="updateNominalVoltage()">
+              <option value="single">Single Phase</option>
+              <option value="three">Three Phase</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="current">Design Current (A)</label>
+            <input type="number" id="current" value="32" step="0.1" min="0" autofocus>
+          </div>
+
+          <div class="form-group">
+            <label for="length">Cable Route Length (m)</label>
+            <input type="number" id="length" value="35" step="0.1" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="mv">Voltage Drop Value (mV/A/m)</label>
+            <input type="number" id="mv" value="1.15" step="0.01" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="voltage">Nominal Voltage (V)</label>
+            <input type="number" id="voltage" value="230" step="1" min="0">
+          </div>
+
+          <p class="unit-note">
+            Enter the tabulated voltage drop value for the selected cable type, installation method and conductor size.
+          </p>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculateVoltageDrop()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Voltage Drop</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Voltage drop is calculated from current, route length and tabulated cable voltage drop value:
+          </p>
+
+          <div class="formula-block">
+            Vd = (mV/A/m × I × L) ÷ 1000
+          </div>
+
+          <p>
+            Percentage voltage drop is then:
+          </p>
+
+          <div class="formula-block">
+            Vd% = (Vd ÷ V) × 100
+          </div>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>Vd</strong> = voltage drop (V)</li>
+              <li><strong>I</strong> = design current (A)</li>
+              <li><strong>L</strong> = cable route length (m)</li>
+              <li><strong>mV/A/m</strong> = tabulated cable voltage drop value</li>
+              <li><strong>V</strong> = nominal voltage (V)</li>
+              <li>Calculated voltage drop = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator applies the standard tabulated voltage drop method commonly used in electrical design.</li>
+            <li>Voltage drop values should be taken from the relevant cable tables for the selected conductor, insulation type and installation method.</li>
+            <li>Typical UK nominal voltages are 230 V for single-phase systems and 400 V for three-phase systems.</li>
+            <li>Relevant standards and guidance may include BS 7671 and associated cable sizing tables.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator provides indicative results only. Final design should consider correction factors, harmonics, operating temperature, installation method, circuit arrangement and applicable voltage drop limits for the project.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="load-current-calculator.html">Load Current Calculator</a>
+            <a href="power-calculator.html">Power Calculator</a>
+            <a href="cable-sizing-calculator.html">Cable Sizing Calculator</a>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    function updateNominalVoltage() {
+      const phase = document.getElementById("phase").value;
+      const voltageInput = document.getElementById("voltage");
+
+      if (phase === "single") {
+        voltageInput.value = "230";
+      } else {
+        voltageInput.value = "400";
+      }
+    }
+
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Voltage Drop</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Voltage Drop</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>Vd</strong> = voltage drop (V)</li>
+          <li><strong>I</strong> = design current (A)</li>
+          <li><strong>L</strong> = cable route length (m)</li>
+          <li><strong>mV/A/m</strong> = tabulated cable voltage drop value</li>
+          <li><strong>V</strong> = nominal voltage (V)</li>
+          <li>Calculated voltage drop = -</li>
+        </ul>
+      `;
+    }
+
+    function calculateVoltageDrop() {
+      const phase = document.getElementById("phase").value;
+      const current = parseFloat(document.getElementById("current").value);
+      const length = parseFloat(document.getElementById("length").value);
+      const mv = parseFloat(document.getElementById("mv").value);
+      const voltage = parseFloat(document.getElementById("voltage").value);
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      if (
+        isNaN(current) ||
+        isNaN(length) ||
+        isNaN(mv) ||
+        isNaN(voltage) ||
+        current <= 0 ||
+        length <= 0 ||
+        mv <= 0 ||
+        voltage <= 0
+      ) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      const voltageDrop = (mv * current * length) / 1000;
+      const voltageDropPercent = (voltageDrop / voltage) * 100;
+      const remainingVoltage = voltage - voltageDrop;
+
+      resultBox.innerHTML = `
+        <div class="result-label">Voltage Drop</div>
+        <div class="result-value-main">${voltageDrop.toFixed(2)} V</div>
+        <div class="result-value-secondary">${voltageDropPercent.toFixed(2)} % of ${voltage.toFixed(0)} V</div>
+        <div class="result-extra">
+          Remaining Voltage: <strong>${remainingVoltage.toFixed(2)} V</strong><br>
+          ${phase === "single" ? "Single-phase" : "Three-phase"} circuit
+        </div>
+      `;
+
+      methodBox.innerHTML = `
+        <ul class="method-list">
+          <li><strong>Vd</strong> = voltage drop (V)</li>
+          <li><strong>I</strong> = ${current.toFixed(2)} A</li>
+          <li><strong>L</strong> = ${length.toFixed(1)} m</li>
+          <li><strong>mV/A/m</strong> = ${mv.toFixed(2)}</li>
+          <li><strong>V</strong> = ${voltage.toFixed(0)} V</li>
+          <li>Voltage Drop = (${mv.toFixed(2)} × ${current.toFixed(2)} × ${length.toFixed(1)}) ÷ 1000 = <span class="method-result">${voltageDrop.toFixed(2)} V</span></li>
+          <li>Voltage Drop % = (${voltageDrop.toFixed(2)} ÷ ${voltage.toFixed(0)}) × 100 = <span class="method-result">${voltageDropPercent.toFixed(2)} %</span></li>
+          <li>Remaining Voltage = ${voltage.toFixed(0)} - ${voltageDrop.toFixed(2)} = <span class="method-result">${remainingVoltage.toFixed(2)} V</span></li>
+        </ul>
+      `;
+    }
+
+    function resetCalc() {
+      document.getElementById("phase").value = "single";
+      document.getElementById("current").value = "32";
+      document.getElementById("length").value = "35";
+      document.getElementById("mv").value = "1.15";
+      document.getElementById("voltage").value = "230";
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("current").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculateVoltageDrop();
+      }
+    });
+  </script>
+</body>
+</html>

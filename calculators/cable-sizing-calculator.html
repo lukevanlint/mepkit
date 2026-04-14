@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cable Sizing Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Estimate cable size from design current using standard current-carrying capacities for preliminary UK electrical design checks."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+      <div class="main-inner">
+
+        <section class="page-header">
+          <p class="discipline-label electrical">Electrical</p>
+          <h1>Cable Sizing Calculator</h1>
+          <p class="page-description">
+            Estimate cable size from design current using standard current-carrying capacities.
+          </p>
+          <p class="intro-note">
+            Use this calculator for preliminary cable sizing checks based on design current and tabulated current-carrying capacities.
+            It is intended as an early-stage estimating tool only and should be checked against the full installation method, correction factors and project requirements.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="form-group">
+            <label for="systemType">System Type</label>
+            <select id="systemType">
+              <option value="single">Single Phase</option>
+              <option value="three">Three Phase</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="designCurrent">Design Current (A)</label>
+            <input type="number" id="designCurrent" value="32" step="0.1" min="0" autofocus>
+          </div>
+
+          <div class="form-group">
+            <label for="cableType">Cable Type</label>
+            <select id="cableType" onchange="updateCableTable()">
+              <option value="pvc">PVC Copper</option>
+              <option value="xlpe">XLPE Copper</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="installationMethod">Installation Method</label>
+            <select id="installationMethod" onchange="updateCableTable()">
+              <option value="clipped">Clipped Direct / In Free Air</option>
+              <option value="conduit">In Conduit / Trunking</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="ratingFactor">Combined Rating Factor</label>
+            <input type="number" id="ratingFactor" value="1.0" step="0.01" min="0">
+          </div>
+
+          <p class="unit-note">
+            The combined rating factor should include any applicable ambient temperature, grouping, thermal insulation or other derating factors.
+          </p>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculateCableSize()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Recommended Cable Size</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Required tabulated current-carrying capacity is estimated by applying the combined rating factor:
+          </p>
+
+          <div class="formula-block">
+            It = Ib ÷ C
+          </div>
+
+          <p>
+            The selected cable size is the smallest size with tabulated current-carrying capacity equal to or greater than the required value.
+          </p>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>Ib</strong> = design current (A)</li>
+              <li><strong>C</strong> = combined rating factor</li>
+              <li><strong>It</strong> = required tabulated current-carrying capacity (A)</li>
+              <li>The smallest listed cable size with sufficient tabulated capacity is selected.</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator provides a preliminary cable size selection based on design current and tabulated current-carrying capacities.</li>
+            <li>Current-carrying capacities vary depending on cable type, insulation type, conductor material and installation method.</li>
+            <li>Relevant standards and guidance may include BS 7671 and associated tabulated current-carrying capacity data.</li>
+            <li>Final cable sizing should also consider voltage drop, earth fault loop impedance, disconnection time, short-circuit withstand and installation conditions.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator is an indicative sizing tool only. Final design must check correction factors, protective devices, voltage drop, fault performance, installation method and project-specific requirements.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="load-current-calculator.html">Load Current Calculator</a>
+            <a href="power-calculator.html">Power Calculator</a>
+            <a href="voltage-drop-calculator.html">Voltage Drop Calculator</a>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    const cableTables = {
+      pvc: {
+        clipped: [
+          { size: "1.0 mm²", capacity: 16 },
+          { size: "1.5 mm²", capacity: 20 },
+          { size: "2.5 mm²", capacity: 27 },
+          { size: "4 mm²", capacity: 37 },
+          { size: "6 mm²", capacity: 47 },
+          { size: "10 mm²", capacity: 65 },
+          { size: "16 mm²", capacity: 87 },
+          { size: "25 mm²", capacity: 114 },
+          { size: "35 mm²", capacity: 141 },
+          { size: "50 mm²", capacity: 176 },
+          { size: "70 mm²", capacity: 221 },
+          { size: "95 mm²", capacity: 269 },
+          { size: "120 mm²", capacity: 312 },
+          { size: "150 mm²", capacity: 356 },
+          { size: "185 mm²", capacity: 405 },
+          { size: "240 mm²", capacity: 476 }
+        ],
+        conduit: [
+          { size: "1.0 mm²", capacity: 11.5 },
+          { size: "1.5 mm²", capacity: 14.5 },
+          { size: "2.5 mm²", capacity: 20 },
+          { size: "4 mm²", capacity: 26 },
+          { size: "6 mm²", capacity: 34 },
+          { size: "10 mm²", capacity: 46 },
+          { size: "16 mm²", capacity: 61 },
+          { size: "25 mm²", capacity: 80 },
+          { size: "35 mm²", capacity: 99 },
+          { size: "50 mm²", capacity: 119 },
+          { size: "70 mm²", capacity: 151 },
+          { size: "95 mm²", capacity: 182 },
+          { size: "120 mm²", capacity: 210 },
+          { size: "150 mm²", capacity: 240 },
+          { size: "185 mm²", capacity: 273 },
+          { size: "240 mm²", capacity: 321 }
+        ]
+      },
+      xlpe: {
+        clipped: [
+          { size: "1.5 mm²", capacity: 23 },
+          { size: "2.5 mm²", capacity: 31 },
+          { size: "4 mm²", capacity: 42 },
+          { size: "6 mm²", capacity: 54 },
+          { size: "10 mm²", capacity: 75 },
+          { size: "16 mm²", capacity: 100 },
+          { size: "25 mm²", capacity: 133 },
+          { size: "35 mm²", capacity: 164 },
+          { size: "50 mm²", capacity: 203 },
+          { size: "70 mm²", capacity: 255 },
+          { size: "95 mm²", capacity: 310 },
+          { size: "120 mm²", capacity: 359 },
+          { size: "150 mm²", capacity: 411 },
+          { size: "185 mm²", capacity: 467 },
+          { size: "240 mm²", capacity: 549 }
+        ],
+        conduit: [
+          { size: "1.5 mm²", capacity: 16.5 },
+          { size: "2.5 mm²", capacity: 23 },
+          { size: "4 mm²", capacity: 30 },
+          { size: "6 mm²", capacity: 38 },
+          { size: "10 mm²", capacity: 52 },
+          { size: "16 mm²", capacity: 69 },
+          { size: "25 mm²", capacity: 89 },
+          { size: "35 mm²", capacity: 110 },
+          { size: "50 mm²", capacity: 133 },
+          { size: "70 mm²", capacity: 168 },
+          { size: "95 mm²", capacity: 201 },
+          { size: "120 mm²", capacity: 232 },
+          { size: "150 mm²", capacity: 265 },
+          { size: "185 mm²", capacity: 300 },
+          { size: "240 mm²", capacity: 353 }
+        ]
+      }
+    };
+
+    function getSelectedCableTable() {
+      const cableType = document.getElementById("cableType").value;
+      const installationMethod = document.getElementById("installationMethod").value;
+      return cableTables[cableType][installationMethod];
+    }
+
+    function updateCableTable() {
+      // placeholder in case you later want dynamic notes or previews
+    }
+
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Recommended Cable Size</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Recommended Cable Size</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>Ib</strong> = design current (A)</li>
+          <li><strong>C</strong> = combined rating factor</li>
+          <li><strong>It</strong> = required tabulated current-carrying capacity (A)</li>
+          <li>The smallest listed cable size with sufficient tabulated capacity is selected.</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function calculateCableSize() {
+      const systemType = document.getElementById("systemType").value;
+      const designCurrent = parseFloat(document.getElementById("designCurrent").value);
+      const ratingFactor = parseFloat(document.getElementById("ratingFactor").value);
+      const cableType = document.getElementById("cableType").value;
+      const installationMethod = document.getElementById("installationMethod").value;
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      if (
+        isNaN(designCurrent) ||
+        isNaN(ratingFactor) ||
+        designCurrent <= 0 ||
+        ratingFactor <= 0
+      ) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      const requiredTabulatedCapacity = designCurrent / ratingFactor;
+      const table = getSelectedCableTable();
+      const selectedCable = table.find(cable => cable.capacity >= requiredTabulatedCapacity);
+
+      const cableTypeLabel = cableType === "pvc" ? "PVC Copper" : "XLPE Copper";
+      const installationLabel = installationMethod === "clipped"
+        ? "Clipped Direct / In Free Air"
+        : "In Conduit / Trunking";
+
+      if (!selectedCable) {
+        resultBox.innerHTML = `
+          <div class="result-label">Recommended Cable Size</div>
+          <div class="result-value-main">Above table range</div>
+          <div class="result-value-secondary">Required capacity exceeds the sizes included in this tool.</div>
+          <div class="result-extra">
+            Required Tabulated Capacity: <strong>${requiredTabulatedCapacity.toFixed(1)} A</strong><br>
+            Basis: <strong>${cableTypeLabel}</strong> • <strong>${installationLabel}</strong>
+          </div>
+        `;
+
+        methodBox.innerHTML = `
+          <ul class="method-list">
+            <li><strong>Ib</strong> = design current (A)</li>
+            <li><strong>C</strong> = combined rating factor</li>
+            <li><strong>It</strong> = required tabulated current-carrying capacity (A)</li>
+            <li>Required Tabulated Capacity = ${designCurrent.toFixed(1)} ÷ ${ratingFactor.toFixed(2)} = <span class="method-result">${requiredTabulatedCapacity.toFixed(1)} A</span></li>
+            <li>No listed cable size in the selected table meets the required capacity.</li>
+          </ul>
+        `;
+        return;
+      }
+
+      resultBox.innerHTML = `
+        <div class="result-label">Recommended Cable Size</div>
+        <div class="result-value-main">${selectedCable.size}</div>
+        <div class="result-value-secondary">${selectedCable.capacity.toFixed(1)} A tabulated capacity</div>
+        <div class="result-extra">
+          Design Current: <strong>${designCurrent.toFixed(1)} A</strong><br>
+          Required Tabulated Capacity: <strong>${requiredTabulatedCapacity.toFixed(1)} A</strong><br>
+          Basis: <strong>${cableTypeLabel}</strong> • <strong>${installationLabel}</strong><br>
+          System Type: <strong>${systemType === "single" ? "Single Phase" : "Three Phase"}</strong>
+        </div>
+      `;
+
+      methodBox.innerHTML = `
+        <ul class="method-list">
+          <li><strong>Ib</strong> = design current (A)</li>
+          <li><strong>C</strong> = combined rating factor</li>
+          <li><strong>It</strong> = required tabulated current-carrying capacity (A)</li>
+          <li>Required Tabulated Capacity = ${designCurrent.toFixed(1)} ÷ ${ratingFactor.toFixed(2)} = <span class="method-result">${requiredTabulatedCapacity.toFixed(1)} A</span></li>
+          <li>Selected smallest listed cable size with tabulated capacity ≥ required value</li>
+          <li>Selected Cable Size = <span class="method-result">${selectedCable.size}</span></li>
+          <li>Tabulated Capacity Used = <span class="method-result">${selectedCable.capacity.toFixed(1)} A</span></li>
+        </ul>
+      `;
+    }
+
+    function resetCalc() {
+      document.getElementById("systemType").value = "single";
+      document.getElementById("designCurrent").value = "32";
+      document.getElementById("cableType").value = "pvc";
+      document.getElementById("installationMethod").value = "clipped";
+      document.getElementById("ratingFactor").value = "1.0";
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("designCurrent").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculateCableSize();
+      }
+    });
+  </script>
+</body>
+</html>
