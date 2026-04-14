@@ -792,22 +792,19 @@ input[type="number"] {
    Discipline Colour Overrides
 ========================= */
 
-body.mechanical .result-value,
 body.mechanical .result-value-main,
 body.mechanical .method-result {
-  color: var(--mechanical);
+  color: var(--mechanical) !important;
 }
 
-body.electrical .result-value,
 body.electrical .result-value-main,
 body.electrical .method-result {
-  color: var(--electrical);
+  color: var(--electrical) !important;
 }
 
-body.public-health .result-value,
 body.public-health .result-value-main,
 body.public-health .method-result {
-  color: var(--public-health);
+  color: var(--public-health) !important;
 }
 
 /* =========================
