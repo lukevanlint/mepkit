@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hot Water Storage Calorifier Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Estimate hot water storage calorifier volume and recovery duty from hot water demand, storage period, temperature rise and recovery time for UK public health design."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+      <div class="main-inner">
+
+        <section class="page-header">
+          <p class="discipline-label public-health">Public Health</p>
+          <h1>Hot Water Storage Calorifier Calculator</h1>
+          <p class="page-description">
+            Estimate hot water storage calorifier volume and recovery duty from demand, storage period and temperature rise.
+          </p>
+          <p class="intro-note">
+            Use this calculator for early-stage domestic hot water storage sizing where a project hot water demand is known or has been estimated separately.
+            It can be used to estimate the required stored hot water volume together with an indicative reheat or recovery duty for a calorifier.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="form-group">
+            <label for="dailyDemand">Daily Hot Water Demand (L/day)</label>
+            <input type="number" id="dailyDemand" value="3000" step="10" min="0" autofocus>
+          </div>
+
+          <div class="form-group">
+            <label for="storageHours">Storage Period Covered (hours)</label>
+            <input type="number" id="storageHours" value="4" step="0.1" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="storageTemp">Stored Hot Water Temperature (°C)</label>
+            <input type="number" id="storageTemp" value="60" step="1" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="incomingTemp">Incoming Cold Water Temperature (°C)</label>
+            <input type="number" id="incomingTemp" value="10" step="1" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="mixedTemp">Mixed Outlet Temperature (°C)</label>
+            <input type="number" id="mixedTemp" value="45" step="1" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="recoveryTime">Recovery / Reheat Time (hours)</label>
+            <input type="number" id="recoveryTime" value="2" step="0.1" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="allowancePercent">Storage Allowance (%)</label>
+            <input type="number" id="allowancePercent" value="10" step="0.1" min="0">
+          </div>
+
+          <p class="unit-note">
+            This calculator converts mixed hot water demand into equivalent stored 60°C water volume using a simple mixing relationship, then estimates calorifier recovery duty from the stored volume and reheat period.
+          </p>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculateCalorifier()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Calorifier Size</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Demand over the selected storage period is estimated as a proportion of daily hot water demand:
+          </p>
+
+          <div class="formula-block">
+            Demand over Storage Period = Daily Demand × (Storage Hours ÷ 24)
+          </div>
+
+          <p>
+            Mixed outlet demand is converted to equivalent stored hot water volume using:
+          </p>
+
+          <div class="formula-block">
+            Stored Volume = Mixed Demand × ((Tₘ - T𝒸) ÷ (Tₛ - T𝒸))
+          </div>
+
+          <p>
+            An allowance is then added:
+          </p>
+
+          <div class="formula-block">
+            Storage Volume = Stored Volume × (1 + Allowance ÷ 100)
+          </div>
+
+          <p>
+            Recovery duty is estimated from:
+          </p>
+
+          <div class="formula-block">
+            Duty = (Volume × 4.18 × ΔT) ÷ Reheat Time
+          </div>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>Tₛ</strong> = stored hot water temperature (°C)</li>
+              <li><strong>T𝒸</strong> = incoming cold water temperature (°C)</li>
+              <li><strong>Tₘ</strong> = mixed outlet temperature (°C)</li>
+              <li><strong>ΔT</strong> = stored temperature rise above incoming cold water (K)</li>
+              <li><strong>Storage Volume</strong> = required calorifier storage volume (L)</li>
+              <li><strong>Duty</strong> = indicative calorifier recovery duty (kW)</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator provides an indicative calorifier storage and recovery estimate based on hot water demand, mixed outlet temperature and reheat period.</li>
+            <li>The conversion from mixed water to stored hot water volume is based on a simple blending relationship between stored hot water and incoming cold water.</li>
+            <li>Recovery duty is estimated using the specific heat capacity of water and assumes a simple sensible heat calculation without standing losses.</li>
+            <li>Relevant guidance may include CIBSE Guide G, BS EN 12897, HSE ACOP L8 guidance, and project-specific domestic hot water design requirements.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator is an indicative estimating tool only. Final design should consider actual demand profiles, peak usage patterns, diversity, storage temperature strategy, pasteurisation requirements, recovery periods, primary flow and return temperatures, coil performance, standing losses and project-specific compliance requirements.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="water-demand-calculator.html">Water Demand Calculator</a>
+            <a href="water-flow-rate-calculator.html">Water Flow Rate Calculator</a>
+            <a href="cold-water-storage-tank-calculator.html">Cold Water Storage Tank Calculator</a>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    const standardCalorifierSizes = [
+      150, 200, 250, 300, 400, 500, 750, 1000, 1250, 1500, 2000, 2500, 3000, 4000, 5000
+    ];
+
+    function getRecommendedCalorifierSize(requiredVolume) {
+      for (const size of standardCalorifierSizes) {
+        if (size >= requiredVolume) {
+          return size;
+        }
+      }
+      return null;
+    }
+
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Calorifier Size</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Calorifier Size</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getTemperatureErrorHtml() {
+      return `
+        <div class="result-label">Calorifier Size</div>
+        <div class="result-value-main">Check temperatures</div>
+        <div class="result-value-secondary">Stored temperature must be greater than mixed outlet temperature, and mixed outlet temperature must be greater than incoming cold water temperature.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>Tₛ</strong> = stored hot water temperature (°C)</li>
+          <li><strong>T𝒸</strong> = incoming cold water temperature (°C)</li>
+          <li><strong>Tₘ</strong> = mixed outlet temperature (°C)</li>
+          <li><strong>ΔT</strong> = stored temperature rise above incoming cold water (K)</li>
+          <li><strong>Storage Volume</strong> = required calorifier storage volume (L)</li>
+          <li><strong>Duty</strong> = indicative calorifier recovery duty (kW)</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function calculateCalorifier() {
+      const dailyDemand = parseFloat(document.getElementById("dailyDemand").value);
+      const storageHours = parseFloat(document.getElementById("storageHours").value);
+      const storageTemp = parseFloat(document.getElementById("storageTemp").value);
+      const incomingTemp = parseFloat(document.getElementById("incomingTemp").value);
+      const mixedTemp = parseFloat(document.getElementById("mixedTemp").value);
+      const recoveryTime = parseFloat(document.getElementById("recoveryTime").value);
+      const allowancePercent = parseFloat(document.getElementById("allowancePercent").value);
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      if (
+        isNaN(dailyDemand) ||
+        isNaN(storageHours) ||
+        isNaN(storageTemp) ||
+        isNaN(incomingTemp) ||
+        isNaN(mixedTemp) ||
+        isNaN(recoveryTime) ||
+        isNaN(allowancePercent) ||
+        dailyDemand <= 0 ||
+        storageHours <= 0 ||
+        recoveryTime <= 0 ||
+        allowancePercent < 0
+      ) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      if (!(storageTemp > mixedTemp && mixedTemp > incomingTemp)) {
+        resultBox.innerHTML = getTemperatureErrorHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      const demandOverStoragePeriod = dailyDemand * (storageHours / 24);
+      const mixingFactor = (mixedTemp - incomingTemp) / (storageTemp - incomingTemp);
+      const equivalentStoredVolume = demandOverStoragePeriod * mixingFactor;
+      const requiredStorageVolume = equivalentStoredVolume * (1 + allowancePercent / 100);
+      const deltaT = storageTemp - incomingTemp;
+      const recoveryDutyKw = (requiredStorageVolume * 4.18 * deltaT) / (recoveryTime * 3600);
+      const recommendedCalorifierSize = getRecommendedCalorifierSize(requiredStorageVolume);
+
+      if (recommendedCalorifierSize === null) {
+        resultBox.innerHTML = `
+          <div class="result-label">Calorifier Size</div>
+          <div class="result-value-main">Above standard range</div>
+          <div class="result-value-secondary">Calculated storage volume exceeds the standard sizes included in this tool.</div>
+          <div class="result-extra">
+            Required Storage Volume: <strong>${requiredStorageVolume.toFixed(0)} L</strong><br>
+            Equivalent Stored Volume: <strong>${equivalentStoredVolume.toFixed(0)} L</strong><br>
+            Indicative Recovery Duty: <strong>${recoveryDutyKw.toFixed(1)} kW</strong><br>
+            Review manufacturer selection for a suitable calorifier size.
+          </div>
+        `;
+
+        methodBox.innerHTML = `
+          <ul class="method-list">
+            <li><strong>Tₛ</strong> = stored hot water temperature (°C)</li>
+            <li><strong>T𝒸</strong> = incoming cold water temperature (°C)</li>
+            <li><strong>Tₘ</strong> = mixed outlet temperature (°C)</li>
+            <li><strong>ΔT</strong> = stored temperature rise above incoming cold water (K)</li>
+            <li><strong>Storage Volume</strong> = required calorifier storage volume (L)</li>
+            <li><strong>Duty</strong> = indicative calorifier recovery duty (kW)</li>
+            <li>Demand over Storage Period = ${dailyDemand.toFixed(0)} × (${storageHours.toFixed(1)} ÷ 24) = <span class="method-result">${demandOverStoragePeriod.toFixed(0)} L</span></li>
+            <li>Mixing Factor = (${mixedTemp.toFixed(1)} - ${incomingTemp.toFixed(1)}) ÷ (${storageTemp.toFixed(1)} - ${incomingTemp.toFixed(1)}) = <span class="method-result">${mixingFactor.toFixed(3)}</span></li>
+            <li>Equivalent Stored Volume = ${demandOverStoragePeriod.toFixed(0)} × ${mixingFactor.toFixed(3)} = <span class="method-result">${equivalentStoredVolume.toFixed(0)} L</span></li>
+            <li>Required Storage Volume = ${equivalentStoredVolume.toFixed(0)} × (1 + ${allowancePercent.toFixed(1)} ÷ 100) = <span class="method-result">${requiredStorageVolume.toFixed(0)} L</span></li>
+            <li>Recovery Duty = (${requiredStorageVolume.toFixed(0)} × 4.18 × ${deltaT.toFixed(1)}) ÷ (${recoveryTime.toFixed(1)} × 3600) = <span class="method-result">${recoveryDutyKw.toFixed(1)} kW</span></li>
+          </ul>
+        `;
+        return;
+      }
+
+      resultBox.innerHTML = `
+        <div class="result-label">Calorifier Size</div>
+        <div class="result-value-main">${recommendedCalorifierSize.toFixed(0)} L</div>
+        <div class="result-value-secondary">Recommended nominal calorifier storage volume</div>
+        <div class="result-extra">
+          Required Storage Volume: <strong>${requiredStorageVolume.toFixed(0)} L</strong><br>
+          Equivalent Stored Volume at ${storageTemp.toFixed(0)}°C: <strong>${equivalentStoredVolume.toFixed(0)} L</strong><br>
+          Demand over Storage Period: <strong>${demandOverStoragePeriod.toFixed(0)} L</strong><br>
+          Indicative Recovery Duty: <strong>${recoveryDutyKw.toFixed(1)} kW</strong>
+        </div>
+      `;
+
+      methodBox.innerHTML = `
+        <ul class="method-list">
+          <li><strong>Tₛ</strong> = stored hot water temperature (°C)</li>
+          <li><strong>T𝒸</strong> = incoming cold water temperature (°C)</li>
+          <li><strong>Tₘ</strong> = mixed outlet temperature (°C)</li>
+          <li><strong>ΔT</strong> = stored temperature rise above incoming cold water (K)</li>
+          <li><strong>Storage Volume</strong> = required calorifier storage volume (L)</li>
+          <li><strong>Duty</strong> = indicative calorifier recovery duty (kW)</li>
+          <li>Demand over Storage Period = ${dailyDemand.toFixed(0)} × (${storageHours.toFixed(1)} ÷ 24) = <span class="method-result">${demandOverStoragePeriod.toFixed(0)} L</span></li>
+          <li>Mixing Factor = (${mixedTemp.toFixed(1)} - ${incomingTemp.toFixed(1)}) ÷ (${storageTemp.toFixed(1)} - ${incomingTemp.toFixed(1)}) = <span class="method-result">${mixingFactor.toFixed(3)}</span></li>
+          <li>Equivalent Stored Volume = ${demandOverStoragePeriod.toFixed(0)} × ${mixingFactor.toFixed(3)} = <span class="method-result">${equivalentStoredVolume.toFixed(0)} L</span></li>
+          <li>Required Storage Volume = ${equivalentStoredVolume.toFixed(0)} × (1 + ${allowancePercent.toFixed(1)} ÷ 100) = <span class="method-result">${requiredStorageVolume.toFixed(0)} L</span></li>
+          <li>Recovery Duty = (${requiredStorageVolume.toFixed(0)} × 4.18 × ${deltaT.toFixed(1)}) ÷ (${recoveryTime.toFixed(1)} × 3600) = <span class="method-result">${recoveryDutyKw.toFixed(1)} kW</span></li>
+          <li>Recommended Calorifier Size = <span class="method-result">${recommendedCalorifierSize.toFixed(0)} L</span></li>
+        </ul>
+      `;
+    }
+
+    function resetCalc() {
+      document.getElementById("dailyDemand").value = "3000";
+      document.getElementById("storageHours").value = "4";
+      document.getElementById("storageTemp").value = "60";
+      document.getElementById("incomingTemp").value = "10";
+      document.getElementById("mixedTemp").value = "45";
+      document.getElementById("recoveryTime").value = "2";
+      document.getElementById("allowancePercent").value = "10";
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("dailyDemand").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculateCalorifier();
+      }
+    });
+  </script>
+</body>
+</html>
