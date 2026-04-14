@@ -7,11 +7,11 @@
   <title>MEPkit | UK MEP Engineering Calculators</title>
   <meta
     name="description"
-    content="MEPkit is a lightweight toolkit of UK MEP engineering calculators for building services design, with clear methods, practical assumptions, and references to relevant CIBSE guidance, British Standards, and Building Regulations."
+    content="MEPkit is a lightweight toolkit of UK MEP engineering calculators for building services design, with clear methods, practical assumptions and references to relevant guidance."
   >
   <meta
     name="keywords"
-    content="MEP calculator, building services calculator, UK MEP tools, flow rate calculator, pipe sizing calculator, pipe pressure drop calculator, pump head calculator, expansion vessel calculator, ventilation rate calculator, air changes calculator, duct sizing calculator, duct pressure drop calculator, specific fan power calculator, load current calculator, power calculator, voltage drop calculator, cable sizing calculator, water demand calculator, water flow rate calculator, domestic water pipe calculator, cold water storage tank calculator"
+    content="MEP calculator, building services calculator, UK MEP tools, flow rate calculator, pipe sizing calculator, pump head calculator, ventilation calculator, duct sizing calculator, voltage drop calculator, cable sizing calculator, water demand calculator"
   >
 
   <link rel="icon" type="image/png" href="assets/favicon1.png">
@@ -48,7 +48,7 @@
           <div class="discipline-grid">
             <div class="discipline-card mechanical" id="mechanical-tools">
               <h3>Mechanical</h3>
-              <p>Heating, ventilation and hydraulic calculators for building services design.</p>
+              <p>Heating, ventilation and hydraulic system calculators for typical day-to-day MEP design checks.</p>
 
               <div class="card-subheading">Heating</div>
               <ul>
@@ -63,43 +63,86 @@
               <div class="card-subheading">Ventilation</div>
               <ul>
                 <li><a href="calculators/ventilation-rate-calculator.html">Ventilation Rate Calculator</a></li>
-                <li><span class="disabled">Air Changes Calculator</span></li>
+                <li><a href="calculators/air-changes-calculator.html">Air Changes Calculator</a></li>
                 <li><a href="calculators/duct-sizing-calculator.html">Duct Sizing Calculator</a></li>
-                <li><span class="disabled">Duct Pressure Drop Calculator</span></li>
+                <li><a href="calculators/duct-pressure-drop-calculator.html">Duct Pressure Drop Calculator</a></li>
                 <li><a href="calculators/specific-fan-power-calculator.html">Specific Fan Power Calculator</a></li>
               </ul>
             </div>
 
             <div class="discipline-card electrical" id="electrical-tools">
               <h3>Electrical</h3>
-              <p>Load, power, voltage drop and cable sizing calculators for design.</p>
+              <p>Practical calculators for cable sizing, voltage drop, power and electrical design checks.</p>
 
               <div class="card-subheading">Power</div>
               <ul>
-                <li><span class="disabled">Load Current Calculator</span></li>
-                <li><span class="disabled">Power Calculator</span></li>
-                <li><span class="disabled">Voltage Drop Calculator</span></li>
-                <li><span class="disabled">Cable Sizing Calculator</span></li>
+                <li><a href="calculators/load-current-calculator.html">Load Current Calculator</a></li>
+                <li><a href="calculators/power-calculator.html">Power Calculator</a></li>
+                <li><a href="calculators/voltage-drop-calculator.html">Voltage Drop Calculator</a></li>
+                <li><a href="calculators/cable-sizing-calculator.html">Cable Sizing Calculator</a></li>
               </ul>
             </div>
 
             <div class="discipline-card public-health" id="public-health-tools">
               <h3>Public Health</h3>
-              <p>Water demand, pipe sizing and storage calculators for design work.</p>
+              <p>Water demand, flow, storage and pipe sizing calculators for public health engineering design work.</p>
 
               <div class="card-subheading">Water</div>
               <ul>
-                <li><span class="disabled">Water Demand Calculator</span></li>
-                <li><span class="disabled">Water Flow Rate Calculator</span></li>
-                <li><span class="disabled">Domestic Water Pipe Calculator</span></li>
-                <li><span class="disabled">Cold Water Storage Tank Calculator</span></li>
+                <li><a href="calculators/water-demand-calculator.html">Water Demand Calculator</a></li>
+                <li><a href="calculators/water-flow-rate-calculator.html">Water Flow Rate Calculator</a></li>
+                <li><a href="calculators/water-pipe-size-calculator.html">Domestic Water Pipe Calculator</a></li>
+                <li><a href="calculators/cold-water-tank-calculator.html">Cold Water Storage Tank Calculator</a></li>
+                <li><a href="calculators/hot-water-cylinder-calculator.html">Hot Water Storage Calorifier Calculator</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <p class="section-title">Calculator Workflows</p>
+
+          <div class="discipline-grid">
+            <div class="discipline-card mechanical">
+              <h3>Heating Flow</h3>
+              <p>Follow the typical hydraulic design path from duty through to vessel sizing.</p>
+              <ul>
+                <li><a href="calculators/flow-rate-calculator.html">Flow Rate Calculator</a></li>
+                <li><a href="calculators/pipe-sizing-calculator.html">Pipe Sizing Calculator</a></li>
+                <li><a href="calculators/pipe-pressure-drop-calculator.html">Pipe Pressure Drop Calculator</a></li>
+                <li><a href="calculators/pump-head-calculator.html">Pump Head Calculator</a></li>
+                <li><a href="calculators/system-water-volume-estimator.html">System Water Volume Estimator</a></li>
+                <li><a href="calculators/expansion-vessel-calculator.html">Expansion Vessel Calculator</a></li>
+              </ul>
+            </div>
+
+            <div class="discipline-card electrical">
+              <h3>Electrical Flow</h3>
+              <p>Move from load assumptions through to voltage drop and cable sizing checks.</p>
+              <ul>
+                <li><a href="calculators/load-current-calculator.html">Load Current Calculator</a></li>
+                <li><a href="calculators/power-calculator.html">Power Calculator</a></li>
+                <li><a href="calculators/voltage-drop-calculator.html">Voltage Drop Calculator</a></li>
+                <li><a href="calculators/cable-sizing-calculator.html">Cable Sizing Calculator</a></li>
+              </ul>
+            </div>
+
+            <div class="discipline-card public-health">
+              <h3>Water Flow</h3>
+              <p>Start from demand, then move through flow, pipe sizing and storage checks.</p>
+              <ul>
+                <li><a href="calculators/water-demand-calculator.html">Water Demand Calculator</a></li>
+                <li><a href="calculators/water-flow-rate-calculator.html">Water Flow Rate Calculator</a></li>
+                <li><a href="calculators/water-pipe-size-calculator.html">Domestic Water Pipe Calculator</a></li>
+                <li><a href="calculators/cold-water-tank-calculator.html">Cold Water Storage Tank Calculator</a></li>
+                <li><a href="calculators/hot-water-cylinder-calculator.html">Hot Water Storage Calorifier Calculator</a></li>
               </ul>
             </div>
           </div>
         </section>
 
         <div class="site-note">
-          MEPkit provides indicative engineering tools for preliminary design, feasibility checks and day-to-day calculation support. Final design should always consider project-specific requirements, full system parameters, manufacturer data, and applicable standards.
+          MEPkit provides indicative engineering tools for preliminary design, feasibility checks and day-to-day calculation support. Final design should always consider project-specific requirements, manufacturer data, applicable standards, and detailed system constraints.
         </div>
 
         <footer class="site-footer">
