@@ -4,6 +4,9 @@
   --panel-soft: #13161c;
   --border: #262b36;
   --border-soft: #2d3442;
+  --input-bg: #111318;
+  --hover: #1d2330;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
 
   --text: #f3f4f6;
   --muted: #9ca3af;
@@ -12,10 +15,6 @@
   --mechanical: #60a5fa;
   --electrical: #39ab63;
   --public-health: #f28b82;
-
-  --hover: #1d2330;
-  --input-bg: #111318;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
 }
 
 * {
@@ -126,7 +125,7 @@ textarea {
 }
 
 .nav-group {
-  margin-bottom: 28px;
+  margin-bottom: 30px;
 }
 
 .nav-group h2 {
@@ -157,12 +156,12 @@ textarea {
 }
 
 .nav-subheading {
-  margin: 14px 12px 4px;
+  margin: 16px 12px 6px;
   font-size: 12px;
   line-height: 1.3;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #7f8796;
+  letter-spacing: 0.14em;
+  color: #8b93a5;
   font-weight: 700;
 }
 
@@ -172,9 +171,9 @@ textarea {
   padding: 10px 12px;
   border: 1px solid transparent;
   border-radius: 10px;
-  color: var(--muted-2);
   font-size: 15px;
   line-height: 1.35;
+  color: var(--muted-2);
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
@@ -190,23 +189,13 @@ textarea {
   color: white;
 }
 
-.nav-links .coming-soon {
-  opacity: 0.62;
+.nav-links .disabled {
+  color: var(--muted);
+  opacity: 0.55;
   cursor: default;
 }
 
-.nav-links .coming-soon::after {
-  content: "Coming soon";
-  display: inline-block;
-  margin-left: 8px;
-  font-size: 11px;
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-}
-
-/* Main layout */
+/* Main */
 
 .main {
   flex: 1;
@@ -274,7 +263,7 @@ textarea {
   line-height: 1.7;
 }
 
-/* Sections */
+/* Shared sections */
 
 .section {
   margin-bottom: 28px;
@@ -290,7 +279,7 @@ textarea {
   font-weight: 700;
 }
 
-/* Discipline cards */
+/* Homepage cards */
 
 .discipline-grid {
   display: grid;
@@ -335,17 +324,17 @@ textarea {
 }
 
 .card-subheading {
-  margin: 18px 0 10px;
-  font-size: 12px;
+  margin: 18px 0 8px;
+  font-size: 13px;
   line-height: 1.3;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #7f8796;
+  letter-spacing: 0.12em;
   font-weight: 700;
+  color: #8b93a5;
 }
 
 .card-subheading:first-of-type {
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .discipline-card ul {
@@ -381,20 +370,10 @@ textarea {
   opacity: 0.78;
 }
 
-.discipline-card .coming-soon {
-  opacity: 0.62;
-  cursor: default;
-}
-
-.discipline-card .coming-soon::after {
-  content: "Coming soon";
-  display: inline-block;
-  margin-left: 8px;
-  font-size: 11px;
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+.discipline-card .disabled {
   color: var(--muted);
+  opacity: 0.65;
+  cursor: default;
 }
 
 /* Footer content */
@@ -466,6 +445,14 @@ textarea {
   line-height: 1.6;
 }
 
+.intro-note {
+  margin-top: 14px;
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
 .calc-card,
 .content-card {
   background: var(--panel);
@@ -486,10 +473,14 @@ textarea {
 }
 
 .content-card p {
-  margin: 0;
+  margin: 0 0 14px 0;
   color: var(--muted-2);
   font-size: 15px;
   line-height: 1.7;
+}
+
+.content-card p:last-child {
+  margin-bottom: 0;
 }
 
 .content-card strong {
@@ -546,6 +537,12 @@ input[type="number"] {
 
 /* Buttons */
 
+.button-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
 .calc-button {
   width: 100%;
   margin-bottom: 24px;
@@ -560,18 +557,12 @@ input[type="number"] {
   transition: opacity 0.2s ease;
 }
 
-.calc-button:hover {
-  opacity: 0.9;
-}
-
-.button-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
 .button-row .calc-button {
   margin-bottom: 0;
+}
+
+.calc-button:hover {
+  opacity: 0.9;
 }
 
 .secondary-button {
@@ -592,20 +583,14 @@ input[type="number"] {
   border-color: #374151;
 }
 
-/* Results */
+/* Result */
 
 .result-box {
-  padding: 20px;
+  padding: 24px;
   background: var(--input-bg);
   border: 1px solid #3a404d;
   border-radius: 16px;
   text-align: left;
-}
-
-.result-box p {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.6;
 }
 
 .result-label {
@@ -637,7 +622,7 @@ input[type="number"] {
   line-height: 1.4;
 }
 
-/* Lists and related links */
+/* Method / reference / notes */
 
 .method-list,
 .reference-list {
@@ -657,6 +642,30 @@ input[type="number"] {
 .reference-list li:last-child {
   margin-bottom: 0;
 }
+
+.formula-block {
+  margin: 14px 0 18px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  font-size: 17px;
+  line-height: 1.6;
+  color: white;
+}
+
+.design-note {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel-soft);
+  color: var(--muted-2);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* Related */
 
 .related-links {
   display: flex;
@@ -756,7 +765,8 @@ input[type="number"] {
 
   .hero-support,
   .page-description,
-  .content-card p {
+  .content-card p,
+  .intro-note {
     font-size: 15px;
   }
 
