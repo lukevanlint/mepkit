@@ -856,6 +856,17 @@ body.public-health .method-result {
     flex-direction: column;
   }
 
+  #sidebar-container {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+#sidebar-container:empty {
+  min-height: 100vh;
+  background: var(--panel-soft);
+  border-right: 1px solid var(--border);
+}
+
   .sidebar {
     width: 100%;
     height: auto;
