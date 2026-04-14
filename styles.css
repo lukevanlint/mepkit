@@ -158,8 +158,19 @@ textarea {
 
 .sidebar-search:focus {
   outline: none;
-  border-color: var(--mechanical);
   background: #151922;
+}
+
+body.mechanical .sidebar-search:focus {
+  border-color: var(--mechanical);
+}
+
+body.electrical .sidebar-search:focus {
+  border-color: var(--electrical);
+}
+
+body.public-health .sidebar-search:focus {
+  border-color: var(--public-health);
 }
 
 .nav-group {
@@ -222,9 +233,22 @@ textarea {
 }
 
 .nav-links a.active {
+  color: white;
+}
+
+body.mechanical .nav-links a.active {
   background: rgba(96, 165, 250, 0.12);
   border-color: rgba(96, 165, 250, 0.24);
-  color: white;
+}
+
+body.electrical .nav-links a.active {
+  background: rgba(57, 171, 99, 0.12);
+  border-color: rgba(57, 171, 99, 0.24);
+}
+
+body.public-health .nav-links a.active {
+  background: rgba(242, 139, 130, 0.12);
+  border-color: rgba(242, 139, 130, 0.24);
 }
 
 .nav-links .disabled {
@@ -532,8 +556,25 @@ textarea {
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: var(--mechanical);
   background: #151922;
+}
+
+body.mechanical .form-group input:focus,
+body.mechanical .form-group select:focus,
+body.mechanical .form-group textarea:focus {
+  border-color: var(--mechanical);
+}
+
+body.electrical .form-group input:focus,
+body.electrical .form-group select:focus,
+body.electrical .form-group textarea:focus {
+  border-color: var(--electrical);
+}
+
+body.public-health .form-group input:focus,
+body.public-health .form-group select:focus,
+body.public-health .form-group textarea:focus {
+  border-color: var(--public-health);
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -676,13 +717,11 @@ input[type="number"] {
 }
 
 .result-value {
-  color: var(--mechanical);
   font-weight: 700;
 }
 
 .result-value-main {
   margin-bottom: 8px;
-  color: var(--mechanical);
   font-size: 34px;
   line-height: 1.1;
   font-weight: 700;
@@ -746,8 +785,29 @@ input[type="number"] {
 }
 
 .method-result {
-  color: var(--mechanical);
   font-weight: 700;
+}
+
+/* =========================
+   Discipline Colour Overrides
+========================= */
+
+body.mechanical .result-value,
+body.mechanical .result-value-main,
+body.mechanical .method-result {
+  color: var(--mechanical);
+}
+
+body.electrical .result-value,
+body.electrical .result-value-main,
+body.electrical .method-result {
+  color: var(--electrical);
+}
+
+body.public-health .result-value,
+body.public-health .result-value-main,
+body.public-health .method-result {
+  color: var(--public-health);
 }
 
 /* =========================
