@@ -1,3 +1,7 @@
+/* =========================
+   Design Tokens
+========================= */
+
 :root {
   --bg: #0f1115;
   --panel: #171a21;
@@ -16,6 +20,10 @@
   --electrical: #39ab63;
   --public-health: #f28b82;
 }
+
+/* =========================
+   Base / Reset
+========================= */
 
 * {
   box-sizing: border-box;
@@ -52,12 +60,42 @@ textarea {
   font: inherit;
 }
 
+/* =========================
+   Shared Layout
+========================= */
+
 .layout {
   display: flex;
   min-height: 100vh;
 }
 
-/* Sidebar */
+.main {
+  flex: 1;
+  padding: 40px 32px 56px;
+}
+
+.main-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: 28px;
+}
+
+.section-title {
+  margin: 0 0 14px 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+/* =========================
+   Sidebar
+========================= */
 
 .sidebar {
   width: 300px;
@@ -195,19 +233,9 @@ textarea {
   cursor: default;
 }
 
-/* Main */
-
-.main {
-  flex: 1;
-  padding: 40px 32px 56px;
-}
-
-.main-inner {
-  max-width: 1040px;
-  margin: 0 auto;
-}
-
-/* Hero */
+/* =========================
+   Homepage
+========================= */
 
 .hero {
   margin-bottom: 28px;
@@ -262,24 +290,6 @@ textarea {
   font-size: 16px;
   line-height: 1.7;
 }
-
-/* Shared sections */
-
-.section {
-  margin-bottom: 28px;
-}
-
-.section-title {
-  margin: 0 0 14px 0;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.3;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 700;
-}
-
-/* Homepage cards */
 
 .discipline-grid {
   display: grid;
@@ -376,8 +386,6 @@ textarea {
   cursor: default;
 }
 
-/* Footer content */
-
 .site-note {
   margin-top: 8px;
   padding: 18px 20px;
@@ -402,7 +410,9 @@ textarea {
   margin: 0;
 }
 
-/* Calculator pages */
+/* =========================
+   Calculator Page Shell
+========================= */
 
 .page-header {
   margin-bottom: 28px;
@@ -487,7 +497,9 @@ textarea {
   color: white;
 }
 
-/* Forms */
+/* =========================
+   Forms and Inputs
+========================= */
 
 .form-group {
   margin-bottom: 22px;
@@ -535,7 +547,9 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-/* Buttons */
+/* =========================
+   Buttons
+========================= */
 
 .button-row {
   display: flex;
@@ -583,7 +597,9 @@ input[type="number"] {
   border-color: #374151;
 }
 
-/* Result */
+/* =========================
+   Results
+========================= */
 
 .result-box {
   padding: 24px;
@@ -622,7 +638,9 @@ input[type="number"] {
   line-height: 1.4;
 }
 
-/* Method / reference / notes */
+/* =========================
+   Method / Reference / Notes
+========================= */
 
 .method-list,
 .reference-list {
@@ -670,7 +688,9 @@ input[type="number"] {
   font-weight: 700;
 }
 
-/* Related */
+/* =========================
+   Related Links
+========================= */
 
 .related-links {
   display: flex;
@@ -695,7 +715,9 @@ input[type="number"] {
   border-color: #374151;
 }
 
-/* Responsive */
+/* =========================
+   Responsive
+========================= */
 
 @media (max-width: 1100px) {
   .discipline-grid {
