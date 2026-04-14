@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Air Changes Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Calculate air changes per hour from airflow and room volume, or calculate required airflow from target ACH for UK building services design."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+      <div class="main-inner">
+        <section class="page-header">
+          <p class="discipline-label mechanical">Mechanical</p>
+          <h1>Air Changes Calculator</h1>
+          <p class="page-description">
+            Calculate air changes per hour from airflow and room volume, or calculate required airflow from target ACH.
+          </p>
+          <p class="intro-note">
+            Use this calculator for quick ventilation checks where room dimensions and either airflow or target air changes are known.
+            It can be used either to calculate ACH from a known supply or extract airflow, or to determine the airflow required to achieve a target ACH.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="input-method-card">
+            <div class="input-method-title">Calculation Mode</div>
+            <div class="radio-row">
+              <label class="radio-option">
+                <input type="radio" name="calcMode" value="achFromFlow" checked onchange="toggleCalcMode()">
+                ACH from Airflow
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="calcMode" value="flowFromAch" onchange="toggleCalcMode()">
+                Airflow from ACH
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="length">Room Length (m)</label>
+            <input type="number" id="length" value="8" step="0.1" min="0" autofocus>
+          </div>
+
+          <div class="form-group">
+            <label for="width">Room Width (m)</label>
+            <input type="number" id="width" value="6" step="0.1" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="height">Room Height (m)</label>
+            <input type="number" id="height" value="3" step="0.1" min="0">
+          </div>
+
+          <div id="airflowMode">
+            <div class="form-group">
+              <label for="airflowLs">Airflow Rate (L/s)</label>
+              <input type="number" id="airflowLs" value="160" step="1" min="0">
+            </div>
+          </div>
+
+          <div id="achMode" class="hidden">
+            <div class="form-group">
+              <label for="targetAch">Target Air Changes per Hour (ACH)</label>
+              <input type="number" id="targetAch" value="4" step="0.1" min="0">
+            </div>
+          </div>
+
+          <p class="unit-note">
+            Room volume is calculated from length × width × height. Airflow results are shown in both L/s and m³/h for convenience.
+          </p>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculateAirChanges()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Air Changes</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Room volume is calculated from the room dimensions:
+          </p>
+
+          <div class="formula-block">
+            V = L × W × H
+          </div>
+
+          <p>
+            Where airflow is known, air changes per hour are calculated from:
+          </p>
+
+          <div class="formula-block">
+            ACH = Q ÷ V
+          </div>
+
+          <p>
+            using airflow in m³/h.
+          </p>
+
+          <p>
+            Where target ACH is known, the required airflow is:
+          </p>
+
+          <div class="formula-block">
+            Q = ACH × V
+          </div>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>V</strong> = room volume (m³)</li>
+              <li><strong>L</strong> = room length (m)</li>
+              <li><strong>W</strong> = room width (m)</li>
+              <li><strong>H</strong> = room height (m)</li>
+              <li><strong>Q</strong> = airflow rate (m³/h)</li>
+              <li><strong>ACH</strong> = air changes per hour</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator provides a simple air change relationship between room volume and airflow rate.</li>
+            <li>ACH can be useful for preliminary ventilation checks, especially where a room-volume based design approach is being considered.</li>
+            <li>Final ventilation design should still be checked against the relevant occupancy, pollutant load, building use and project-specific compliance route.</li>
+            <li>Where applicable, final design should align with Approved Document F, BB 101, project specifications and manufacturer requirements.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator is an indicative estimating tool only. Final ventilation requirements may depend on occupancy, internal gains, contaminant sources, supply and extract strategy, ventilation effectiveness and project-specific design criteria.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="ventilation-rate-calculator.html">Ventilation Rate Calculator</a>
+            <a href="duct-sizing-calculator.html">Duct Sizing Calculator</a>
+            <a href="specific-fan-power-calculator.html">Specific Fan Power Calculator</a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Air Changes</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Air Changes</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>V</strong> = room volume (m³)</li>
+          <li><strong>L</strong> = room length (m)</li>
+          <li><strong>W</strong> = room width (m)</li>
+          <li><strong>H</strong> = room height (m)</li>
+          <li><strong>Q</strong> = airflow rate (m³/h)</li>
+          <li><strong>ACH</strong> = air changes per hour</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function toggleCalcMode() {
+      const mode = document.querySelector('input[name="calcMode"]:checked').value;
+      const airflowMode = document.getElementById("airflowMode");
+      const achMode = document.getElementById("achMode");
+
+      if (mode === "achFromFlow") {
+        airflowMode.classList.remove("hidden");
+        achMode.classList.add("hidden");
+        document.getElementById("airflowLs").focus();
+      } else {
+        airflowMode.classList.add("hidden");
+        achMode.classList.remove("hidden");
+        document.getElementById("targetAch").focus();
+      }
+    }
+
+    function calculateAirChanges() {
+      const length = parseFloat(document.getElementById("length").value);
+      const width = parseFloat(document.getElementById("width").value);
+      const height = parseFloat(document.getElementById("height").value);
+      const mode = document.querySelector('input[name="calcMode"]:checked').value;
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      if (
+        isNaN(length) || isNaN(width) || isNaN(height) ||
+        length <= 0 || width <= 0 || height <= 0
+      ) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      const volume = length * width * height;
+
+      if (mode === "achFromFlow") {
+        const airflowLs = parseFloat(document.getElementById("airflowLs").value);
+
+        if (isNaN(airflowLs) || airflowLs <= 0) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        const airflowM3h = airflowLs * 3.6;
+        const ach = airflowM3h / volume;
+
+        resultBox.innerHTML = `
+          <div class="result-label">Air Changes</div>
+          <div class="result-value-main">${ach.toFixed(2)} ACH</div>
+          <div class="result-value-secondary">${airflowLs.toFixed(1)} L/s (${airflowM3h.toFixed(1)} m³/h)</div>
+          <div class="result-extra">
+            Room Volume: <strong>${volume.toFixed(1)} m³</strong><br>
+            Basis: <strong>Known airflow to calculated ACH</strong>
+          </div>
+        `;
+
+        methodBox.innerHTML = `
+          <ul class="method-list">
+            <li><strong>V</strong> = room volume (m³)</li>
+            <li><strong>L</strong> = room length (m)</li>
+            <li><strong>W</strong> = room width (m)</li>
+            <li><strong>H</strong> = room height (m)</li>
+            <li><strong>Q</strong> = airflow rate (m³/h)</li>
+            <li><strong>ACH</strong> = air changes per hour</li>
+            <li>Room Volume = ${length.toFixed(1)} × ${width.toFixed(1)} × ${height.toFixed(1)} = <span class="method-result">${volume.toFixed(1)} m³</span></li>
+            <li>Airflow = <span class="method-result">${airflowLs.toFixed(1)} L/s</span> = ${airflowM3h.toFixed(1)} m³/h</li>
+            <li>ACH = ${airflowM3h.toFixed(1)} ÷ ${volume.toFixed(1)} = <span class="method-result">${ach.toFixed(2)} ACH</span></li>
+          </ul>
+        `;
+        return;
+      }
+
+      const targetAch = parseFloat(document.getElementById("targetAch").value);
+
+      if (isNaN(targetAch) || targetAch <= 0) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      const requiredFlowM3h = targetAch * volume;
+      const requiredFlowLs = requiredFlowM3h / 3.6;
+
+      resultBox.innerHTML = `
+        <div class="result-label">Required Airflow</div>
+        <div class="result-value-main">${requiredFlowLs.toFixed(1)} L/s</div>
+        <div class="result-value-secondary">${requiredFlowM3h.toFixed(1)} m³/h</div>
+        <div class="result-extra">
+          Room Volume: <strong>${volume.toFixed(1)} m³</strong><br>
+          Basis: <strong>${targetAch.toFixed(2)} ACH target</strong>
+        </div>
+      `;
+
+      methodBox.innerHTML = `
+        <ul class="method-list">
+          <li><strong>V</strong> = room volume (m³)</li>
+          <li><strong>L</strong> = room length (m)</li>
+          <li><strong>W</strong> = room width (m)</li>
+          <li><strong>H</strong> = room height (m)</li>
+          <li><strong>Q</strong> = airflow rate (m³/h)</li>
+          <li><strong>ACH</strong> = air changes per hour</li>
+          <li>Room Volume = ${length.toFixed(1)} × ${width.toFixed(1)} × ${height.toFixed(1)} = <span class="method-result">${volume.toFixed(1)} m³</span></li>
+          <li>Required Airflow = ${targetAch.toFixed(2)} × ${volume.toFixed(1)} = <span class="method-result">${requiredFlowM3h.toFixed(1)} m³/h</span></li>
+          <li>Required Airflow = ${requiredFlowM3h.toFixed(1)} ÷ 3.6 = <span class="method-result">${requiredFlowLs.toFixed(1)} L/s</span></li>
+        </ul>
+      `;
+    }
+
+    function resetCalc() {
+      document.querySelector('input[name="calcMode"][value="achFromFlow"]').checked = true;
+
+      document.getElementById("length").value = "8";
+      document.getElementById("width").value = "6";
+      document.getElementById("height").value = "3";
+      document.getElementById("airflowLs").value = "160";
+      document.getElementById("targetAch").value = "4";
+
+      toggleCalcMode();
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("length").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculateAirChanges();
+      }
+    });
+
+    toggleCalcMode();
+  </script>
+</body>
+</html>

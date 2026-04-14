@@ -1,451 +1,539 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Duct Sizing Calculator - MEPkit</title>
-
-<link rel="icon" type="image/png" href="favicon1.png">
-<link rel="stylesheet" href="styles.css">
-
-<style>
-
-body{
-padding:36px 20px 60px;
-}
-
-.container{
-max-width:560px;
-margin:0 auto;
-}
-
-.calculator-logo{
-width:120px;
-margin-bottom:18px;
-}
-
-.category-tag{
-font-size:13px;
-font-weight:700;
-text-transform:uppercase;
-letter-spacing:0.08em;
-color:#60a5fa;
-margin-bottom:14px;
-}
-
-h1{
-font-size:36px;
-line-height:1.15;
-margin:0 0 12px 0;
-}
-
-.subtitle{
-color:#d4d4d4;
-margin:0 0 30px 0;
-font-size:16px;
-line-height:1.5;
-}
-
-.card{
-background:#2a2a2a;
-border-radius:12px;
-padding:24px;
-text-align:left;
-}
-
-.section-block{
-margin-top:24px;
-}
-
-.section-block:first-child{
-margin-top:0;
-}
-
-.section-title{
-font-size:13px;
-font-weight:700;
-text-transform:uppercase;
-letter-spacing:0.08em;
-color:#bdbdbd;
-margin-bottom:14px;
-}
-
-label{
-display:block;
-margin-bottom:8px;
-font-size:15px;
-color:#e5e5e5;
-}
-
-input,select{
-width:100%;
-padding:12px;
-margin-bottom:20px;
-border:1px solid #444;
-border-radius:8px;
-background:#181818;
-color:white;
-font-size:16px;
-box-sizing:border-box;
-}
-
-.note{
-font-size:13px;
-color:#bdbdbd;
-margin-top:-10px;
-margin-bottom:18px;
-}
-
-button{
-width:100%;
-padding:14px;
-background:white;
-color:black;
-border:none;
-border-radius:8px;
-font-size:16px;
-font-weight:700;
-cursor:pointer;
-}
-
-button:hover{
-opacity:0.9;
-}
-
-.result,
-.method,
-.reference{
-padding:18px;
-background:#181818;
-border-radius:10px;
-}
-
-.result{
-font-size:15px;
-line-height:1.8;
-}
-
-.method,
-.reference{
-font-size:14px;
-line-height:1.7;
-color:#d4d4d4;
-}
-
-.back{
-display:inline-block;
-margin-top:28px;
-color:white;
-text-decoration:none;
-opacity:0.8;
-}
-
-.back:hover{
-opacity:1;
-}
-
-.hidden{
-display:none;
-}
-
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Duct Sizing Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Size or check circular and rectangular ducts from airflow and velocity for UK building services design."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
 </head>
 
 <body>
-
-<div class="container">
-
-<img src="logo-mechanical.png" class="calculator-logo">
-
-<div class="category-tag">Mechanical</div>
-
-<h1>Duct Sizing Calculator</h1>
-
-<p class="subtitle">
-Size or check circular and rectangular ducts from airflow and velocity.
-</p>
-
-<div class="card">
-
-<div class="section-block">
-
-<div class="section-title">Inputs</div>
-
-<label>Mode</label>
-
-<select id="mode" onchange="toggleMode()">
-<option value="size">Size Duct</option>
-<option value="check">Check Existing Duct</option>
-</select>
-
-<label>Duct Shape</label>
-
-<select id="shape" onchange="toggleShape()">
-<option value="circular">Circular</option>
-<option value="rectangular">Rectangular</option>
-</select>
-
-<label>Airflow Unit</label>
-
-<select id="flowUnit">
-<option value="ls">L/s</option>
-<option value="m3h">m³/h</option>
-<option value="m3s">m³/s</option>
-</select>
-
-<label>Airflow</label>
-
-<input type="number" id="flow" value="1000">
-
-<div id="sizeMode">
-
-<label>Duct Classification</label>
-
-<select id="preset" onchange="applyPreset()">
-<option value="terminal">Terminal Branch</option>
-<option value="branch" selected>Branch / Secondary</option>
-<option value="main">Main Distribution</option>
-<option value="custom">Custom</option>
-</select>
-
-<div class="note" id="presetText"></div>
-
-<label>Target Velocity (m/s)</label>
-
-<input type="number" id="velocity" value="4">
-
-<div id="aspectBlock" class="hidden">
-
-<label>Aspect Ratio (W:H)</label>
-
-<select id="aspect">
-<option value="1.5">1.5:1</option>
-<option value="2" selected>2:1</option>
-<option value="3">3:1</option>
-<option value="4">4:1</option>
-</select>
-
-</div>
-
-</div>
-
-<div id="checkMode" class="hidden">
-
-<div id="checkCircular">
-
-<label>Diameter (mm)</label>
-<input type="number" id="diameter" value="500">
-
-</div>
-
-<div id="checkRectangular" class="hidden">
-
-<label>Width (mm)</label>
-<input type="number" id="width" value="600">
-
-<label>Height (mm)</label>
-<input type="number" id="height" value="300">
-
-</div>
-
-</div>
-
-<button onclick="calculate()">Calculate</button>
-
-</div>
-
-<div class="section-block">
-
-<div class="section-title">Result</div>
-
-<div class="result" id="result">-</div>
-
-</div>
-
-<div class="section-block">
-
-<div class="section-title">Method</div>
-
-<div class="method" id="method">
-
-<p>Area = Flow ÷ Velocity</p>
-<p>Circular Diameter = √(4A ÷ π)</p>
-<p>Velocity Pressure = 0.5 × ρ × v²</p>
-
-</div>
-
-</div>
-
-<div class="section-block">
-
-<div class="section-title">Reference</div>
-
-<div class="reference">
-
-<p>An air density of <strong>1.2 kg/m³</strong> is assumed for velocity pressure checks.</p>
-
-<p>Duct sizing is commonly undertaken using guidance contained within 
-<strong>CIBSE Guide B2: Ventilation and ductwork</strong>, 
-<strong>CIBSE Guide C: Reference data</strong>, 
-and sizing methods presented in <strong>CIBSE Guide C4: Flow of fluids in pipes and ducts</strong>.</p>
-
-<p>The velocity presets in this calculator represent <strong>indicative design conventions only</strong> used in practice to balance duct size, noise and pressure drop.</p>
-
-<p><strong>Regulatory note:</strong> ventilation compliance in England is typically demonstrated against 
-<strong>Approved Document F</strong>, which is divided into Volume 1 (dwellings) and Volume 2 (buildings other than dwellings).</p>
-
-<p><strong>Scope note:</strong> this calculator provides an indicative duct size only. Final design should consider noise criteria, pressure drop, space constraints, fan selection and ductwork standards.</p>
-
-</div>
-
-</div>
-
-</div>
-
-<a class="back" href="index.html">← Back to homepage</a>
-
-</div>
-
-<script>
-
-const standardDiameters=[100,125,160,200,250,315,355,400,450,500,560,630,710,800,900,1000,1120,1250,1400,1600];
-
-function nearestStandard(d){
-
-for(let i=0;i<standardDiameters.length;i++){
-
-if(d<=standardDiameters[i]) return standardDiameters[i]
-
-}
-
-return standardDiameters[standardDiameters.length-1]
-
-}
-
-function roundRect(x){
-
-return Math.ceil(x/50)*50
-
-}
-
-function applyPreset(){
-
-const preset=document.getElementById("preset").value
-const vel=document.getElementById("velocity")
-const text=document.getElementById("presetText")
-
-if(preset==="terminal"){
-vel.value=2.5
-text.innerHTML="Lower velocity typically used near terminals to reduce noise."
-}
-
-if(preset==="branch"){
-vel.value=4
-text.innerHTML="Moderate velocity used for general branch distribution."
-}
-
-if(preset==="main"){
-vel.value=6
-text.innerHTML="Higher velocity acceptable on main ducts where space is limited."
-}
-
-if(preset==="custom"){
-text.innerHTML="Enter a custom design velocity suitable for your project."
-}
-
-}
-
-function toggleMode(){
-
-const mode=document.getElementById("mode").value
-
-document.getElementById("sizeMode").classList.toggle("hidden",mode==="check")
-document.getElementById("checkMode").classList.toggle("hidden",mode==="size")
-
-}
-
-function toggleShape(){
-
-const shape=document.getElementById("shape").value
-
-document.getElementById("aspectBlock").classList.toggle("hidden",shape!=="rectangular")
-
-document.getElementById("checkCircular").classList.toggle("hidden",shape!=="circular")
-
-document.getElementById("checkRectangular").classList.toggle("hidden",shape!=="rectangular")
-
-}
-
-function flowToM3s(flow,unit){
-
-if(unit==="ls") return flow/1000
-if(unit==="m3h") return flow/3600
-return flow
-
-}
-
-function calculate(){
-
-const mode=document.getElementById("mode").value
-const shape=document.getElementById("shape").value
-const flow=parseFloat(document.getElementById("flow").value)
-const unit=document.getElementById("flowUnit").value
-
-const flowM3s=flowToM3s(flow,unit)
-
-let area
-let velocity
-
-if(mode==="size"){
-
-velocity=parseFloat(document.getElementById("velocity").value)
-
-area=flowM3s/velocity
-
-if(shape==="circular"){
-
-let d=Math.sqrt((4*area)/Math.PI)*1000
-
-let selected=nearestStandard(d)
-
-let actualArea=Math.PI*Math.pow(selected/1000,2)/4
-
-let v=flowM3s/actualArea
-
-document.getElementById("result").innerHTML=
-
-`Duct Size: ${selected} mm<br>
-Velocity: ${v.toFixed(2)} m/s`
-
-}
-
-if(shape==="rectangular"){
-
-let aspect=parseFloat(document.getElementById("aspect").value)
-
-let h=Math.sqrt(area/aspect)
-let w=aspect*h
-
-let width=roundRect(w*1000)
-let height=roundRect(h*1000)
-
-document.getElementById("result").innerHTML=
-
-`Duct Size: ${width} × ${height} mm<br>
-Velocity: ${(flowM3s/(width/1000*height/1000)).toFixed(2)} m/s`
-
-}
-
-}
-
-}
-
-applyPreset()
-toggleMode()
-toggleShape()
-
-</script>
-
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+      <div class="main-inner">
+        <section class="page-header">
+          <p class="discipline-label mechanical">Mechanical</p>
+          <h1>Duct Sizing Calculator</h1>
+          <p class="page-description">
+            Size or check circular and rectangular ducts from airflow and velocity.
+          </p>
+          <p class="intro-note">
+            Use this calculator for preliminary duct sizing and checking based on airflow, target velocity and duct geometry.
+            It can be used either to size a new duct from airflow and target velocity, or to check velocity in an existing duct.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="input-method-card">
+            <div class="input-method-title">Calculation Mode</div>
+            <div class="radio-row">
+              <label class="radio-option">
+                <input type="radio" name="calcMode" value="size" checked onchange="toggleMode()">
+                Size Duct
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="calcMode" value="check" onchange="toggleMode()">
+                Check Existing Duct
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="shape">Duct Shape</label>
+            <select id="shape" onchange="toggleShape()">
+              <option value="circular">Circular</option>
+              <option value="rectangular">Rectangular</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="flowUnit">Airflow Unit</label>
+            <select id="flowUnit">
+              <option value="ls">L/s</option>
+              <option value="m3h">m³/h</option>
+              <option value="m3s">m³/s</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="flow">Airflow</label>
+            <input type="number" id="flow" value="1000" step="1" min="0" autofocus>
+          </div>
+
+          <div id="sizeMode">
+            <div class="form-group">
+              <label for="preset">Duct Classification</label>
+              <select id="preset" onchange="applyPreset()">
+                <option value="terminal">Terminal Branch</option>
+                <option value="branch" selected>Branch / Secondary</option>
+                <option value="main">Main Distribution</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+
+            <p class="unit-note" id="presetText">
+              Moderate velocity used for general branch distribution.
+            </p>
+
+            <div class="form-group">
+              <label for="velocity">Target Velocity (m/s)</label>
+              <input type="number" id="velocity" value="4" step="0.1" min="0">
+            </div>
+
+            <div id="aspectBlock" class="hidden">
+              <div class="form-group">
+                <label for="aspect">Aspect Ratio (W:H)</label>
+                <select id="aspect">
+                  <option value="1.5">1.5:1</option>
+                  <option value="2" selected>2:1</option>
+                  <option value="3">3:1</option>
+                  <option value="4">4:1</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div id="checkMode" class="hidden">
+            <div id="checkCircular">
+              <div class="form-group">
+                <label for="diameter">Diameter (mm)</label>
+                <input type="number" id="diameter" value="500" step="1" min="0">
+              </div>
+            </div>
+
+            <div id="checkRectangular" class="hidden">
+              <div class="form-group">
+                <label for="width">Width (mm)</label>
+                <input type="number" id="width" value="600" step="1" min="0">
+              </div>
+
+              <div class="form-group">
+                <label for="height">Height (mm)</label>
+                <input type="number" id="height" value="300" step="1" min="0">
+              </div>
+            </div>
+          </div>
+
+          <p class="unit-note">
+            Circular sizing selects the next standard diameter up. Rectangular sizing rounds width and height up to the nearest 50 mm.
+          </p>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculate()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Duct Size</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Required duct area is determined from airflow and design velocity:
+          </p>
+
+          <div class="formula-block">
+            A = Q ÷ v
+          </div>
+
+          <p>
+            For circular ducts:
+          </p>
+
+          <div class="formula-block">
+            d = √(4A ÷ π)
+          </div>
+
+          <p>
+            For rectangular ducts:
+          </p>
+
+          <div class="formula-block">
+            A = W × H
+          </div>
+
+          <p>
+            Velocity pressure may be estimated from:
+          </p>
+
+          <div class="formula-block">
+            Pᵥ = 0.5 × ρ × v²
+          </div>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>A</strong> = duct area (m²)</li>
+              <li><strong>Q</strong> = airflow rate (m³/s)</li>
+              <li><strong>v</strong> = air velocity (m/s)</li>
+              <li><strong>d</strong> = circular duct diameter (m)</li>
+              <li><strong>W</strong> = rectangular duct width (m)</li>
+              <li><strong>H</strong> = rectangular duct height (m)</li>
+              <li><strong>Pᵥ</strong> = velocity pressure (Pa)</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>An air density of 1.2 kg/m³ is assumed for velocity pressure checks.</li>
+            <li>Duct sizing is commonly undertaken using guidance contained within CIBSE Guide B2, CIBSE Guide C and methods presented in CIBSE Guide C4.</li>
+            <li>The velocity presets in this calculator represent indicative design conventions only, used in practice to balance duct size, noise and pressure drop.</li>
+            <li>Where applicable, final design should align with Approved Document F, project specifications, ductwork standards and manufacturer requirements.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator provides an indicative duct size or velocity check only. Final design should consider noise criteria, pressure drop, space constraints, fan selection, duct classification, leakage and project-specific requirements.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="ventilation-rate-calculator.html">Ventilation Rate Calculator</a>
+            <a href="air-changes-calculator.html">Air Changes Calculator</a>
+            <a href="specific-fan-power-calculator.html">Specific Fan Power Calculator</a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    const standardDiameters = [100, 125, 160, 200, 250, 315, 355, 400, 450, 500, 560, 630, 710, 800, 900, 1000, 1120, 1250, 1400, 1600];
+
+    function nearestStandard(diameter) {
+      for (const size of standardDiameters) {
+        if (diameter <= size) return size;
+      }
+      return standardDiameters[standardDiameters.length - 1];
+    }
+
+    function roundRect(value) {
+      return Math.ceil(value / 50) * 50;
+    }
+
+    function flowToM3s(flow, unit) {
+      if (unit === "ls") return flow / 1000;
+      if (unit === "m3h") return flow / 3600;
+      return flow;
+    }
+
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Duct Size</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Duct Size</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>A</strong> = duct area (m²)</li>
+          <li><strong>Q</strong> = airflow rate (m³/s)</li>
+          <li><strong>v</strong> = air velocity (m/s)</li>
+          <li><strong>d</strong> = circular duct diameter (m)</li>
+          <li><strong>W</strong> = rectangular duct width (m)</li>
+          <li><strong>H</strong> = rectangular duct height (m)</li>
+          <li><strong>Pᵥ</strong> = velocity pressure (Pa)</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function applyPreset() {
+      const preset = document.getElementById("preset").value;
+      const velocity = document.getElementById("velocity");
+      const presetText = document.getElementById("presetText");
+
+      if (preset === "terminal") {
+        velocity.value = "2.5";
+        presetText.textContent = "Lower velocity typically used near terminals to reduce noise.";
+      }
+
+      if (preset === "branch") {
+        velocity.value = "4";
+        presetText.textContent = "Moderate velocity used for general branch distribution.";
+      }
+
+      if (preset === "main") {
+        velocity.value = "6";
+        presetText.textContent = "Higher velocity may be acceptable on main ducts where space is limited.";
+      }
+
+      if (preset === "custom") {
+        presetText.textContent = "Enter a custom design velocity suitable for your project.";
+      }
+    }
+
+    function toggleMode() {
+      const mode = document.querySelector('input[name="calcMode"]:checked').value;
+      document.getElementById("sizeMode").classList.toggle("hidden", mode === "check");
+      document.getElementById("checkMode").classList.toggle("hidden", mode === "size");
+    }
+
+    function toggleShape() {
+      const shape = document.getElementById("shape").value;
+      document.getElementById("aspectBlock").classList.toggle("hidden", shape !== "rectangular");
+      document.getElementById("checkCircular").classList.toggle("hidden", shape !== "circular");
+      document.getElementById("checkRectangular").classList.toggle("hidden", shape !== "rectangular");
+    }
+
+    function calculate() {
+      const mode = document.querySelector('input[name="calcMode"]:checked').value;
+      const shape = document.getElementById("shape").value;
+      const flow = parseFloat(document.getElementById("flow").value);
+      const unit = document.getElementById("flowUnit").value;
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      if (isNaN(flow) || flow <= 0) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      const flowM3s = flowToM3s(flow, unit);
+      const flowLs = flowM3s * 1000;
+      const flowM3h = flowM3s * 3600;
+
+      if (mode === "size") {
+        const velocity = parseFloat(document.getElementById("velocity").value);
+
+        if (isNaN(velocity) || velocity <= 0) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        const area = flowM3s / velocity;
+        const velocityPressure = 0.5 * 1.2 * Math.pow(velocity, 2);
+
+        if (shape === "circular") {
+          const rawDiameterMm = Math.sqrt((4 * area) / Math.PI) * 1000;
+          const selectedDiameter = nearestStandard(rawDiameterMm);
+          const actualArea = Math.PI * Math.pow(selectedDiameter / 1000, 2) / 4;
+          const actualVelocity = flowM3s / actualArea;
+          const actualVelocityPressure = 0.5 * 1.2 * Math.pow(actualVelocity, 2);
+
+          resultBox.innerHTML = `
+            <div class="result-label">Duct Size</div>
+            <div class="result-value-main">${selectedDiameter} mm Ø</div>
+            <div class="result-value-secondary">${actualVelocity.toFixed(2)} m/s actual velocity</div>
+            <div class="result-extra">
+              Airflow: <strong>${flowLs.toFixed(1)} L/s</strong> (${flowM3h.toFixed(1)} m³/h)<br>
+              Calculated Area: <strong>${area.toFixed(4)} m²</strong><br>
+              Velocity Pressure: <strong>${actualVelocityPressure.toFixed(1)} Pa</strong>
+            </div>
+          `;
+
+          methodBox.innerHTML = `
+            <ul class="method-list">
+              <li><strong>A</strong> = duct area (m²)</li>
+              <li><strong>Q</strong> = airflow rate (m³/s)</li>
+              <li><strong>v</strong> = air velocity (m/s)</li>
+              <li><strong>d</strong> = circular duct diameter (m)</li>
+              <li><strong>Pᵥ</strong> = velocity pressure (Pa)</li>
+              <li>Airflow = <span class="method-result">${flowLs.toFixed(1)} L/s</span> = ${flowM3s.toFixed(4)} m³/s</li>
+              <li>Required Area = ${flowM3s.toFixed(4)} ÷ ${velocity.toFixed(2)} = <span class="method-result">${area.toFixed(4)} m²</span></li>
+              <li>Calculated Diameter = √(4 × ${area.toFixed(4)} ÷ π) = ${rawDiameterMm.toFixed(0)} mm</li>
+              <li>Selected Standard Diameter = <span class="method-result">${selectedDiameter} mm</span></li>
+              <li>Actual Velocity = ${flowM3s.toFixed(4)} ÷ ${actualArea.toFixed(4)} = <span class="method-result">${actualVelocity.toFixed(2)} m/s</span></li>
+              <li>Velocity Pressure = 0.5 × 1.2 × ${actualVelocity.toFixed(2)}² = <span class="method-result">${actualVelocityPressure.toFixed(1)} Pa</span></li>
+            </ul>
+          `;
+          return;
+        }
+
+        const aspect = parseFloat(document.getElementById("aspect").value);
+
+        if (isNaN(aspect) || aspect <= 0) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        const rawHeight = Math.sqrt(area / aspect);
+        const rawWidth = aspect * rawHeight;
+
+        const widthMm = roundRect(rawWidth * 1000);
+        const heightMm = roundRect(rawHeight * 1000);
+        const actualArea = (widthMm / 1000) * (heightMm / 1000);
+        const actualVelocity = flowM3s / actualArea;
+        const actualVelocityPressure = 0.5 * 1.2 * Math.pow(actualVelocity, 2);
+
+        resultBox.innerHTML = `
+          <div class="result-label">Duct Size</div>
+          <div class="result-value-main">${widthMm} × ${heightMm} mm</div>
+          <div class="result-value-secondary">${actualVelocity.toFixed(2)} m/s actual velocity</div>
+          <div class="result-extra">
+            Airflow: <strong>${flowLs.toFixed(1)} L/s</strong> (${flowM3h.toFixed(1)} m³/h)<br>
+            Calculated Area: <strong>${area.toFixed(4)} m²</strong><br>
+            Velocity Pressure: <strong>${actualVelocityPressure.toFixed(1)} Pa</strong>
+          </div>
+        `;
+
+        methodBox.innerHTML = `
+          <ul class="method-list">
+            <li><strong>A</strong> = duct area (m²)</li>
+            <li><strong>Q</strong> = airflow rate (m³/s)</li>
+            <li><strong>v</strong> = air velocity (m/s)</li>
+            <li><strong>W</strong> = rectangular duct width (m)</li>
+            <li><strong>H</strong> = rectangular duct height (m)</li>
+            <li><strong>Pᵥ</strong> = velocity pressure (Pa)</li>
+            <li>Airflow = <span class="method-result">${flowLs.toFixed(1)} L/s</span> = ${flowM3s.toFixed(4)} m³/s</li>
+            <li>Required Area = ${flowM3s.toFixed(4)} ÷ ${velocity.toFixed(2)} = <span class="method-result">${area.toFixed(4)} m²</span></li>
+            <li>Using aspect ratio ${aspect.toFixed(1)}:1</li>
+            <li>Calculated Width × Height = ${(rawWidth * 1000).toFixed(0)} × ${(rawHeight * 1000).toFixed(0)} mm</li>
+            <li>Selected Size = <span class="method-result">${widthMm} × ${heightMm} mm</span></li>
+            <li>Actual Velocity = ${flowM3s.toFixed(4)} ÷ ${actualArea.toFixed(4)} = <span class="method-result">${actualVelocity.toFixed(2)} m/s</span></li>
+            <li>Velocity Pressure = 0.5 × 1.2 × ${actualVelocity.toFixed(2)}² = <span class="method-result">${actualVelocityPressure.toFixed(1)} Pa</span></li>
+          </ul>
+        `;
+        return;
+      }
+
+      if (shape === "circular") {
+        const diameter = parseFloat(document.getElementById("diameter").value);
+
+        if (isNaN(diameter) || diameter <= 0) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        const area = Math.PI * Math.pow(diameter / 1000, 2) / 4;
+        const velocity = flowM3s / area;
+        const velocityPressure = 0.5 * 1.2 * Math.pow(velocity, 2);
+
+        resultBox.innerHTML = `
+          <div class="result-label">Velocity Check</div>
+          <div class="result-value-main">${velocity.toFixed(2)} m/s</div>
+          <div class="result-value-secondary">${diameter.toFixed(0)} mm Ø circular duct</div>
+          <div class="result-extra">
+            Airflow: <strong>${flowLs.toFixed(1)} L/s</strong> (${flowM3h.toFixed(1)} m³/h)<br>
+            Duct Area: <strong>${area.toFixed(4)} m²</strong><br>
+            Velocity Pressure: <strong>${velocityPressure.toFixed(1)} Pa</strong>
+          </div>
+        `;
+
+        methodBox.innerHTML = `
+          <ul class="method-list">
+            <li><strong>A</strong> = duct area (m²)</li>
+            <li><strong>Q</strong> = airflow rate (m³/s)</li>
+            <li><strong>v</strong> = air velocity (m/s)</li>
+            <li><strong>d</strong> = circular duct diameter (m)</li>
+            <li><strong>Pᵥ</strong> = velocity pressure (Pa)</li>
+            <li>Airflow = <span class="method-result">${flowLs.toFixed(1)} L/s</span> = ${flowM3s.toFixed(4)} m³/s</li>
+            <li>Area = π × (${(diameter / 1000).toFixed(3)}²) ÷ 4 = <span class="method-result">${area.toFixed(4)} m²</span></li>
+            <li>Velocity = ${flowM3s.toFixed(4)} ÷ ${area.toFixed(4)} = <span class="method-result">${velocity.toFixed(2)} m/s</span></li>
+            <li>Velocity Pressure = 0.5 × 1.2 × ${velocity.toFixed(2)}² = <span class="method-result">${velocityPressure.toFixed(1)} Pa</span></li>
+          </ul>
+        `;
+        return;
+      }
+
+      const width = parseFloat(document.getElementById("width").value);
+      const height = parseFloat(document.getElementById("height").value);
+
+      if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      const area = (width / 1000) * (height / 1000);
+      const velocity = flowM3s / area;
+      const velocityPressure = 0.5 * 1.2 * Math.pow(velocity, 2);
+
+      resultBox.innerHTML = `
+        <div class="result-label">Velocity Check</div>
+        <div class="result-value-main">${velocity.toFixed(2)} m/s</div>
+        <div class="result-value-secondary">${width.toFixed(0)} × ${height.toFixed(0)} mm rectangular duct</div>
+        <div class="result-extra">
+          Airflow: <strong>${flowLs.toFixed(1)} L/s</strong> (${flowM3h.toFixed(1)} m³/h)<br>
+          Duct Area: <strong>${area.toFixed(4)} m²</strong><br>
+          Velocity Pressure: <strong>${velocityPressure.toFixed(1)} Pa</strong>
+        </div>
+      `;
+
+      methodBox.innerHTML = `
+        <ul class="method-list">
+          <li><strong>A</strong> = duct area (m²)</li>
+          <li><strong>Q</strong> = airflow rate (m³/s)</li>
+          <li><strong>v</strong> = air velocity (m/s)</li>
+          <li><strong>W</strong> = rectangular duct width (m)</li>
+          <li><strong>H</strong> = rectangular duct height (m)</li>
+          <li><strong>Pᵥ</strong> = velocity pressure (Pa)</li>
+          <li>Airflow = <span class="method-result">${flowLs.toFixed(1)} L/s</span> = ${flowM3s.toFixed(4)} m³/s</li>
+          <li>Area = ${(width / 1000).toFixed(3)} × ${(height / 1000).toFixed(3)} = <span class="method-result">${area.toFixed(4)} m²</span></li>
+          <li>Velocity = ${flowM3s.toFixed(4)} ÷ ${area.toFixed(4)} = <span class="method-result">${velocity.toFixed(2)} m/s</span></li>
+          <li>Velocity Pressure = 0.5 × 1.2 × ${velocity.toFixed(2)}² = <span class="method-result">${velocityPressure.toFixed(1)} Pa</span></li>
+        </ul>
+      `;
+    }
+
+    function resetCalc() {
+      document.querySelector('input[name="calcMode"][value="size"]').checked = true;
+      document.getElementById("shape").value = "circular";
+      document.getElementById("flowUnit").value = "ls";
+      document.getElementById("flow").value = "1000";
+      document.getElementById("preset").value = "branch";
+      document.getElementById("velocity").value = "4";
+      document.getElementById("aspect").value = "2";
+      document.getElementById("diameter").value = "500";
+      document.getElementById("width").value = "600";
+      document.getElementById("height").value = "300";
+
+      applyPreset();
+      toggleMode();
+      toggleShape();
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("flow").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculate();
+      }
+    });
+
+    applyPreset();
+    toggleMode();
+    toggleShape();
+  </script>
 </body>
 </html>
