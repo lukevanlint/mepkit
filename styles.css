@@ -665,6 +665,11 @@ input[type="number"] {
   line-height: 1.7;
 }
 
+.method-result {
+  color: var(--mechanical);
+  font-weight: 700;
+}
+
 /* Related */
 
 .related-links {

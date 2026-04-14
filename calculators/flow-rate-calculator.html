@@ -12,34 +12,9 @@
   <link rel="stylesheet" href="../styles.css">
 
   <style>
-    .intro-note {
-      margin-top: 14px;
-      max-width: 760px;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.7;
-    }
-
-    .formula-block {
-      margin: 14px 0 18px;
-      padding: 16px 18px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: #111318;
-      font-size: 17px;
-      line-height: 1.6;
-      color: white;
-    }
-
-    .design-note {
-      margin-top: 12px;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--panel-soft);
-      color: var(--muted-2);
-      font-size: 14px;
-      line-height: 1.7;
+    .method-result {
+      color: var(--mechanical);
+      font-weight: 700;
     }
   </style>
 </head>
@@ -133,9 +108,9 @@
         <section class="content-card">
           <h2 class="section-title">Related Calculators</h2>
           <div class="related-links">
-            <a href="lthw-pipe-sizing.html">Pipe Sizing Calculator</a>
-            <a href="lthw-pump-head.html">Pump Head Calculator</a>
-            <a href="expansion-vessel-calc.html">Expansion Vessel Calculator</a>
+            <a href="pipe-sizing-calculator.html">Pipe Sizing Calculator</a>
+            <a href="pump-head-calculator.html">Pump Head Calculator</a>
+            <a href="expansion-vessel-calculator.html">Expansion Vessel Calculator</a>
           </div>
         </section>
       </div>
@@ -164,6 +139,14 @@
       `;
     }
 
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Flow Rate</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+      `;
+    }
+
     function calculateFlow() {
       const load = parseFloat(document.getElementById("load").value);
       const deltaT = parseFloat(document.getElementById("deltaT").value);
@@ -172,11 +155,7 @@
       const methodBox = document.getElementById("method");
 
       if (isNaN(load) || isNaN(deltaT) || load <= 0 || deltaT <= 0) {
-        resultBox.innerHTML = `
-          <div class="result-label">Flow Rate</div>
-          <div class="result-value-main">-</div>
-          <div class="result-value-secondary">Please enter valid positive values.</div>
-        `;
+        resultBox.innerHTML = getInvalidResultHtml();
         methodBox.innerHTML = getDefaultMethodHtml();
         return;
       }
@@ -196,7 +175,11 @@
           <li><strong>Cp</strong> = specific heat capacity of water, taken as 4.18 kJ/kg·K</li>
           <li><strong>ΔT</strong> = temperature difference between flow and return water (°C)</li>
           <li>Flow Rate = ${load} ÷ (4.18 × ${deltaT})</li>
-          <li>Calculated flow rate = <strong>${flowLs.toFixed(2)} L/s</strong> (${flowM3h.toFixed(2)} m³/h)</li>
+          <li>
+            Calculated flow rate =
+            <span class="method-result">${flowLs.toFixed(2)} L/s</span>
+            (${flowM3h.toFixed(2)} m³/h)
+          </li>
         </ul>
       `;
     }
