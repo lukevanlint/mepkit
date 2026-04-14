@@ -867,13 +867,17 @@ body.public-health .method-result {
   border-right: 1px solid var(--border);
 }
 
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
+.sidebar {
+  width: 100%;
+  background: var(--panel-soft);
+  border-right: 1px solid var(--border);
+  padding: 28px 20px 32px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
 
   .main {
     padding: 24px 18px 40px;
