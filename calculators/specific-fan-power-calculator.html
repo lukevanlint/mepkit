@@ -3,309 +3,239 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Specific Fan Power Calculator - MEPkit</title>
-  <link rel="icon" type="image/png" href="favicon1.png">
-  <link rel="stylesheet" href="styles.css">
-
-  <style>
-    body {
-      padding: 36px 20px 60px;
-    }
-
-    .container {
-      max-width: 560px;
-      margin: 0 auto;
-    }
-
-    .calculator-logo {
-      width: 120px;
-      margin-bottom: 18px;
-    }
-
-    .category-tag {
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #60a5fa;
-      margin-bottom: 14px;
-    }
-
-    h1 {
-      font-size: 36px;
-      line-height: 1.15;
-      margin: 0 0 12px 0;
-    }
-
-    .subtitle {
-      color: #d4d4d4;
-      margin: 0 0 30px 0;
-      font-size: 16px;
-      line-height: 1.5;
-    }
-
-    .card {
-      background: #2a2a2a;
-      border-radius: 12px;
-      padding: 24px;
-      text-align: left;
-    }
-
-    .section-block {
-      margin-top: 24px;
-    }
-
-    .section-block:first-child {
-      margin-top: 0;
-    }
-
-    .section-title {
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #bdbdbd;
-      margin-bottom: 14px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 15px;
-      color: #e5e5e5;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 20px;
-      border: 1px solid #444;
-      border-radius: 8px;
-      background: #181818;
-      color: white;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-
-    .input-note {
-      display: block;
-      margin-top: -12px;
-      margin-bottom: 20px;
-      font-size: 13px;
-      line-height: 1.5;
-      color: #bdbdbd;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      background: white;
-      color: black;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity 0.2s ease;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .result,
-    .method,
-    .reference {
-      padding: 18px;
-      background: #181818;
-      border-radius: 10px;
-    }
-
-    .result {
-      font-size: 15px;
-      line-height: 1.8;
-      color: #ffffff;
-    }
-
-    .result strong {
-      color: white;
-    }
-
-    .method,
-    .reference {
-      font-size: 14px;
-      line-height: 1.7;
-      color: #d4d4d4;
-    }
-
-    .method p,
-    .reference p {
-      margin: 0 0 10px 0;
-    }
-
-    .method p:last-child,
-    .reference p:last-child {
-      margin-bottom: 0;
-    }
-
-    .reference strong {
-      color: white;
-    }
-
-    .back {
-      display: inline-block;
-      margin-top: 28px;
-      color: white;
-      text-decoration: none;
-      opacity: 0.8;
-      font-size: 15px;
-    }
-
-    .back:hover {
-      opacity: 1;
-    }
-  </style>
+  <title>Specific Fan Power Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Calculate or estimate specific fan power from airflow, fan input power, pressure rise and efficiency for UK building services design."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
 </head>
 
 <body>
-  <div class="container">
-    <img src="logo-mechanical.png" alt="MEPkit Mechanical logo" class="calculator-logo">
+  <div class="layout">
+    <div id="sidebar-container"></div>
 
-    <div class="category-tag">Mechanical</div>
-    <h1> Specific Fan Power Calculator</h1>
-    <p class="subtitle">Calculate or estimate system specific fan power (SFP) from airflow, fan input power, pressure rise and efficiency.</p>
+    <main class="main">
+      <div class="main-inner">
+        <section class="page-header">
+          <p class="discipline-label mechanical">Mechanical</p>
+          <h1>Specific Fan Power Calculator</h1>
+          <p class="page-description">
+            Calculate or estimate specific fan power from airflow, fan input power, pressure rise and efficiency.
+          </p>
+          <p class="intro-note">
+            Use this calculator for preliminary system fan power checks where either the design fan input powers are known, or fan power is to be estimated from system pressure and overall efficiency.
+            It is intended for early-stage design checks and comparison of ventilation system performance.
+          </p>
+        </section>
 
-    <div class="card">
-      <div class="section-block">
-        <div class="section-title">Inputs</div>
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
 
-        <label for="mode">Calculation Method</label>
-        <select id="mode" onchange="toggleMode()">
-          <option value="knownPower">Known Fan Input Power</option>
-          <option value="estimatePower">Estimate from Pressure and Efficiency</option>
-        </select>
+          <div class="form-group">
+            <label for="mode">Calculation Method</label>
+            <select id="mode" onchange="toggleMode()">
+              <option value="knownPower">Known Fan Input Power</option>
+              <option value="estimatePower">Estimate from Pressure and Efficiency</option>
+            </select>
+          </div>
 
-        <label for="flowUnit">Airflow Unit</label>
-        <select id="flowUnit">
-          <option value="ls">L/s</option>
-          <option value="m3h">m³/h</option>
-          <option value="m3s">m³/s</option>
-        </select>
+          <div class="form-group">
+            <label for="flowUnit">Airflow Unit</label>
+            <select id="flowUnit">
+              <option value="ls">L/s</option>
+              <option value="m3h">m³/h</option>
+              <option value="m3s">m³/s</option>
+            </select>
+          </div>
 
-        <label for="flow">System Airflow</label>
-        <input type="number" id="flow" value="1000" step="0.1">
+          <div class="form-group">
+            <label for="flow">System Airflow</label>
+            <input type="number" id="flow" value="1000" step="0.1" min="0" autofocus>
+          </div>
 
-        <div id="knownPowerMode">
-          <label for="supplyPower">Supply Fan Input Power (kW)</label>
-          <input type="number" id="supplyPower" value="2.2" step="0.01">
+          <div id="knownPowerMode">
+            <div class="form-group">
+              <label for="supplyPower">Supply Fan Input Power (kW)</label>
+              <input type="number" id="supplyPower" value="2.2" step="0.01" min="0">
+            </div>
 
-          <label for="extractPower">Extract Fan Input Power (kW)</label>
-          <input type="number" id="extractPower" value="1.8" step="0.01">
+            <div class="form-group">
+              <label for="extractPower">Extract Fan Input Power (kW)</label>
+              <input type="number" id="extractPower" value="1.8" step="0.01" min="0">
+            </div>
 
-          <small class="input-note">Include total design electrical input to the relevant supply and extract fans, including associated control losses where applicable.</small>
-        </div>
+            <small class="input-note">
+              Include total design electrical input to the relevant supply and extract fans, including associated control losses where applicable.
+            </small>
+          </div>
 
-        <div id="estimatePowerMode" class="hidden">
-          <label for="supplyPressure">Supply System Total Pressure (Pa)</label>
-          <input type="number" id="supplyPressure" value="800" step="1">
+          <div id="estimatePowerMode" class="hidden">
+            <div class="form-group">
+              <label for="supplyPressure">Supply System Total Pressure (Pa)</label>
+              <input type="number" id="supplyPressure" value="800" step="1" min="0">
+            </div>
 
-          <label for="extractPressure">Extract System Total Pressure (Pa)</label>
-          <input type="number" id="extractPressure" value="600" step="1">
+            <div class="form-group">
+              <label for="extractPressure">Extract System Total Pressure (Pa)</label>
+              <input type="number" id="extractPressure" value="600" step="1" min="0">
+            </div>
 
-          <label for="overallEfficiency">Overall Fan System Efficiency (%)</label>
-          <input type="number" id="overallEfficiency" value="60" step="0.1">
+            <div class="form-group">
+              <label for="overallEfficiency">Overall Fan System Efficiency (%)</label>
+              <input type="number" id="overallEfficiency" value="60" step="0.1" min="0">
+            </div>
 
-          <small class="input-note">Overall efficiency should reflect the installed fan/motor/drive arrangement used to generate the required system pressure at design airflow.</small>
-        </div>
+            <small class="input-note">
+              Overall efficiency should reflect the installed fan, motor and drive arrangement used to generate the required system pressure at design airflow.
+            </small>
+          </div>
 
-        <button onclick="calculateSFP()">Calculate</button>
+          <div class="button-row">
+            <button class="calc-button" onclick="calculateSFP()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Specific Fan Power</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Specific fan power is calculated from total fan input power and system airflow:
+          </p>
+
+          <div class="formula-block">
+            SFP = P ÷ Q
+          </div>
+
+          <p>
+            Where fan power is not known, it can be estimated from airflow, total pressure and overall efficiency:
+          </p>
+
+          <div class="formula-block">
+            P = (Q × ΔP) ÷ η
+          </div>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>SFP</strong> = specific fan power</li>
+              <li><strong>P</strong> = total fan input power (W)</li>
+              <li><strong>Q</strong> = airflow rate (L/s or m³/s depending on expression)</li>
+              <li><strong>ΔP</strong> = total system pressure (Pa)</li>
+              <li><strong>η</strong> = overall fan system efficiency</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator evaluates specific fan power from either known fan electrical input power or an estimated power derived from airflow, pressure and overall efficiency.</li>
+            <li>SFP is commonly used as a standardised measure of how much total fan power is required to move air through the connected system.</li>
+            <li>Relevant guidance may include BS EN 16798-3, Approved Document L and CIBSE guidance relating to ventilation systems and energy performance.</li>
+            <li>Where applicable, final design and compliance checks should align with the agreed project compliance route and installed system arrangement.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator is an indicative design and checking tool only. Final compliance should be based on the actual installed system arrangement, design operating point, controls, component losses and the applicable project compliance route.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="ventilation-rate-calculator.html">Ventilation Rate Calculator</a>
+            <a href="duct-sizing-calculator.html">Duct Sizing Calculator</a>
+            <a href="duct-pressure-drop-calculator.html">Duct Pressure Drop Calculator</a>
+          </div>
+        </section>
       </div>
-
-      <div class="section-block">
-        <div class="section-title">Result</div>
-        <div class="result" id="result">
-          <strong>System Airflow:</strong> -<br>
-          <strong>Total Fan Input Power:</strong> -<br>
-          <strong>System SFP:</strong> -<br>
-          <strong>Equivalent SFP:</strong> -<br>
-          <strong>Basis:</strong> -
-        </div>
-      </div>
-
-      <div class="section-block">
-        <div class="section-title">Method</div>
-        <div class="method" id="method">
-          <p>System SFP = Total Fan Input Power ÷ Airflow</p>
-          <p>Estimated Fan Power = (Flow × Total Pressure) ÷ Overall Efficiency</p>
-          <p>SFP is reported in W/(L·s)</p>
-        </div>
-      </div>
-
-      <div class="section-block">
-        <div class="section-title">Reference</div>
-        <div class="reference">
-          <p>This calculator evaluates <strong>system specific fan power (SFP)</strong> from either known fan electrical input power or an estimated power derived from airflow, pressure and overall efficiency.</p>
-
-          <p><strong>Key relationships used:</strong></p>
-          <p><strong>System SFP = Total Fan Input Power ÷ Airflow</strong></p>
-          <p><strong>Estimated Fan Power = (Flow × Total Pressure) ÷ Overall Efficiency</strong></p>
-
-          <p>CIBSE describes SFP as a standardised measure of how much total power is required by the fan to move air through the connected system, commonly expressed as <strong>W/(L·s)</strong>. :contentReference[oaicite:1]{index=1}</p>
-
-          <p>CIBSE also notes that <strong>BS EN 16798-3</strong> provides the framework for determining SFP for non-residential ventilation systems. :contentReference[oaicite:2]{index=2}</p>
-
-          <p><strong>Regulatory note:</strong> Approved Document L for England uses maximum SFP values for air distribution systems and states that SFP should be calculated in accordance with <strong>BS EN 16798-3</strong> at full design load. :contentReference[oaicite:3]{index=3}</p>
-
-          <p><strong>Scope note:</strong> this calculator is an indicative system-design and checking tool. Final compliance should be based on the actual installed system arrangement, design operating point, controls, component losses and the applicable project compliance route.</p>
-        </div>
-      </div>
-    </div>
-
-    <a class="back" href="index.html">← Back to homepage</a>
+    </main>
   </div>
+
+  <script src="../script.js"></script>
 
   <script>
     function toggleMode() {
-      const mode = document.getElementById('mode').value;
-      const knownPowerMode = document.getElementById('knownPowerMode');
-      const estimatePowerMode = document.getElementById('estimatePowerMode');
+      const mode = document.getElementById("mode").value;
+      const knownPowerMode = document.getElementById("knownPowerMode");
+      const estimatePowerMode = document.getElementById("estimatePowerMode");
 
-      if (mode === 'knownPower') {
-        knownPowerMode.classList.remove('hidden');
-        estimatePowerMode.classList.add('hidden');
+      if (mode === "knownPower") {
+        knownPowerMode.classList.remove("hidden");
+        estimatePowerMode.classList.add("hidden");
+        document.getElementById("supplyPower").focus();
       } else {
-        knownPowerMode.classList.add('hidden');
-        estimatePowerMode.classList.remove('hidden');
+        knownPowerMode.classList.add("hidden");
+        estimatePowerMode.classList.remove("hidden");
+        document.getElementById("supplyPressure").focus();
       }
     }
 
     function getFlowM3s(value, unit) {
-      if (unit === 'ls') return value / 1000;
-      if (unit === 'm3h') return value / 3600;
+      if (unit === "ls") return value / 1000;
+      if (unit === "m3h") return value / 3600;
       return value;
     }
 
     function getFlowLs(value, unit) {
-      if (unit === 'ls') return value;
-      if (unit === 'm3h') return value / 3.6;
+      if (unit === "ls") return value;
+      if (unit === "m3h") return value / 3.6;
       return value * 1000;
     }
 
-    function calculateSFP() {
-      const mode = document.getElementById('mode').value;
-      const flow = parseFloat(document.getElementById('flow').value);
-      const flowUnit = document.getElementById('flowUnit').value);
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Specific Fan Power</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
 
-      const resultBox = document.getElementById('result');
-      const methodBox = document.getElementById('method');
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Specific Fan Power</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>SFP</strong> = specific fan power</li>
+          <li><strong>P</strong> = total fan input power (W)</li>
+          <li><strong>Q</strong> = airflow rate (L/s or m³/s depending on expression)</li>
+          <li><strong>ΔP</strong> = total system pressure (Pa)</li>
+          <li><strong>η</strong> = overall fan system efficiency</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function calculateSFP() {
+      const mode = document.getElementById("mode").value;
+      const flow = parseFloat(document.getElementById("flow").value);
+      const flowUnit = document.getElementById("flowUnit").value;
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
 
       if (isNaN(flow) || flow <= 0) {
-        resultBox.innerHTML = 'Please enter valid numbers';
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
         return;
       }
 
@@ -314,31 +244,49 @@
       const flowM3h = flowM3s * 3600;
 
       let totalPowerW = 0;
-      let basisText = '';
+      let basisText = "";
+      let methodHtml = "";
 
-      if (mode === 'knownPower') {
-        const supplyPower = parseFloat(document.getElementById('supplyPower').value);
-        const extractPower = parseFloat(document.getElementById('extractPower').value);
+      if (mode === "knownPower") {
+        const supplyPower = parseFloat(document.getElementById("supplyPower").value);
+        const extractPower = parseFloat(document.getElementById("extractPower").value);
 
         if (isNaN(supplyPower) || isNaN(extractPower) || supplyPower < 0 || extractPower < 0) {
-          resultBox.innerHTML = 'Please enter valid numbers';
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
           return;
         }
 
         totalPowerW = (supplyPower + extractPower) * 1000;
         basisText = `Known fan input powers: supply ${supplyPower.toFixed(2)} kW + extract ${extractPower.toFixed(2)} kW`;
+
+        methodHtml = `
+          <ul class="method-list">
+            <li><strong>SFP</strong> = specific fan power</li>
+            <li><strong>P</strong> = total fan input power (W)</li>
+            <li><strong>Q</strong> = airflow rate (L/s or m³/s depending on expression)</li>
+            <li><strong>ΔP</strong> = total system pressure (Pa)</li>
+            <li><strong>η</strong> = overall fan system efficiency</li>
+            <li>Total Fan Input Power = (${supplyPower.toFixed(2)} + ${extractPower.toFixed(2)}) × 1000 = <span class="method-result">${totalPowerW.toFixed(0)} W</span></li>
+          </ul>
+        `;
       }
 
-      if (mode === 'estimatePower') {
-        const supplyPressure = parseFloat(document.getElementById('supplyPressure').value);
-        const extractPressure = parseFloat(document.getElementById('extractPressure').value);
-        const overallEfficiencyPercent = parseFloat(document.getElementById('overallEfficiency').value);
+      if (mode === "estimatePower") {
+        const supplyPressure = parseFloat(document.getElementById("supplyPressure").value);
+        const extractPressure = parseFloat(document.getElementById("extractPressure").value);
+        const overallEfficiencyPercent = parseFloat(document.getElementById("overallEfficiency").value);
 
         if (
-          isNaN(supplyPressure) || isNaN(extractPressure) || isNaN(overallEfficiencyPercent) ||
-          supplyPressure < 0 || extractPressure < 0 || overallEfficiencyPercent <= 0
+          isNaN(supplyPressure) ||
+          isNaN(extractPressure) ||
+          isNaN(overallEfficiencyPercent) ||
+          supplyPressure < 0 ||
+          extractPressure < 0 ||
+          overallEfficiencyPercent <= 0
         ) {
-          resultBox.innerHTML = 'Please enter valid numbers';
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
           return;
         }
 
@@ -346,56 +294,61 @@
         const totalPressure = supplyPressure + extractPressure;
         totalPowerW = (flowM3s * totalPressure) / efficiency;
         basisText = `Estimated from total pressure ${totalPressure.toFixed(0)} Pa and overall efficiency ${overallEfficiencyPercent.toFixed(1)}%`;
+
+        methodHtml = `
+          <ul class="method-list">
+            <li><strong>SFP</strong> = specific fan power</li>
+            <li><strong>P</strong> = total fan input power (W)</li>
+            <li><strong>Q</strong> = airflow rate (L/s or m³/s depending on expression)</li>
+            <li><strong>ΔP</strong> = total system pressure (Pa)</li>
+            <li><strong>η</strong> = overall fan system efficiency</li>
+            <li>Total Pressure = ${supplyPressure.toFixed(0)} + ${extractPressure.toFixed(0)} = <span class="method-result">${totalPressure.toFixed(0)} Pa</span></li>
+            <li>Estimated Fan Power = (${flowM3s.toFixed(4)} × ${totalPressure.toFixed(0)}) ÷ ${efficiency.toFixed(3)} = <span class="method-result">${totalPowerW.toFixed(0)} W</span></li>
+          </ul>
+        `;
       }
 
       const sfpWPerLs = totalPowerW / flowLs;
       const sfpKWPerM3s = (totalPowerW / 1000) / flowM3s;
 
       resultBox.innerHTML = `
-        <strong>System Airflow:</strong> ${flowLs.toFixed(1)} L/s (${flowM3h.toFixed(1)} m³/h)<br>
-        <strong>Total Fan Input Power:</strong> ${(totalPowerW / 1000).toFixed(2)} kW<br>
-        <strong>System SFP:</strong> ${sfpWPerLs.toFixed(2)} W/(L·s)<br>
-        <strong>Equivalent SFP:</strong> ${sfpKWPerM3s.toFixed(2)} kW/(m³/s)<br>
-        <strong>Basis:</strong> ${basisText}
+        <div class="result-label">Specific Fan Power</div>
+        <div class="result-value-main">${sfpWPerLs.toFixed(2)} W/(L·s)</div>
+        <div class="result-value-secondary">${sfpKWPerM3s.toFixed(2)} kW/(m³/s)</div>
+        <div class="result-extra">
+          System Airflow: <strong>${flowLs.toFixed(1)} L/s</strong> (${flowM3h.toFixed(1)} m³/h)<br>
+          Total Fan Input Power: <strong>${(totalPowerW / 1000).toFixed(2)} kW</strong><br>
+          Basis: <strong>${basisText}</strong>
+        </div>
       `;
 
-      if (mode === 'knownPower') {
-        const supplyPower = parseFloat(document.getElementById('supplyPower').value);
-        const extractPower = parseFloat(document.getElementById('extractPower').value);
-
-        methodBox.innerHTML = `
-          <p>Total Fan Input Power = (${supplyPower.toFixed(2)} + ${extractPower.toFixed(2)}) × 1000</p>
-          <p>Total Fan Input Power = ${totalPowerW.toFixed(0)} W</p>
-
-          <p>System SFP = Total Fan Input Power ÷ Airflow</p>
-          <p>System SFP = ${totalPowerW.toFixed(0)} ÷ ${flowLs.toFixed(1)}</p>
-          <p>System SFP = ${sfpWPerLs.toFixed(2)} W/(L·s)</p>
-        `;
-      }
-
-      if (mode === 'estimatePower') {
-        const supplyPressure = parseFloat(document.getElementById('supplyPressure').value);
-        const extractPressure = parseFloat(document.getElementById('extractPressure').value);
-        const overallEfficiencyPercent = parseFloat(document.getElementById('overallEfficiency').value);
-        const efficiency = overallEfficiencyPercent / 100;
-        const totalPressure = supplyPressure + extractPressure;
-
-        methodBox.innerHTML = `
-          <p>Total Pressure = ${supplyPressure.toFixed(0)} + ${extractPressure.toFixed(0)}</p>
-          <p>Total Pressure = ${totalPressure.toFixed(0)} Pa</p>
-
-          <p>Estimated Fan Power = (Flow × Total Pressure) ÷ Overall Efficiency</p>
-          <p>Estimated Fan Power = (${flowM3s.toFixed(4)} × ${totalPressure.toFixed(0)}) ÷ ${efficiency.toFixed(3)}</p>
-          <p>Estimated Fan Power = ${totalPowerW.toFixed(0)} W</p>
-
-          <p>System SFP = ${totalPowerW.toFixed(0)} ÷ ${flowLs.toFixed(1)}</p>
-          <p>System SFP = ${sfpWPerLs.toFixed(2)} W/(L·s)</p>
-        `;
-      }
+      methodBox.innerHTML = `
+        ${methodHtml.replace("</ul>", `
+          <li>System SFP = ${totalPowerW.toFixed(0)} ÷ ${flowLs.toFixed(1)} = <span class="method-result">${sfpWPerLs.toFixed(2)} W/(L·s)</span></li>
+          <li>Equivalent SFP = ${(totalPowerW / 1000).toFixed(2)} ÷ ${flowM3s.toFixed(4)} = <span class="method-result">${sfpKWPerM3s.toFixed(2)} kW/(m³/s)</span></li>
+        </ul>`)}
+      `;
     }
 
-    document.addEventListener('keypress', function(event) {
-      if (event.key === 'Enter') {
+    function resetCalc() {
+      document.getElementById("mode").value = "knownPower";
+      document.getElementById("flowUnit").value = "ls";
+      document.getElementById("flow").value = "1000";
+      document.getElementById("supplyPower").value = "2.2";
+      document.getElementById("extractPower").value = "1.8";
+      document.getElementById("supplyPressure").value = "800";
+      document.getElementById("extractPressure").value = "600";
+      document.getElementById("overallEfficiency").value = "60";
+
+      toggleMode();
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("flow").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
         calculateSFP();
       }
     });
