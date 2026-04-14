@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Power Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Calculate electrical power from current, voltage, power factor and efficiency for single-phase and three-phase systems."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+      <div class="main-inner">
+
+        <section class="page-header">
+          <p class="discipline-label electrical">Electrical</p>
+          <h1>Power Calculator</h1>
+          <p class="page-description">
+            Calculate electrical power from current, voltage, power factor and efficiency.
+          </p>
+          <p class="intro-note">
+            Use this calculator for quick electrical load checks for single-phase and three-phase systems.
+            Suitable for preliminary design checks, load assessments and comparing connected electrical demand.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="form-group">
+            <label for="phase">System Type</label>
+            <select id="phase">
+              <option value="single">Single Phase</option>
+              <option value="three">Three Phase</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="current">Current (A)</label>
+            <input type="number" id="current" value="16" step="0.1" min="0" autofocus>
+          </div>
+
+          <div class="form-group">
+            <label for="voltage">Voltage (V)</label>
+            <input type="number" id="voltage" value="230" step="1" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="pf">Power Factor</label>
+            <input type="number" id="pf" value="0.9" step="0.01" min="0" max="1">
+          </div>
+
+          <div class="form-group">
+            <label for="efficiency">Efficiency (%)</label>
+            <input type="number" id="efficiency" value="95" step="0.1" min="0" max="100">
+          </div>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculatePower()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Power</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>Single-phase power is calculated from:</p>
+          <div class="formula-block">
+            P = V × I × PF × η
+          </div>
+
+          <p>Three-phase power is calculated from:</p>
+          <div class="formula-block">
+            P = √3 × V × I × PF × η
+          </div>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>P</strong> = power (W)</li>
+              <li><strong>V</strong> = voltage (V)</li>
+              <li><strong>I</strong> = current (A)</li>
+              <li><strong>PF</strong> = power factor</li>
+              <li><strong>η</strong> = efficiency</li>
+              <li>Calculated power = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator applies standard electrical power relationships between current, voltage and power.</li>
+            <li>Three-phase calculations assume balanced load conditions.</li>
+            <li>Typical UK nominal voltages are 230V for single-phase systems and 400V for three-phase systems.</li>
+            <li>Relevant standards may include BS 7671 and associated electrical design guidance.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator provides indicative results only. Final design should consider diversity, starting conditions, harmonics, equipment characteristics, circuit protection and installation method.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="load-current-calculator.html">Load Current Calculator</a>
+            <a href="voltage-drop-calculator.html">Voltage Drop Calculator</a>
+            <a href="cable-sizing-calculator.html">Cable Sizing Calculator</a>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Power</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Power</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>P</strong> = power (W)</li>
+          <li><strong>V</strong> = voltage (V)</li>
+          <li><strong>I</strong> = current (A)</li>
+          <li><strong>PF</strong> = power factor</li>
+          <li><strong>η</strong> = efficiency</li>
+          <li>Calculated power = -</li>
+        </ul>
+      `;
+    }
+
+    function calculatePower() {
+      const phase = document.getElementById("phase").value;
+      const current = parseFloat(document.getElementById("current").value);
+      const voltage = parseFloat(document.getElementById("voltage").value);
+      const pf = parseFloat(document.getElementById("pf").value);
+      const efficiencyPercent = parseFloat(document.getElementById("efficiency").value);
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      if (
+        isNaN(current) ||
+        isNaN(voltage) ||
+        isNaN(pf) ||
+        isNaN(efficiencyPercent) ||
+        current <= 0 ||
+        voltage <= 0 ||
+        pf <= 0 ||
+        efficiencyPercent <= 0
+      ) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      const efficiency = efficiencyPercent / 100;
+      let powerW;
+
+      if (phase === "single") {
+        powerW = voltage * current * pf * efficiency;
+      } else {
+        powerW = Math.sqrt(3) * voltage * current * pf * efficiency;
+      }
+
+      const powerKW = powerW / 1000;
+      const apparentPowerKVA = phase === "single"
+        ? (voltage * current) / 1000
+        : (Math.sqrt(3) * voltage * current) / 1000;
+
+      resultBox.innerHTML = `
+        <div class="result-label">Power</div>
+        <div class="result-value-main">${powerKW.toFixed(2)} kW</div>
+        <div class="result-value-secondary">${powerW.toFixed(0)} W</div>
+        <div class="result-extra">
+          Apparent Power: <strong>${apparentPowerKVA.toFixed(2)} kVA</strong><br>
+          ${phase === "single" ? "Single-phase" : "Three-phase"} system
+        </div>
+      `;
+
+      methodBox.innerHTML = `
+        <ul class="method-list">
+          <li><strong>P</strong> = power (W)</li>
+          <li><strong>V</strong> = ${voltage.toFixed(0)} V</li>
+          <li><strong>I</strong> = ${current.toFixed(2)} A</li>
+          <li><strong>PF</strong> = ${pf.toFixed(2)}</li>
+          <li><strong>η</strong> = ${efficiency.toFixed(2)}</li>
+          <li>
+            Power =
+            <span class="method-result">${powerKW.toFixed(2)} kW</span>
+            (${powerW.toFixed(0)} W)
+          </li>
+        </ul>
+      `;
+    }
+
+    function resetCalc() {
+      document.getElementById("phase").value = "single";
+      document.getElementById("current").value = "16";
+      document.getElementById("voltage").value = "230";
+      document.getElementById("pf").value = "0.9";
+      document.getElementById("efficiency").value = "95";
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("current").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculatePower();
+      }
+    });
+  </script>
+</body>
+</html>
