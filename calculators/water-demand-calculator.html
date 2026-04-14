@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Demand Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Estimate domestic water demand from occupancy, dwelling numbers or user-defined consumption rates for UK public health design."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+      <div class="main-inner">
+
+        <section class="page-header">
+          <p class="discipline-label public-health">Public Health</p>
+          <h1>Water Demand Calculator</h1>
+          <p class="page-description">
+            Estimate domestic water demand from occupancy, dwelling numbers or user-defined consumption rates.
+          </p>
+          <p class="intro-note">
+            Use this calculator for early-stage domestic water demand checks where a detailed fixture schedule is not yet available.
+            It can be used for simple occupancy-based demand estimates, dwelling-based assessments or custom daily consumption inputs.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="form-group">
+            <label for="mode">Calculation Method</label>
+            <select id="mode" onchange="toggleMode()">
+              <option value="occupancy">Occupancy Based</option>
+              <option value="dwellings">Dwellings Based</option>
+              <option value="custom">Custom Daily Demand</option>
+            </select>
+          </div>
+
+          <div id="occupancyMode">
+            <div class="form-group">
+              <label for="occupants">Number of Occupants</label>
+              <input type="number" id="occupants" value="12" step="1" min="0" autofocus>
+            </div>
+
+            <div class="form-group">
+              <label for="litresPerPerson">Daily Demand (L/person/day)</label>
+              <input type="number" id="litresPerPerson" value="110" step="1" min="0">
+            </div>
+
+            <small class="input-note">
+              Use this for simple early-stage assessments where daily water use per person is known or assumed.
+            </small>
+          </div>
+
+          <div id="dwellingsMode" class="hidden">
+            <div class="form-group">
+              <label for="dwellings">Number of Dwellings</label>
+              <input type="number" id="dwellings" value="8" step="1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="peoplePerDwelling">Average Occupancy per Dwelling</label>
+              <input type="number" id="peoplePerDwelling" value="2.4" step="0.1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="litresPerDwellingPerson">Daily Demand (L/person/day)</label>
+              <input type="number" id="litresPerDwellingPerson" value="110" step="1" min="0">
+            </div>
+
+            <small class="input-note">
+              Use this for simple residential developments where a detailed unit-by-unit demand assessment is not yet available.
+            </small>
+          </div>
+
+          <div id="customMode" class="hidden">
+            <div class="form-group">
+              <label for="customDailyDemand">Total Daily Demand (L/day)</label>
+              <input type="number" id="customDailyDemand" value="3000" step="10" min="0">
+            </div>
+
+            <small class="input-note">
+              Use this where a daily demand has already been estimated from a separate water demand or fixture assessment.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="peakFactor">Peak Hour Factor</label>
+            <input type="number" id="peakFactor" value="2.5" step="0.1" min="0">
+          </div>
+
+          <p class="unit-note">
+            Peak hour flow is estimated by converting daily demand to an average hourly flow and applying the selected peak factor.
+          </p>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculateWaterDemand()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Water Demand</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Daily water demand may be estimated from occupancy and assumed daily usage:
+          </p>
+
+          <div class="formula-block">
+            Daily Demand = Occupancy × Daily Use per Person
+          </div>
+
+          <p>
+            Peak hour demand is then estimated from:
+          </p>
+
+          <div class="formula-block">
+            Peak Hour Demand = (Daily Demand ÷ 24) × Peak Factor
+          </div>
+
+          <p>
+            Peak flow is shown in both L/h and L/s.
+          </p>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>Daily Demand</strong> = total daily water demand (L/day)</li>
+              <li><strong>Peak Factor</strong> = applied diversity / peak hour multiplier</li>
+              <li><strong>Peak Hour Demand</strong> = estimated peak hour water use (L/h)</li>
+              <li><strong>Peak Flow</strong> = estimated peak hour flow converted to L/s</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator provides an indicative daily and peak hour water demand estimate for early-stage public health design.</li>
+            <li>Occupancy-based demand assumptions should be checked against the building type, client brief and project-specific usage patterns.</li>
+            <li>Peak demand estimation may later need refinement using fixture loading methods, diversity assumptions or utility requirements.</li>
+            <li>Relevant guidance may include BS EN 806, the Water Supply (Water Fittings) Regulations and project-specific water authority criteria.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator is an indicative estimating tool only. Final design should consider fixture units, simultaneous demand, storage strategy, boosted supply requirements, utility authority criteria and project-specific occupancy patterns.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="water-flow-rate-calculator.html">Water Flow Rate Calculator</a>
+            <a href="domestic-water-pipe-calculator.html">Domestic Water Pipe Calculator</a>
+            <a href="cold-water-storage-tank-calculator.html">Cold Water Storage Tank Calculator</a>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    function toggleMode() {
+      const mode = document.getElementById("mode").value;
+
+      document.getElementById("occupancyMode").classList.add("hidden");
+      document.getElementById("dwellingsMode").classList.add("hidden");
+      document.getElementById("customMode").classList.add("hidden");
+
+      if (mode === "occupancy") {
+        document.getElementById("occupancyMode").classList.remove("hidden");
+        document.getElementById("occupants").focus();
+      }
+
+      if (mode === "dwellings") {
+        document.getElementById("dwellingsMode").classList.remove("hidden");
+        document.getElementById("dwellings").focus();
+      }
+
+      if (mode === "custom") {
+        document.getElementById("customMode").classList.remove("hidden");
+        document.getElementById("customDailyDemand").focus();
+      }
+    }
+
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Water Demand</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Water Demand</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>Daily Demand</strong> = total daily water demand (L/day)</li>
+          <li><strong>Peak Factor</strong> = applied diversity / peak hour multiplier</li>
+          <li><strong>Peak Hour Demand</strong> = estimated peak hour water use (L/h)</li>
+          <li><strong>Peak Flow</strong> = estimated peak hour flow converted to L/s</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function calculateWaterDemand() {
+      const mode = document.getElementById("mode").value;
+      const peakFactor = parseFloat(document.getElementById("peakFactor").value);
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      if (isNaN(peakFactor) || peakFactor <= 0) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      let dailyDemand;
+      let basisText = "";
+      let methodLines = "";
+
+      if (mode === "occupancy") {
+        const occupants = parseFloat(document.getElementById("occupants").value);
+        const litresPerPerson = parseFloat(document.getElementById("litresPerPerson").value);
+
+        if (
+          isNaN(occupants) ||
+          isNaN(litresPerPerson) ||
+          occupants <= 0 ||
+          litresPerPerson <= 0
+        ) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        dailyDemand = occupants * litresPerPerson;
+        basisText = `${occupants.toFixed(0)} occupants at ${litresPerPerson.toFixed(0)} L/person/day`;
+        methodLines = `
+          <li>Daily Demand = ${occupants.toFixed(0)} × ${litresPerPerson.toFixed(0)} = <span class="method-result">${dailyDemand.toFixed(0)} L/day</span></li>
+        `;
+      }
+
+      if (mode === "dwellings") {
+        const dwellings = parseFloat(document.getElementById("dwellings").value);
+        const peoplePerDwelling = parseFloat(document.getElementById("peoplePerDwelling").value);
+        const litresPerDwellingPerson = parseFloat(document.getElementById("litresPerDwellingPerson").value);
+
+        if (
+          isNaN(dwellings) ||
+          isNaN(peoplePerDwelling) ||
+          isNaN(litresPerDwellingPerson) ||
+          dwellings <= 0 ||
+          peoplePerDwelling <= 0 ||
+          litresPerDwellingPerson <= 0
+        ) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        const totalOccupancy = dwellings * peoplePerDwelling;
+        dailyDemand = totalOccupancy * litresPerDwellingPerson;
+        basisText = `${dwellings.toFixed(0)} dwellings × ${peoplePerDwelling.toFixed(1)} people/dwelling at ${litresPerDwellingPerson.toFixed(0)} L/person/day`;
+        methodLines = `
+          <li>Total Occupancy = ${dwellings.toFixed(0)} × ${peoplePerDwelling.toFixed(1)} = <span class="method-result">${totalOccupancy.toFixed(1)} people</span></li>
+          <li>Daily Demand = ${totalOccupancy.toFixed(1)} × ${litresPerDwellingPerson.toFixed(0)} = <span class="method-result">${dailyDemand.toFixed(0)} L/day</span></li>
+        `;
+      }
+
+      if (mode === "custom") {
+        const customDailyDemand = parseFloat(document.getElementById("customDailyDemand").value);
+
+        if (isNaN(customDailyDemand) || customDailyDemand <= 0) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        dailyDemand = customDailyDemand;
+        basisText = `User-defined daily demand`;
+        methodLines = `
+          <li>Daily Demand = <span class="method-result">${dailyDemand.toFixed(0)} L/day</span></li>
+        `;
+      }
+
+      const averageHourlyDemand = dailyDemand / 24;
+      const peakHourDemand = averageHourlyDemand * peakFactor;
+      const peakFlowLs = peakHourDemand / 3600;
+
+      resultBox.innerHTML = `
+        <div class="result-label">Water Demand</div>
+        <div class="result-value-main">${dailyDemand.toFixed(0)} L/day</div>
+        <div class="result-value-secondary">${peakFlowLs.toFixed(2)} L/s estimated peak hour flow</div>
+        <div class="result-extra">
+          Peak Hour Demand: <strong>${peakHourDemand.toFixed(0)} L/h</strong><br>
+          Average Hourly Demand: <strong>${averageHourlyDemand.toFixed(0)} L/h</strong><br>
+          Basis: <strong>${basisText}</strong>
+        </div>
+      `;
+
+      methodBox.innerHTML = `
+        <ul class="method-list">
+          <li><strong>Daily Demand</strong> = total daily water demand (L/day)</li>
+          <li><strong>Peak Factor</strong> = applied diversity / peak hour multiplier</li>
+          <li><strong>Peak Hour Demand</strong> = estimated peak hour water use (L/h)</li>
+          <li><strong>Peak Flow</strong> = estimated peak hour flow converted to L/s</li>
+          ${methodLines}
+          <li>Average Hourly Demand = ${dailyDemand.toFixed(0)} ÷ 24 = <span class="method-result">${averageHourlyDemand.toFixed(0)} L/h</span></li>
+          <li>Peak Hour Demand = ${averageHourlyDemand.toFixed(0)} × ${peakFactor.toFixed(2)} = <span class="method-result">${peakHourDemand.toFixed(0)} L/h</span></li>
+          <li>Peak Flow = ${peakHourDemand.toFixed(0)} ÷ 3600 = <span class="method-result">${peakFlowLs.toFixed(2)} L/s</span></li>
+        </ul>
+      `;
+    }
+
+    function resetCalc() {
+      document.getElementById("mode").value = "occupancy";
+      document.getElementById("occupants").value = "12";
+      document.getElementById("litresPerPerson").value = "110";
+      document.getElementById("dwellings").value = "8";
+      document.getElementById("peoplePerDwelling").value = "2.4";
+      document.getElementById("litresPerDwellingPerson").value = "110";
+      document.getElementById("customDailyDemand").value = "3000";
+      document.getElementById("peakFactor").value = "2.5";
+
+      toggleMode();
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("occupants").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculateWaterDemand();
+      }
+    });
+
+    toggleMode();
+  </script>
+</body>
+</html>
