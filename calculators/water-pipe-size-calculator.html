@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Pipe Size Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Estimate domestic water pipe size from flow rate and target velocity for UK public health design."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+      <div class="main-inner">
+
+        <section class="page-header">
+          <p class="discipline-label public-health">Public Health</p>
+          <h1>Water Pipe Size Calculator</h1>
+          <p class="page-description">
+            Estimate domestic water pipe size from flow rate and target velocity.
+          </p>
+          <p class="intro-note">
+            Use this calculator for preliminary domestic cold water and boosted water pipe sizing checks based on a target maximum velocity.
+            It can size from a known design flow rate and select the smallest listed pipe size that keeps velocity at or below the chosen limit.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="form-group">
+            <label for="material">Pipe Material</label>
+            <select id="material">
+              <option value="copper">Copper</option>
+              <option value="mdpe">MDPE</option>
+              <option value="steel">Steel</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="flowRate">Design Flow Rate (L/s)</label>
+            <input type="number" id="flowRate" value="1.20" step="0.01" min="0" autofocus>
+          </div>
+
+          <div class="form-group">
+            <label for="velocity">Target Maximum Velocity (m/s)</label>
+            <input type="number" id="velocity" value="1.5" step="0.1" min="0">
+          </div>
+
+          <p class="unit-note">
+            Pipe selection is based on the smallest listed pipe size that keeps calculated velocity at or below the selected maximum.
+            Final domestic water design should also consider pressure drop, residual pressure and outlet requirements.
+          </p>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculatePipe()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Recommended Pipe Size</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Pipe size is selected by comparing the design flow rate against the internal flow area of each listed pipe size.
+          </p>
+
+          <div class="formula-block">
+            v = Q ÷ A
+          </div>
+
+          <p>
+            Internal pipe area is determined from:
+          </p>
+
+          <div class="formula-block">
+            A = πd² ÷ 4
+          </div>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>v</strong> = water velocity in pipe (m/s)</li>
+              <li><strong>Q</strong> = volumetric flow rate (m³/s)</li>
+              <li><strong>A</strong> = internal pipe area (m²)</li>
+              <li><strong>d</strong> = internal pipe diameter (m)</li>
+              <li>The smallest listed pipe size with velocity at or below the target is selected.</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator applies a simple velocity-based method for preliminary domestic water pipe sizing.</li>
+            <li>Different pipe materials use different size series and internal diameters, so the recommended size depends on the selected material.</li>
+            <li>Velocity-based selection is only one part of the design process and should be checked alongside pressure loss and outlet performance.</li>
+            <li>Relevant guidance may include BS EN 806, the Water Supply (Water Fittings) Regulations and project-specific water authority criteria.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator sizes pipework based on velocity only. Final pipe selection should also consider pressure drop, available supply pressure, boosted water systems, outlet performance, fittings losses, noise, manufacturer data and project-specific design criteria.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="water-flow-rate-calculator.html">Water Flow Rate Calculator</a>
+            <a href="water-demand-calculator.html">Water Demand Calculator</a>
+            <a href="cold-water-storage-tank-calculator.html">Cold Water Storage Tank Calculator</a>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    const copperSizes = [
+      { label: "15 mm", internalDiameter: 13.6 },
+      { label: "22 mm", internalDiameter: 20.2 },
+      { label: "28 mm", internalDiameter: 25.6 },
+      { label: "35 mm", internalDiameter: 32.0 },
+      { label: "42 mm", internalDiameter: 38.0 },
+      { label: "54 mm", internalDiameter: 50.0 },
+      { label: "67 mm", internalDiameter: 62.0 }
+    ];
+
+    const mdpeSizes = [
+      { label: "20 mm", internalDiameter: 17.0 },
+      { label: "25 mm", internalDiameter: 21.2 },
+      { label: "32 mm", internalDiameter: 27.2 },
+      { label: "40 mm", internalDiameter: 34.0 },
+      { label: "50 mm", internalDiameter: 42.6 },
+      { label: "63 mm", internalDiameter: 53.8 },
+      { label: "90 mm", internalDiameter: 76.8 }
+    ];
+
+    const steelSizes = [
+      { label: "DN15", internalDiameter: 16.0 },
+      { label: "DN20", internalDiameter: 21.7 },
+      { label: "DN25", internalDiameter: 27.3 },
+      { label: "DN32", internalDiameter: 36.0 },
+      { label: "DN40", internalDiameter: 41.9 },
+      { label: "DN50", internalDiameter: 53.1 },
+      { label: "DN65", internalDiameter: 68.9 }
+    ];
+
+    function getVelocityGuidance(velocity) {
+      if (velocity < 0.75) return "Low velocity – conservative range";
+      if (velocity < 1.5) return "Typical domestic range";
+      if (velocity <= 2.0) return "Upper range – review noise and pressure drop";
+      return "High velocity – review pipe size";
+    }
+
+    function getPipeSizes(material) {
+      if (material === "mdpe") return mdpeSizes;
+      if (material === "steel") return steelSizes;
+      return copperSizes;
+    }
+
+    function getMaterialLabel(material) {
+      if (material === "mdpe") return "MDPE";
+      if (material === "steel") return "Steel";
+      return "Copper";
+    }
+
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Recommended Pipe Size</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Recommended Pipe Size</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>v</strong> = water velocity in pipe (m/s)</li>
+          <li><strong>Q</strong> = volumetric flow rate (m³/s)</li>
+          <li><strong>A</strong> = internal pipe area (m²)</li>
+          <li><strong>d</strong> = internal pipe diameter (m)</li>
+          <li>The smallest listed pipe size with velocity at or below the target is selected.</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function calculatePipe() {
+      const material = document.getElementById("material").value;
+      const flowRate = parseFloat(document.getElementById("flowRate").value);
+      const velocityLimit = parseFloat(document.getElementById("velocity").value);
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      if (
+        isNaN(flowRate) ||
+        isNaN(velocityLimit) ||
+        flowRate <= 0 ||
+        velocityLimit <= 0
+      ) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      const pipeSizes = getPipeSizes(material);
+      const materialLabel = getMaterialLabel(material);
+      const flowM3s = flowRate / 1000;
+
+      let selectedPipe = null;
+      let selectedVelocity = null;
+      let selectedArea = null;
+
+      for (const pipe of pipeSizes) {
+        const diameterM = pipe.internalDiameter / 1000;
+        const area = Math.PI * diameterM * diameterM / 4;
+        const actualVelocity = flowM3s / area;
+
+        if (actualVelocity <= velocityLimit) {
+          selectedPipe = pipe;
+          selectedVelocity = actualVelocity;
+          selectedArea = area;
+          break;
+        }
+      }
+
+      if (selectedPipe) {
+        const guidance = getVelocityGuidance(selectedVelocity);
+
+        resultBox.innerHTML = `
+          <div class="result-label">Recommended Pipe Size</div>
+          <div class="result-value-main">${selectedPipe.label}</div>
+          <div class="result-value-secondary">${materialLabel} pipe • ${selectedVelocity.toFixed(2)} m/s actual velocity</div>
+          <div class="result-extra">
+            Flow Rate: <strong>${flowRate.toFixed(2)} L/s</strong><br>
+            Internal Diameter Used: <strong>${selectedPipe.internalDiameter.toFixed(1)} mm</strong><br>
+            Velocity Guidance: <strong>${guidance}</strong>
+          </div>
+        `;
+
+        methodBox.innerHTML = `
+          <ul class="method-list">
+            <li><strong>v</strong> = water velocity in pipe (m/s)</li>
+            <li><strong>Q</strong> = volumetric flow rate (m³/s)</li>
+            <li><strong>A</strong> = internal pipe area (m²)</li>
+            <li><strong>d</strong> = internal pipe diameter (m)</li>
+            <li>Flow Rate = <span class="method-result">${flowRate.toFixed(2)} L/s</span> = ${flowM3s.toFixed(4)} m³/s</li>
+            <li>Selected smallest listed ${materialLabel.toLowerCase()} pipe with velocity at or below ${velocityLimit.toFixed(1)} m/s</li>
+            <li>Selected Pipe Size = <span class="method-result">${selectedPipe.label}</span></li>
+            <li>Internal Area = π × (${(selectedPipe.internalDiameter / 1000).toFixed(4)}²) ÷ 4 = ${selectedArea.toFixed(4)} m²</li>
+            <li>Calculated Velocity = ${flowM3s.toFixed(4)} ÷ ${selectedArea.toFixed(4)} = <span class="method-result">${selectedVelocity.toFixed(2)} m/s</span></li>
+          </ul>
+        `;
+      } else {
+        resultBox.innerHTML = `
+          <div class="result-label">Recommended Pipe Size</div>
+          <div class="result-value-main">No match</div>
+          <div class="result-value-secondary">No listed ${materialLabel.toLowerCase()} pipe size met the selected velocity limit.</div>
+          <div class="result-extra">
+            Try increasing the allowable velocity or reviewing the available pipe size range.
+          </div>
+        `;
+
+        methodBox.innerHTML = `
+          <ul class="method-list">
+            <li><strong>v</strong> = water velocity in pipe (m/s)</li>
+            <li><strong>Q</strong> = volumetric flow rate (m³/s)</li>
+            <li><strong>A</strong> = internal pipe area (m²)</li>
+            <li><strong>d</strong> = internal pipe diameter (m)</li>
+            <li>Flow Rate = <span class="method-result">${flowRate.toFixed(2)} L/s</span> = ${flowM3s.toFixed(4)} m³/s</li>
+            <li>No listed ${materialLabel.toLowerCase()} pipe size achieved a velocity at or below ${velocityLimit.toFixed(1)} m/s</li>
+          </ul>
+        `;
+      }
+    }
+
+    function resetCalc() {
+      document.getElementById("material").value = "copper";
+      document.getElementById("flowRate").value = "1.20";
+      document.getElementById("velocity").value = "1.5";
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("flowRate").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculatePipe();
+      }
+    });
+  </script>
+</body>
+</html>
