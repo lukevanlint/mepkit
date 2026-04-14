@@ -1,6 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
   const sidebarContainer = document.getElementById("sidebar-container");
 
+  /* =========================
+     Sidebar Load + Active Link
+  ========================= */
+
   if (sidebarContainer) {
     fetch("/sidebar.html")
       .then((response) => response.text())
@@ -20,5 +24,30 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => {
         console.error("Sidebar failed to load:", error);
       });
+  }
+
+  /* =========================
+     Discipline Auto-Detection
+  ========================= */
+
+  const path = window.location.pathname;
+
+  if (
+    path.includes("load-current") ||
+    path.includes("power-calculator") ||
+    path.includes("voltage-drop") ||
+    path.includes("cable-sizing")
+  ) {
+    document.body.classList.add("electrical");
+  } 
+  else if (
+    path.includes("water") ||
+    path.includes("tank") ||
+    path.includes("calorifier")
+  ) {
+    document.body.classList.add("public-health");
+  } 
+  else if (path.includes("calculators")) {
+    document.body.classList.add("mechanical");
   }
 });
