@@ -237,18 +237,18 @@ body.public-health .sidebar-search:focus {
 }
 
 body.mechanical .nav-links a.active {
-  background: rgba(96, 165, 250, 0.12);
-  border-color: rgba(96, 165, 250, 0.24);
+  background: rgba(96, 165, 250, 0.18);
+  border-color: rgba(96, 165, 250, 0.28);
 }
 
 body.electrical .nav-links a.active {
-  background: rgba(57, 171, 99, 0.12);
-  border-color: rgba(57, 171, 99, 0.24);
+  background: rgba(57, 171, 99, 0.18);
+  border-color: rgba(57, 171, 99, 0.28);
 }
 
 body.public-health .nav-links a.active {
-  background: rgba(242, 139, 130, 0.12);
-  border-color: rgba(242, 139, 130, 0.24);
+  background: rgba(242, 139, 130, 0.18);
+  border-color: rgba(242, 139, 130, 0.28);
 }
 
 .nav-links .disabled {
