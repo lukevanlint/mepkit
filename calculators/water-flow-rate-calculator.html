@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Flow Rate Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Calculate water flow rate from fixture demand, volume and fill time, or daily demand and operating hours for UK public health design."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+      <div class="main-inner">
+
+        <section class="page-header">
+          <p class="discipline-label public-health">Public Health</p>
+          <h1>Water Flow Rate Calculator</h1>
+          <p class="page-description">
+            Calculate water flow rate from volume and fill time, or from daily demand and operating hours.
+          </p>
+          <p class="intro-note">
+            Use this calculator for quick public health design checks where a required water flow rate needs to be established from a known volume over time.
+            It can be used for simple fixture filling checks, storage replenishment assessments or converting daily water demand into an average operating flow rate.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="form-group">
+            <label for="mode">Calculation Method</label>
+            <select id="mode" onchange="toggleMode()">
+              <option value="volumeTime">Volume and Fill Time</option>
+              <option value="dailyDemand">Daily Demand and Operating Hours</option>
+            </select>
+          </div>
+
+          <div id="volumeTimeMode">
+            <div class="form-group">
+              <label for="volume">Water Volume (L)</label>
+              <input type="number" id="volume" value="500" step="1" min="0" autofocus>
+            </div>
+
+            <div class="form-group">
+              <label for="fillTime">Fill Time (minutes)</label>
+              <input type="number" id="fillTime" value="10" step="0.1" min="0">
+            </div>
+
+            <small class="input-note">
+              Use this for simple tank filling, appliance filling or point demand checks where the required volume and fill time are known.
+            </small>
+          </div>
+
+          <div id="dailyDemandMode" class="hidden">
+            <div class="form-group">
+              <label for="dailyDemand">Daily Demand (L/day)</label>
+              <input type="number" id="dailyDemand" value="3000" step="10" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="operatingHours">Operating Hours per Day</label>
+              <input type="number" id="operatingHours" value="8" step="0.1" min="0">
+            </div>
+
+            <small class="input-note">
+              Use this for average operating flow estimates where the total daily demand is known and spread across a defined daily operating period.
+            </small>
+          </div>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculateWaterFlowRate()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Water Flow Rate</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Where volume and fill time are known, flow rate is calculated from:
+          </p>
+
+          <div class="formula-block">
+            Flow Rate = Volume ÷ Time
+          </div>
+
+          <p>
+            Where daily demand is known, average operating flow is estimated from:
+          </p>
+
+          <div class="formula-block">
+            Flow Rate = Daily Demand ÷ Operating Time
+          </div>
+
+          <p>
+            Results are shown in both L/s and m³/h.
+          </p>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>Flow Rate</strong> = water flow rate</li>
+              <li><strong>Volume</strong> = water volume (L)</li>
+              <li><strong>Time</strong> = filling or operating time</li>
+              <li><strong>Daily Demand</strong> = total daily water demand (L/day)</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator provides a simple flow rate estimate from a known water volume over a known time period.</li>
+            <li>It can be used for preliminary tank filling, replenishment, appliance demand or average daily demand conversion checks.</li>
+            <li>Final flow requirements may need further refinement using fixture loading, simultaneous demand or utility criteria depending on the project.</li>
+            <li>Relevant guidance may include BS EN 806, the Water Supply (Water Fittings) Regulations and project-specific water authority requirements.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator is an indicative estimating tool only. Final design should consider simultaneous use, storage strategy, boosted supply requirements, pipe sizing, velocity limits and project-specific operating patterns.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="water-demand-calculator.html">Water Demand Calculator</a>
+            <a href="domestic-water-pipe-calculator.html">Domestic Water Pipe Calculator</a>
+            <a href="cold-water-storage-tank-calculator.html">Cold Water Storage Tank Calculator</a>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    function toggleMode() {
+      const mode = document.getElementById("mode").value;
+
+      document.getElementById("volumeTimeMode").classList.add("hidden");
+      document.getElementById("dailyDemandMode").classList.add("hidden");
+
+      if (mode === "volumeTime") {
+        document.getElementById("volumeTimeMode").classList.remove("hidden");
+        document.getElementById("volume").focus();
+      }
+
+      if (mode === "dailyDemand") {
+        document.getElementById("dailyDemandMode").classList.remove("hidden");
+        document.getElementById("dailyDemand").focus();
+      }
+    }
+
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Water Flow Rate</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Water Flow Rate</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>Flow Rate</strong> = water flow rate</li>
+          <li><strong>Volume</strong> = water volume (L)</li>
+          <li><strong>Time</strong> = filling or operating time</li>
+          <li><strong>Daily Demand</strong> = total daily water demand (L/day)</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function calculateWaterFlowRate() {
+      const mode = document.getElementById("mode").value;
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      let flowLs;
+      let flowM3h;
+      let basisText = "";
+      let methodLines = "";
+
+      if (mode === "volumeTime") {
+        const volume = parseFloat(document.getElementById("volume").value);
+        const fillTimeMinutes = parseFloat(document.getElementById("fillTime").value);
+
+        if (
+          isNaN(volume) ||
+          isNaN(fillTimeMinutes) ||
+          volume <= 0 ||
+          fillTimeMinutes <= 0
+        ) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        const fillTimeSeconds = fillTimeMinutes * 60;
+        flowLs = volume / fillTimeSeconds;
+        flowM3h = flowLs * 3.6;
+
+        basisText = `${volume.toFixed(0)} L over ${fillTimeMinutes.toFixed(1)} minutes`;
+
+        methodLines = `
+          <li>Fill Time = ${fillTimeMinutes.toFixed(1)} × 60 = <span class="method-result">${fillTimeSeconds.toFixed(0)} s</span></li>
+          <li>Flow Rate = ${volume.toFixed(0)} ÷ ${fillTimeSeconds.toFixed(0)} = <span class="method-result">${flowLs.toFixed(3)} L/s</span></li>
+          <li>Flow Rate = ${flowLs.toFixed(3)} × 3.6 = <span class="method-result">${flowM3h.toFixed(2)} m³/h</span></li>
+        `;
+      }
+
+      if (mode === "dailyDemand") {
+        const dailyDemand = parseFloat(document.getElementById("dailyDemand").value);
+        const operatingHours = parseFloat(document.getElementById("operatingHours").value);
+
+        if (
+          isNaN(dailyDemand) ||
+          isNaN(operatingHours) ||
+          dailyDemand <= 0 ||
+          operatingHours <= 0
+        ) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        const operatingSeconds = operatingHours * 3600;
+        const operatingHoursDemand = dailyDemand / operatingHours;
+        flowLs = dailyDemand / operatingSeconds;
+        flowM3h = flowLs * 3.6;
+
+        basisText = `${dailyDemand.toFixed(0)} L/day over ${operatingHours.toFixed(1)} operating hours`;
+
+        methodLines = `
+          <li>Average Operating Demand = ${dailyDemand.toFixed(0)} ÷ ${operatingHours.toFixed(1)} = <span class="method-result">${operatingHoursDemand.toFixed(1)} L/h</span></li>
+          <li>Operating Time = ${operatingHours.toFixed(1)} × 3600 = <span class="method-result">${operatingSeconds.toFixed(0)} s</span></li>
+          <li>Flow Rate = ${dailyDemand.toFixed(0)} ÷ ${operatingSeconds.toFixed(0)} = <span class="method-result">${flowLs.toFixed(3)} L/s</span></li>
+          <li>Flow Rate = ${flowLs.toFixed(3)} × 3.6 = <span class="method-result">${flowM3h.toFixed(2)} m³/h</span></li>
+        `;
+      }
+
+      resultBox.innerHTML = `
+        <div class="result-label">Water Flow Rate</div>
+        <div class="result-value-main">${flowLs.toFixed(3)} L/s</div>
+        <div class="result-value-secondary">${flowM3h.toFixed(2)} m³/h</div>
+        <div class="result-extra">
+          Basis: <strong>${basisText}</strong>
+        </div>
+      `;
+
+      methodBox.innerHTML = `
+        <ul class="method-list">
+          <li><strong>Flow Rate</strong> = water flow rate</li>
+          <li><strong>Volume</strong> = water volume (L)</li>
+          <li><strong>Time</strong> = filling or operating time</li>
+          <li><strong>Daily Demand</strong> = total daily water demand (L/day)</li>
+          ${methodLines}
+        </ul>
+      `;
+    }
+
+    function resetCalc() {
+      document.getElementById("mode").value = "volumeTime";
+      document.getElementById("volume").value = "500";
+      document.getElementById("fillTime").value = "10";
+      document.getElementById("dailyDemand").value = "3000";
+      document.getElementById("operatingHours").value = "8";
+
+      toggleMode();
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("volume").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculateWaterFlowRate();
+      }
+    });
+
+    toggleMode();
+  </script>
+</body>
+</html>
