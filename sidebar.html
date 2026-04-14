@@ -1,60 +1,56 @@
-<aside class="sidebar">
-  <div class="sidebar-brand">
-    <a href="/index.html" class="sidebar-brand-link">
-      <img src="/assets/MEPkitlogocolour.png" alt="MEPkit logo" class="sidebar-logo">
-      <div class="sidebar-brand-text">
-        <h1>MEPkit</h1>
-        <p>UK MEP engineering toolkit</p>
+<div class="sidebar">
+  <div class="sidebar-inner">
+
+    <!-- LOGO -->
+    <div class="sidebar-header">
+      <img src="assets/MEPkitlogocolour.png" alt="MEPkit logo">
+      <span>MEPkit</span>
+    </div>
+
+    <!-- NAV -->
+    <nav class="sidebar-nav">
+
+      <!-- MECHANICAL -->
+      <div class="nav-section">
+        <div class="nav-title">Mechanical</div>
+
+        <a href="flow-rate-calculator.html">Flow Rate</a>
+        <a href="pipe-sizing-calculator.html">Pipe Sizing</a>
+        <a href="pipe-pressure-drop-calculator.html">Pipe Pressure Drop</a>
+        <a href="pump-head-calculator.html">Pump Head</a>
+        <a href="expansion-vessel-calculator.html">Expansion Vessel</a>
+        <a href="system-water-volume-estimator.html">System Volume</a>
+
+        <div class="nav-subtitle">Ventilation</div>
+
+        <a href="ventilation-rate-calculator.html">Ventilation Rate</a>
+        <a href="air-changes-calculator.html">Air Changes</a>
+        <a href="duct-sizing-calculator.html">Duct Sizing</a>
+        <a href="duct-pressure-drop-calculator.html">Duct Pressure Drop</a>
+        <a href="specific-fan-power-calculator.html">SFP</a>
       </div>
-    </a>
+
+      <!-- ELECTRICAL -->
+      <div class="nav-section">
+        <div class="nav-title">Electrical</div>
+
+        <a href="load-current-calculator.html">Load Current</a>
+        <a href="power-calculator.html">Power</a>
+        <a href="voltage-drop-calculator.html">Voltage Drop</a>
+        <a href="cable-sizing-calculator.html">Cable Sizing</a>
+      </div>
+
+      <!-- PUBLIC HEALTH -->
+      <div class="nav-section">
+        <div class="nav-title">Public Health</div>
+
+        <a href="water-demand-calculator.html">Water Demand</a>
+        <a href="water-flow-rate-calculator.html">Water Flow Rate</a>
+        <a href="water-pipe-size-calculator.html">Pipe Sizing</a>
+        <a href="cold-water-tank-calculator.html">Cold Water Storage</a>
+        <a href="hot-water-cylinder-calculator.html">Hot Water Storage</a>
+      </div>
+
+    </nav>
   </div>
-
-  <input
-    type="text"
-    class="sidebar-search"
-    placeholder="Search calculators..."
-    aria-label="Search calculators"
-  >
-
-  <div class="nav-group mechanical">
-    <h2>Mechanical</h2>
-    <div class="nav-links">
-      <div class="nav-subheading">Heating</div>
-      <a href="/calculators/flow-rate-calculator.html">Flow Rate Calculator</a>
-      <a href="/calculators/pipe-sizing-calculator.html">Pipe Sizing Calculator</a>
-      <a href="/calculators/pipe-pressure-drop-calculator.html">Pipe Pressure Drop Calculator</a>
-      <a href="/calculators/pump-head-calculator.html">Pump Head Calculator</a>
-      <a href="/calculators/expansion-vessel-calculator.html">Expansion Vessel Calculator</a>
-      <a href="calculators/system-water-volume-estimator.html">System Water Volume Estimator</a>
-
-      <div class="nav-subheading">Ventilation</div>
-      <a href="/calculators/ventilation-rate-calculator.html">Ventilation Rate Calculator</a>
-      <span class="disabled">Air Changes Calculator</span>
-      <a href="/calculators/duct-sizing-calculator.html">Duct Sizing Calculator</a>
-      <span class="disabled">Duct Pressure Drop Calculator</span>
-      <a href="/calculators/specific-fan-power-calculator.html">Specific Fan Power Calculator</a>
-    </div>
-  </div>
-
-  <div class="nav-group electrical">
-    <h2>Electrical</h2>
-    <div class="nav-links">
-      <div class="nav-subheading">Power</div>
-      <span class="disabled">Load Current Calculator</span>
-      <span class="disabled">Power Calculator</span>
-      <span class="disabled">Voltage Drop Calculator</span>
-      <span class="disabled">Cable Sizing Calculator</span>
-    </div>
-  </div>
-
-  <div class="nav-group public-health">
-    <h2>Public Health</h2>
-    <div class="nav-links">
-      <div class="nav-subheading">Water</div>
-      <span class="disabled">Water Demand Calculator</span>
-      <span class="disabled">Water Flow Rate Calculator</span>
-      <span class="disabled">Domestic Water Pipe Calculator</span>
-      <span class="disabled">Cold Water Storage Tank Calculator</span>
-    </div>
-  </div>
-</aside>
+</div>
