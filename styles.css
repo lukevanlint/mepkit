@@ -71,6 +71,7 @@ textarea {
 
 .main {
   flex: 1;
+  min-width: 0;
   padding: 40px 32px 56px;
 }
 
@@ -97,10 +98,21 @@ textarea {
    Sidebar
 ========================= */
 
-.sidebar {
+#sidebar-container {
   width: 300px;
+  min-width: 300px;
+  flex-shrink: 0;
   background: var(--panel-soft);
   border-right: 1px solid var(--border);
+}
+
+#sidebar-container:empty {
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 100%;
+  background: var(--panel-soft);
   padding: 28px 20px 32px;
   position: sticky;
   top: 0;
@@ -801,17 +813,17 @@ input[type="number"] {
 
 body.mechanical .result-value-main,
 body.mechanical .method-result {
-  color: var(--mechanical) !important;
+  color: var(--mechanical);
 }
 
 body.electrical .result-value-main,
 body.electrical .method-result {
-  color: var(--electrical) !important;
+  color: var(--electrical);
 }
 
 body.public-health .result-value-main,
 body.public-health .method-result {
-  color: var(--public-health) !important;
+  color: var(--public-health);
 }
 
 /* =========================
@@ -857,27 +869,21 @@ body.public-health .method-result {
   }
 
   #sidebar-container {
-  width: 300px;
-  flex-shrink: 0;
-}
+    width: 100%;
+    min-width: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
 
-#sidebar-container:empty {
-  min-height: 100vh;
-  background: var(--panel-soft);
-  border-right: 1px solid var(--border);
-}
+  #sidebar-container:empty {
+    min-height: 0;
+  }
 
-.sidebar {
-  width: 100%;
-  background: var(--panel-soft);
-  border-right: 1px solid var(--border);
-  padding: 28px 20px 32px;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
-  flex-shrink: 0;
-}
+  .sidebar {
+    height: auto;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
 
   .main {
     padding: 24px 18px 40px;
