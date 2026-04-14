@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Duct Pressure Drop Calculator | MEPkit</title>
+  <meta
+    name="description"
+    content="Calculate indicative duct pressure drop, air velocity and total loss from airflow, duct size and equivalent length for UK building services design."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+      <div class="main-inner">
+        <section class="page-header">
+          <p class="discipline-label mechanical">Mechanical</p>
+          <h1>Duct Pressure Drop Calculator</h1>
+          <p class="page-description">
+            Calculate indicative duct pressure drop, velocity and total loss from airflow, duct size and equivalent length.
+          </p>
+          <p class="intro-note">
+            Use this calculator for preliminary ventilation pressure loss checks where airflow, duct size and equivalent duct length are known.
+            It is intended for early-stage duct sizing and fan allowance checks rather than full detailed pressure loss calculations.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="form-group">
+            <label for="shape">Duct Shape</label>
+            <select id="shape" onchange="toggleShape()">
+              <option value="circular">Circular</option>
+              <option value="rectangular">Rectangular</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="flowUnit">Airflow Unit</label>
+            <select id="flowUnit">
+              <option value="ls">L/s</option>
+              <option value="m3h">m³/h</option>
+              <option value="m3s">m³/s</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="flow">Airflow</label>
+            <input type="number" id="flow" value="1000" step="1" min="0" autofocus>
+          </div>
+
+          <div id="circularInputs">
+            <div class="form-group">
+              <label for="diameter">Diameter (mm)</label>
+              <input type="number" id="diameter" value="500" step="1" min="0">
+            </div>
+          </div>
+
+          <div id="rectangularInputs" class="hidden">
+            <div class="form-group">
+              <label for="width">Width (mm)</label>
+              <input type="number" id="width" value="600" step="1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="height">Height (mm)</label>
+              <input type="number" id="height" value="300" step="1" min="0">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="length">Equivalent Duct Length (m)</label>
+            <input type="number" id="length" value="30" step="1" min="0">
+          </div>
+
+          <div class="form-group">
+            <label for="frictionRate">Friction Rate (Pa/m)</label>
+            <input type="number" id="frictionRate" value="1.0" step="0.1" min="0">
+          </div>
+
+          <p class="unit-note">
+            Equivalent duct length should include allowances for bends, branches, attenuators, dampers and fittings where appropriate.
+          </p>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculateDuctPressureDrop()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Pressure Drop</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Air velocity is calculated from airflow and duct area:
+          </p>
+
+          <div class="formula-block">
+            v = Q ÷ A
+          </div>
+
+          <p>
+            Duct area is determined from the selected geometry:
+          </p>
+
+          <div class="formula-block">
+            Circular: A = πd² ÷ 4
+          </div>
+
+          <div class="formula-block">
+            Rectangular: A = W × H
+          </div>
+
+          <p>
+            Pressure drop is then estimated from the equivalent duct length and selected friction rate:
+          </p>
+
+          <div class="formula-block">
+            ΔP = L × R
+          </div>
+
+          <p>
+            Velocity pressure is shown as an additional check:
+          </p>
+
+          <div class="formula-block">
+            Pᵥ = 0.5 × ρ × v²
+          </div>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>v</strong> = air velocity (m/s)</li>
+              <li><strong>Q</strong> = airflow rate (m³/s)</li>
+              <li><strong>A</strong> = duct area (m²)</li>
+              <li><strong>L</strong> = equivalent duct length (m)</li>
+              <li><strong>R</strong> = friction rate (Pa/m)</li>
+              <li><strong>ΔP</strong> = pressure drop (Pa)</li>
+              <li><strong>Pᵥ</strong> = velocity pressure (Pa)</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This calculator estimates straight-duct pressure loss using an entered friction rate and equivalent duct length.</li>
+            <li>Velocity pressure is based on an assumed air density of 1.2 kg/m³ for preliminary design purposes.</li>
+            <li>Relevant guidance may include CIBSE Guide B2, CIBSE Guide C and CIBSE Guide C4 for duct sizing, airflow and pressure loss relationships.</li>
+            <li>Where applicable, final design should also align with project specifications, ductwork standards and manufacturer data.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This calculator provides an indicative duct pressure loss only. Final design should consider fitting losses, terminals, attenuators, dampers, coils, filters, leakage, fan selection and project-specific pressure loss criteria.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="duct-sizing-calculator.html">Duct Sizing Calculator</a>
+            <a href="ventilation-rate-calculator.html">Ventilation Rate Calculator</a>
+            <a href="specific-fan-power-calculator.html">Specific Fan Power Calculator</a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    function flowToM3s(flow, unit) {
+      if (unit === "ls") return flow / 1000;
+      if (unit === "m3h") return flow / 3600;
+      return flow;
+    }
+
+    function toggleShape() {
+      const shape = document.getElementById("shape").value;
+      document.getElementById("circularInputs").classList.toggle("hidden", shape !== "circular");
+      document.getElementById("rectangularInputs").classList.toggle("hidden", shape !== "rectangular");
+    }
+
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Pressure Drop</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Pressure Drop</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>v</strong> = air velocity (m/s)</li>
+          <li><strong>Q</strong> = airflow rate (m³/s)</li>
+          <li><strong>A</strong> = duct area (m²)</li>
+          <li><strong>L</strong> = equivalent duct length (m)</li>
+          <li><strong>R</strong> = friction rate (Pa/m)</li>
+          <li><strong>ΔP</strong> = pressure drop (Pa)</li>
+          <li><strong>Pᵥ</strong> = velocity pressure (Pa)</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function calculateDuctPressureDrop() {
+      const shape = document.getElementById("shape").value;
+      const flow = parseFloat(document.getElementById("flow").value);
+      const flowUnit = document.getElementById("flowUnit").value;
+      const length = parseFloat(document.getElementById("length").value);
+      const frictionRate = parseFloat(document.getElementById("frictionRate").value);
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      if (
+        isNaN(flow) || isNaN(length) || isNaN(frictionRate) ||
+        flow <= 0 || length <= 0 || frictionRate <= 0
+      ) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      const flowM3s = flowToM3s(flow, flowUnit);
+      const flowLs = flowM3s * 1000;
+      const flowM3h = flowM3s * 3600;
+
+      let area;
+      let sizeDescription = "";
+      let sizeMethod = "";
+
+      if (shape === "circular") {
+        const diameter = parseFloat(document.getElementById("diameter").value);
+
+        if (isNaN(diameter) || diameter <= 0) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        area = Math.PI * Math.pow(diameter / 1000, 2) / 4;
+        sizeDescription = `${diameter.toFixed(0)} mm Ø circular duct`;
+        sizeMethod = `Area = π × (${(diameter / 1000).toFixed(3)}²) ÷ 4 = <span class="method-result">${area.toFixed(4)} m²</span>`;
+      } else {
+        const width = parseFloat(document.getElementById("width").value);
+        const height = parseFloat(document.getElementById("height").value);
+
+        if (isNaN(width) || isNaN(height) || width <= 0 || height <= 0) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
+          return;
+        }
+
+        area = (width / 1000) * (height / 1000);
+        sizeDescription = `${width.toFixed(0)} × ${height.toFixed(0)} mm rectangular duct`;
+        sizeMethod = `Area = ${(width / 1000).toFixed(3)} × ${(height / 1000).toFixed(3)} = <span class="method-result">${area.toFixed(4)} m²</span>`;
+      }
+
+      const velocity = flowM3s / area;
+      const velocityPressure = 0.5 * 1.2 * Math.pow(velocity, 2);
+      const totalPressureDrop = length * frictionRate;
+
+      resultBox.innerHTML = `
+        <div class="result-label">Pressure Drop</div>
+        <div class="result-value-main">${totalPressureDrop.toFixed(1)} Pa</div>
+        <div class="result-value-secondary">${frictionRate.toFixed(2)} Pa/m across ${length.toFixed(1)} m equivalent length</div>
+        <div class="result-extra">
+          Duct Size: <strong>${sizeDescription}</strong><br>
+          Airflow: <strong>${flowLs.toFixed(1)} L/s</strong> (${flowM3h.toFixed(1)} m³/h)<br>
+          Velocity: <strong>${velocity.toFixed(2)} m/s</strong><br>
+          Velocity Pressure: <strong>${velocityPressure.toFixed(1)} Pa</strong>
+        </div>
+      `;
+
+      methodBox.innerHTML = `
+        <ul class="method-list">
+          <li><strong>v</strong> = air velocity (m/s)</li>
+          <li><strong>Q</strong> = airflow rate (m³/s)</li>
+          <li><strong>A</strong> = duct area (m²)</li>
+          <li><strong>L</strong> = equivalent duct length (m)</li>
+          <li><strong>R</strong> = friction rate (Pa/m)</li>
+          <li><strong>ΔP</strong> = pressure drop (Pa)</li>
+          <li><strong>Pᵥ</strong> = velocity pressure (Pa)</li>
+          <li>Airflow = <span class="method-result">${flowLs.toFixed(1)} L/s</span> = ${flowM3s.toFixed(4)} m³/s</li>
+          <li>${sizeMethod}</li>
+          <li>Velocity = ${flowM3s.toFixed(4)} ÷ ${area.toFixed(4)} = <span class="method-result">${velocity.toFixed(2)} m/s</span></li>
+          <li>Pressure Drop = ${length.toFixed(1)} × ${frictionRate.toFixed(2)} = <span class="method-result">${totalPressureDrop.toFixed(1)} Pa</span></li>
+          <li>Velocity Pressure = 0.5 × 1.2 × ${velocity.toFixed(2)}² = <span class="method-result">${velocityPressure.toFixed(1)} Pa</span></li>
+        </ul>
+      `;
+    }
+
+    function resetCalc() {
+      document.getElementById("shape").value = "circular";
+      document.getElementById("flowUnit").value = "ls";
+      document.getElementById("flow").value = "1000";
+      document.getElementById("diameter").value = "500";
+      document.getElementById("width").value = "600";
+      document.getElementById("height").value = "300";
+      document.getElementById("length").value = "30";
+      document.getElementById("frictionRate").value = "1.0";
+
+      toggleShape();
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("flow").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculateDuctPressureDrop();
+      }
+    });
+
+    toggleShape();
+  </script>
+</body>
+</html>
