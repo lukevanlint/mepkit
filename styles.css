@@ -104,10 +104,12 @@ textarea {
   flex-shrink: 0;
   background: var(--panel-soft);
   border-right: 1px solid var(--border);
+  opacity: 0;
+  transition: opacity 0.12s ease;
 }
 
-#sidebar-container:empty {
-  min-height: 100vh;
+#sidebar-container.sidebar-ready {
+  opacity: 1;
 }
 
 .sidebar {
