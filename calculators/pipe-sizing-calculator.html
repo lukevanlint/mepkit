@@ -6,121 +6,16 @@
   <title>LTHW Pipe Sizing Calculator | MEPkit</title>
   <meta
     name="description"
-    content="Estimate LTHW pipe size from either heat load and temperature difference or known flow rate, using target velocity for UK building services design."
+    content="Estimate heating pipe size from either heat load and temperature difference or known flow rate, using target velocity for UK building services design."
   >
   <link rel="icon" type="image/png" href="../assets/favicon1.png">
   <link rel="stylesheet" href="../styles.css">
 
   <style>
-    .intro-note {
-      margin-top: 14px;
-      max-width: 760px;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.7;
-    }
-
-    .result-box {
-      padding: 24px;
-    }
-
-    .result-label {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-
-    .result-value-main {
-      font-size: 34px;
-      line-height: 1.1;
-      font-weight: 700;
-      color: var(--mechanical);
-      margin-bottom: 8px;
-    }
-
-    .result-value-secondary {
-      font-size: 16px;
-      line-height: 1.5;
-      color: var(--muted-2);
-      margin-bottom: 6px;
-    }
-
     .result-extra {
       font-size: 15px;
       line-height: 1.6;
       color: var(--muted-2);
-    }
-
-    .button-row {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    .button-row .calc-button {
-      margin-bottom: 0;
-    }
-
-    .secondary-button {
-      width: 100%;
-      padding: 14px 18px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--panel-soft);
-      color: white;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s ease, border-color 0.2s ease;
-    }
-
-    .secondary-button:hover {
-      background: var(--hover);
-      border-color: #374151;
-    }
-
-    .method-list,
-    .reference-list {
-      margin: 0;
-      padding-left: 18px;
-      color: var(--muted-2);
-      line-height: 1.7;
-      font-size: 15px;
-    }
-
-    .method-list li,
-    .reference-list li {
-      margin-bottom: 8px;
-    }
-
-    .method-list li:last-child,
-    .reference-list li:last-child {
-      margin-bottom: 0;
-    }
-
-    .formula-block {
-      margin: 14px 0 18px;
-      padding: 16px 18px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: #111318;
-      font-size: 17px;
-      line-height: 1.6;
-      color: white;
-    }
-
-    .design-note {
-      margin-top: 12px;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--panel-soft);
-      color: var(--muted-2);
-      font-size: 14px;
-      line-height: 1.7;
     }
 
     .unit-note {
@@ -135,15 +30,15 @@
       padding: 14px;
       border: 1px solid var(--border);
       border-radius: 12px;
-      background: #111318;
+      background: var(--input-bg);
     }
 
     .input-method-title {
+      margin-bottom: 12px;
       font-size: 13px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--muted);
-      margin-bottom: 12px;
       font-weight: 700;
     }
 
@@ -170,14 +65,9 @@
       display: none;
     }
 
-    @media (max-width: 700px) {
-      .button-row {
-        flex-direction: column;
-      }
-
-      .result-value-main {
-        font-size: 26px;
-      }
+    .method-result {
+      color: var(--mechanical);
+      font-weight: 700;
     }
   </style>
 </head>
@@ -192,11 +82,11 @@
           <p class="discipline-label mechanical">Mechanical</p>
           <h1>LTHW Pipe Sizing Calculator</h1>
           <p class="page-description">
-            Estimate LTHW pipe size from either heat load and temperature difference or known flow rate.
+            Estimate heating pipe size from either heat load and temperature difference or known flow rate.
           </p>
           <p class="intro-note">
-            Use this calculator for quick LTHW pipe sizing checks based on a target maximum velocity.
-            You can size either from heat load and design ΔT, or directly from a known flow rate.
+            Use this calculator for quick heating pipe sizing checks based on a target maximum velocity.
+            You can size pipework either from heat load and design temperature difference, or directly from a known flow rate.
           </p>
         </section>
 
@@ -208,7 +98,7 @@
             <div class="radio-row">
               <label class="radio-option">
                 <input type="radio" name="inputMethod" value="duty" checked onchange="toggleInputMode()">
-                Heat Load + Delta T
+                Heat Load + Temperature Difference
               </label>
               <label class="radio-option">
                 <input type="radio" name="inputMethod" value="flow" onchange="toggleInputMode()">
@@ -232,7 +122,7 @@
             </div>
 
             <div class="form-group">
-              <label for="deltaT">Delta T (°C)</label>
+              <label for="deltaT">Temperature Difference (°C)</label>
               <input type="number" id="deltaT" value="20" step="5" min="0">
             </div>
           </div>
@@ -240,17 +130,17 @@
           <div id="flowInputs" class="hidden">
             <div class="form-group">
               <label for="flowRate">Known Flow Rate (L/s)</label>
-              <input type="number" id="flowRate" value="0.60" step="0.1" min="0">
+              <input type="number" id="flowRate" value="0.60" step="0.01" min="0">
             </div>
           </div>
 
           <div class="form-group">
-            <label for="velocity">Target Max Velocity (m/s)</label>
+            <label for="velocity">Target Maximum Velocity (m/s)</label>
             <input type="number" id="velocity" value="1.0" step="0.1" min="0">
           </div>
 
           <p class="unit-note">
-            Pipe selection is based on the smallest listed pipe size that keeps the calculated velocity at or below the selected maximum.
+            Pipe selection is based on the smallest listed pipe size that keeps calculated velocity at or below the selected maximum.
           </p>
 
           <div class="button-row">
@@ -271,7 +161,7 @@
           <h2 class="section-title">Method</h2>
 
           <p>
-            Pipe size is selected by comparing the design flow rate against the internal area of each listed pipe size.
+            Pipe size is selected by comparing the design flow rate against the internal flow area of each listed pipe size.
           </p>
 
           <div class="formula-block">
@@ -299,10 +189,10 @@
         <section class="content-card">
           <h2 class="section-title">Reference</h2>
           <ul class="reference-list">
-            <li>This calculator applies standard LTHW sizing logic by determining design flow rate and comparing it against listed pipe sizes.</li>
+            <li>This calculator applies standard heating pipe sizing logic by determining design flow rate and comparing it against listed pipe sizes.</li>
             <li>Copper and steel pipe systems use different size series, so the recommended size depends on the selected material.</li>
             <li>Velocity guidance shown in the result reflects typical accepted design practice for closed water systems rather than fixed absolute limits.</li>
-            <li>For known flow scenarios, the calculator can be used directly from a previously established duty or schedule flow rate.</li>
+            <li>For known flow scenarios, the calculator can be used directly from an established duty or schedule flow rate.</li>
           </ul>
 
           <div class="design-note">
@@ -313,9 +203,9 @@
         <section class="content-card">
           <h2 class="section-title">Related Calculators</h2>
           <div class="related-links">
-            <a href="heating-flow.html">LTHW Flow Rate Calculator</a>
-            <a href="lthw-pump-head.html">LTHW Pump Head Calculator</a>
-            <a href="expansion-vessel-calc.html">Expansion Vessel Calculator</a>
+            <a href="flow-rate-calculator.html">Flow Rate Calculator</a>
+            <a href="pump-head-calculator.html">Pump Head Calculator</a>
+            <a href="expansion-vessel-calculator.html">Expansion Vessel Calculator</a>
           </div>
         </section>
       </div>
@@ -325,12 +215,65 @@
   <script src="../script.js"></script>
 
   <script>
-    function getVelocityGuidance(v) {
-      if (v < 0.5) return "Low velocity – review";
-      if (v < 1.0) return "Conservative / quiet range";
-      if (v < 1.5) return "Typical design range";
-      if (v <= 3.0) return "High velocity – check noise and pressure drop";
+    const copperSizes = [
+      { label: "15 mm", internalDiameter: 13.6 },
+      { label: "22 mm", internalDiameter: 20.2 },
+      { label: "28 mm", internalDiameter: 25.6 },
+      { label: "35 mm", internalDiameter: 32.0 },
+      { label: "42 mm", internalDiameter: 38.0 },
+      { label: "54 mm", internalDiameter: 50.0 },
+      { label: "67 mm", internalDiameter: 62.0 },
+      { label: "76 mm", internalDiameter: 72.0 },
+      { label: "108 mm", internalDiameter: 102.0 }
+    ];
+
+    const steelSizes = [
+      { label: "DN15", internalDiameter: 16.0 },
+      { label: "DN20", internalDiameter: 21.7 },
+      { label: "DN25", internalDiameter: 27.3 },
+      { label: "DN32", internalDiameter: 36.0 },
+      { label: "DN40", internalDiameter: 41.9 },
+      { label: "DN50", internalDiameter: 53.1 },
+      { label: "DN65", internalDiameter: 68.9 },
+      { label: "DN80", internalDiameter: 80.8 },
+      { label: "DN100", internalDiameter: 105.3 }
+    ];
+
+    function getVelocityGuidance(velocity) {
+      if (velocity < 0.5) return "Low velocity – review";
+      if (velocity < 1.0) return "Conservative / quiet range";
+      if (velocity < 1.5) return "Typical design range";
+      if (velocity <= 3.0) return "High velocity – check noise and pressure drop";
       return "Generally too high – review pipe size";
+    }
+
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Recommended Pipe Size</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Recommended Pipe Size</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>Flow Rate</strong> = design water flow (L/s)</li>
+          <li><strong>Velocity</strong> = water velocity in the selected pipe (m/s)</li>
+          <li>The smallest listed pipe size with velocity at or below the target is selected.</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
     }
 
     function toggleInputMode() {
@@ -351,35 +294,11 @@
 
     function calculatePipe() {
       const material = document.getElementById("material").value;
-      const velocity = parseFloat(document.getElementById("velocity").value);
+      const velocityLimit = parseFloat(document.getElementById("velocity").value);
       const mode = document.querySelector('input[name="inputMethod"]:checked').value;
 
       const resultBox = document.getElementById("result");
       const methodBox = document.getElementById("method");
-
-      const copperSizes = [
-        { label: "15 mm", internalDiameter: 13.6 },
-        { label: "22 mm", internalDiameter: 20.2 },
-        { label: "28 mm", internalDiameter: 25.6 },
-        { label: "35 mm", internalDiameter: 32.0 },
-        { label: "42 mm", internalDiameter: 38.0 },
-        { label: "54 mm", internalDiameter: 50.0 },
-        { label: "67 mm", internalDiameter: 62.0 },
-        { label: "76 mm", internalDiameter: 72.0 },
-        { label: "108 mm", internalDiameter: 102.0 }
-      ];
-
-      const steelSizes = [
-        { label: "DN15", internalDiameter: 16.0 },
-        { label: "DN20", internalDiameter: 21.7 },
-        { label: "DN25", internalDiameter: 27.3 },
-        { label: "DN32", internalDiameter: 36.0 },
-        { label: "DN40", internalDiameter: 41.9 },
-        { label: "DN50", internalDiameter: 53.1 },
-        { label: "DN65", internalDiameter: 68.9 },
-        { label: "DN80", internalDiameter: 80.8 },
-        { label: "DN100", internalDiameter: 105.3 }
-      ];
 
       const pipeSizes = material === "copper" ? copperSizes : steelSizes;
       const materialLabel = material === "copper" ? "Copper" : "Steel";
@@ -391,22 +310,24 @@
         const load = parseFloat(document.getElementById("load").value);
         const deltaT = parseFloat(document.getElementById("deltaT").value);
 
-        if (isNaN(load) || isNaN(deltaT) || isNaN(velocity) || load <= 0 || deltaT <= 0 || velocity <= 0) {
-          showInvalid();
+        if (isNaN(load) || isNaN(deltaT) || isNaN(velocityLimit) || load <= 0 || deltaT <= 0 || velocityLimit <= 0) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
           return;
         }
 
         flowLs = load / (4.18 * deltaT);
-        methodSummary = `Flow Rate = ${load} ÷ (4.18 × ${deltaT}) = <strong>${flowLs.toFixed(2)} L/s</strong>`;
+        methodSummary = `Flow Rate = ${load} ÷ (4.18 × ${deltaT}) = <span class="method-result">${flowLs.toFixed(2)} L/s</span>`;
       } else {
         flowLs = parseFloat(document.getElementById("flowRate").value);
 
-        if (isNaN(flowLs) || isNaN(velocity) || flowLs <= 0 || velocity <= 0) {
-          showInvalid();
+        if (isNaN(flowLs) || isNaN(velocityLimit) || flowLs <= 0 || velocityLimit <= 0) {
+          resultBox.innerHTML = getInvalidResultHtml();
+          methodBox.innerHTML = getDefaultMethodHtml();
           return;
         }
 
-        methodSummary = `Known Flow Rate input = <strong>${flowLs.toFixed(2)} L/s</strong>`;
+        methodSummary = `Known Flow Rate input = <span class="method-result">${flowLs.toFixed(2)} L/s</span>`;
       }
 
       const flowM3s = flowLs / 1000;
@@ -414,14 +335,14 @@
       let selectedPipe = null;
       let selectedVelocity = null;
 
-      for (let p of pipeSizes) {
-        const d = p.internalDiameter / 1000;
-        const area = Math.PI * d * d / 4;
-        const v = flowM3s / area;
+      for (const pipe of pipeSizes) {
+        const diameterM = pipe.internalDiameter / 1000;
+        const area = Math.PI * diameterM * diameterM / 4;
+        const actualVelocity = flowM3s / area;
 
-        if (v <= velocity) {
-          selectedPipe = p;
-          selectedVelocity = v;
+        if (actualVelocity <= velocityLimit) {
+          selectedPipe = pipe;
+          selectedVelocity = actualVelocity;
           break;
         }
       }
@@ -444,8 +365,8 @@
             <li><strong>Flow Rate</strong> = design water flow (L/s)</li>
             <li><strong>Velocity</strong> = water velocity in the selected pipe (m/s)</li>
             <li>${methodSummary}</li>
-            <li>Selected smallest ${materialLabel.toLowerCase()} pipe with velocity ≤ ${velocity.toFixed(1)} m/s</li>
-            <li>Calculated velocity in selected pipe = <strong>${selectedVelocity.toFixed(2)} m/s</strong></li>
+            <li>Selected the smallest listed ${materialLabel.toLowerCase()} pipe with velocity at or below ${velocityLimit.toFixed(1)} m/s</li>
+            <li>Calculated velocity in selected pipe = <span class="method-result">${selectedVelocity.toFixed(2)} m/s</span></li>
           </ul>
         `;
       } else {
@@ -463,25 +384,7 @@
             <li><strong>Flow Rate</strong> = design water flow (L/s)</li>
             <li><strong>Velocity</strong> = water velocity in the selected pipe (m/s)</li>
             <li>${methodSummary}</li>
-            <li>No listed ${materialLabel.toLowerCase()} pipe size achieved a velocity ≤ ${velocity.toFixed(1)} m/s</li>
-          </ul>
-        `;
-      }
-
-      function showInvalid() {
-        resultBox.innerHTML = `
-          <div class="result-label">Recommended Pipe Size</div>
-          <div class="result-value-main">-</div>
-          <div class="result-value-secondary">Please enter valid positive values.</div>
-          <div class="result-extra"></div>
-        `;
-
-        methodBox.innerHTML = `
-          <ul class="method-list">
-            <li><strong>Flow Rate</strong> = design water flow (L/s)</li>
-            <li><strong>Velocity</strong> = water velocity in the selected pipe (m/s)</li>
-            <li>The smallest listed pipe size with velocity at or below the target is selected.</li>
-            <li>Calculated result = -</li>
+            <li>No listed ${materialLabel.toLowerCase()} pipe size achieved a velocity at or below ${velocityLimit.toFixed(1)} m/s</li>
           </ul>
         `;
       }
@@ -497,25 +400,15 @@
 
       toggleInputMode();
 
-      document.getElementById("result").innerHTML = `
-        <div class="result-label">Recommended Pipe Size</div>
-        <div class="result-value-main">-</div>
-        <div class="result-value-secondary">Enter values and click calculate.</div>
-        <div class="result-extra"></div>
-      `;
-
-      document.getElementById("method").innerHTML = `
-        <ul class="method-list">
-          <li><strong>Flow Rate</strong> = design water flow (L/s)</li>
-          <li><strong>Velocity</strong> = water velocity in the selected pipe (m/s)</li>
-          <li>The smallest listed pipe size with velocity at or below the target is selected.</li>
-          <li>Calculated result = -</li>
-        </ul>
-      `;
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("load").focus();
     }
 
-    document.addEventListener("keypress", function (e) {
-      if (e.key === "Enter") calculatePipe();
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculatePipe();
+      }
     });
   </script>
 </body>
