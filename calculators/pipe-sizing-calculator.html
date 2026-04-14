@@ -64,11 +64,6 @@
     .hidden {
       display: none;
     }
-
-    .method-result {
-      color: var(--mechanical);
-      font-weight: 700;
-    }
   </style>
 </head>
 
@@ -165,7 +160,15 @@
           </p>
 
           <div class="formula-block">
-            Velocity = Flow ÷ Pipe Area
+            v = Q ÷ A
+          </div>
+
+          <p>
+            Internal pipe area is determined from:
+          </p>
+
+          <div class="formula-block">
+            A = πd² ÷ 4
           </div>
 
           <p>
@@ -178,8 +181,10 @@
 
           <div id="method">
             <ul class="method-list">
-              <li><strong>Flow Rate</strong> = design water flow (L/s)</li>
-              <li><strong>Velocity</strong> = water velocity in the selected pipe (m/s)</li>
+              <li><strong>v</strong> = water velocity in pipe (m/s)</li>
+              <li><strong>Q</strong> = volumetric flow rate (m³/s)</li>
+              <li><strong>A</strong> = internal pipe area (m²)</li>
+              <li><strong>d</strong> = internal pipe diameter (m)</li>
               <li>The smallest listed pipe size with velocity at or below the target is selected.</li>
               <li>Calculated result = -</li>
             </ul>
@@ -189,10 +194,10 @@
         <section class="content-card">
           <h2 class="section-title">Reference</h2>
           <ul class="reference-list">
-            <li>This calculator applies standard heating pipe sizing logic by determining design flow rate and comparing it against listed pipe sizes.</li>
-            <li>Copper and steel pipe systems use different size series, so the recommended size depends on the selected material.</li>
-            <li>Velocity guidance shown in the result reflects typical accepted design practice for closed water systems rather than fixed absolute limits.</li>
-            <li>For known flow scenarios, the calculator can be used directly from an established duty or schedule flow rate.</li>
+            <li>This calculator applies standard heating pipe sizing logic by determining design flow rate and comparing it against listed pipe internal diameters.</li>
+            <li>Velocity-based selection reflects typical UK building services design practice for preliminary heating pipe sizing.</li>
+            <li>Relevant guidance may include CIBSE Guide B and CIBSE Guide C for heating system design, pipework distribution and hydraulic considerations.</li>
+            <li>Where applicable, final design should also align with relevant British Standards, project specifications and manufacturer requirements.</li>
           </ul>
 
           <div class="design-note">
@@ -268,8 +273,10 @@
     function getDefaultMethodHtml() {
       return `
         <ul class="method-list">
-          <li><strong>Flow Rate</strong> = design water flow (L/s)</li>
-          <li><strong>Velocity</strong> = water velocity in the selected pipe (m/s)</li>
+          <li><strong>v</strong> = water velocity in pipe (m/s)</li>
+          <li><strong>Q</strong> = volumetric flow rate (m³/s)</li>
+          <li><strong>A</strong> = internal pipe area (m²)</li>
+          <li><strong>d</strong> = internal pipe diameter (m)</li>
           <li>The smallest listed pipe size with velocity at or below the target is selected.</li>
           <li>Calculated result = -</li>
         </ul>
@@ -304,6 +311,7 @@
       const materialLabel = material === "copper" ? "Copper" : "Steel";
 
       let flowLs;
+      let flowM3s;
       let methodSummary = "";
 
       if (mode === "duty") {
@@ -317,7 +325,12 @@
         }
 
         flowLs = load / (4.18 * deltaT);
-        methodSummary = `Flow Rate = ${load} ÷ (4.18 × ${deltaT}) = <span class="method-result">${flowLs.toFixed(2)} L/s</span>`;
+        flowM3s = flowLs / 1000;
+
+        methodSummary = `
+          Flow Rate = ${load} ÷ (4.18 × ${deltaT}) =
+          <span class="method-result">${flowLs.toFixed(2)} L/s</span>
+        `;
       } else {
         flowLs = parseFloat(document.getElementById("flowRate").value);
 
@@ -327,10 +340,13 @@
           return;
         }
 
-        methodSummary = `Known Flow Rate input = <span class="method-result">${flowLs.toFixed(2)} L/s</span>`;
-      }
+        flowM3s = flowLs / 1000;
 
-      const flowM3s = flowLs / 1000;
+        methodSummary = `
+          Known Flow Rate input =
+          <span class="method-result">${flowLs.toFixed(2)} L/s</span>
+        `;
+      }
 
       let selectedPipe = null;
       let selectedVelocity = null;
@@ -362,8 +378,10 @@
 
         methodBox.innerHTML = `
           <ul class="method-list">
-            <li><strong>Flow Rate</strong> = design water flow (L/s)</li>
-            <li><strong>Velocity</strong> = water velocity in the selected pipe (m/s)</li>
+            <li><strong>v</strong> = water velocity in pipe (m/s)</li>
+            <li><strong>Q</strong> = volumetric flow rate (m³/s)</li>
+            <li><strong>A</strong> = internal pipe area (m²)</li>
+            <li><strong>d</strong> = internal pipe diameter (m)</li>
             <li>${methodSummary}</li>
             <li>Selected the smallest listed ${materialLabel.toLowerCase()} pipe with velocity at or below ${velocityLimit.toFixed(1)} m/s</li>
             <li>Calculated velocity in selected pipe = <span class="method-result">${selectedVelocity.toFixed(2)} m/s</span></li>
@@ -381,8 +399,10 @@
 
         methodBox.innerHTML = `
           <ul class="method-list">
-            <li><strong>Flow Rate</strong> = design water flow (L/s)</li>
-            <li><strong>Velocity</strong> = water velocity in the selected pipe (m/s)</li>
+            <li><strong>v</strong> = water velocity in pipe (m/s)</li>
+            <li><strong>Q</strong> = volumetric flow rate (m³/s)</li>
+            <li><strong>A</strong> = internal pipe area (m²)</li>
+            <li><strong>d</strong> = internal pipe diameter (m)</li>
             <li>${methodSummary}</li>
             <li>No listed ${materialLabel.toLowerCase()} pipe size achieved a velocity at or below ${velocityLimit.toFixed(1)} m/s</li>
           </ul>
