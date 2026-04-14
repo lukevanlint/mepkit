@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Water Volume Estimator | MEPkit</title>
+  <meta
+    name="description"
+    content="Estimate heating system water volume from pipework lengths, pipe sizes, emitters and plant allowances for UK building services design."
+  >
+  <link rel="icon" type="image/png" href="../assets/favicon1.png">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+  <div class="layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main">
+      <div class="main-inner">
+        <section class="page-header">
+          <p class="discipline-label mechanical">Mechanical</p>
+          <h1>System Water Volume Estimator</h1>
+          <p class="page-description">
+            Estimate heating system water volume from pipework, emitters and plant allowances.
+          </p>
+          <p class="intro-note">
+            Use this estimator for preliminary sealed heating system checks where a full detailed water content schedule is not yet available.
+            It combines pipework water content with simple allowances for emitters and plant to provide an indicative total system volume.
+          </p>
+        </section>
+
+        <section class="calc-card">
+          <h2 class="section-title">Inputs</h2>
+
+          <div class="content-card" style="margin-bottom: 20px;">
+            <h2 class="section-title">Pipework</h2>
+
+            <div class="form-group">
+              <label for="length15">15 mm Pipe Length (m)</label>
+              <input type="number" id="length15" value="40" step="1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="length22">22 mm Pipe Length (m)</label>
+              <input type="number" id="length22" value="80" step="1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="length28">28 mm Pipe Length (m)</label>
+              <input type="number" id="length28" value="30" step="1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="length35">35 mm Pipe Length (m)</label>
+              <input type="number" id="length35" value="15" step="1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="length42">42 mm Pipe Length (m)</label>
+              <input type="number" id="length42" value="10" step="1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="length54">54 mm Pipe Length (m)</label>
+              <input type="number" id="length54" value="5" step="1" min="0">
+            </div>
+          </div>
+
+          <div class="content-card" style="margin-bottom: 20px;">
+            <h2 class="section-title">Emitters / Terminals</h2>
+
+            <div class="form-group">
+              <label for="radiatorCount">Radiator / Trench Heater Quantity</label>
+              <input type="number" id="radiatorCount" value="20" step="1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="radiatorAllowance">Allowance per Emitter (L each)</label>
+              <input type="number" id="radiatorAllowance" value="4" step="0.5" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="ahuCount">Heating Coils / AHUs / FCUs Quantity</label>
+              <input type="number" id="ahuCount" value="2" step="1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="ahuAllowance">Allowance per Coil / Unit (L each)</label>
+              <input type="number" id="ahuAllowance" value="12" step="1" min="0">
+            </div>
+          </div>
+
+          <div class="content-card" style="margin-bottom: 20px;">
+            <h2 class="section-title">Plant / Equipment</h2>
+
+            <div class="form-group">
+              <label for="boilerAllowance">Boilers / Heat Source Allowance (L)</label>
+              <input type="number" id="boilerAllowance" value="40" step="1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="bufferAllowance">Buffer / Low Loss Header / Vessel Allowance (L)</label>
+              <input type="number" id="bufferAllowance" value="0" step="1" min="0">
+            </div>
+
+            <div class="form-group">
+              <label for="miscAllowance">Miscellaneous Allowance (L)</label>
+              <input type="number" id="miscAllowance" value="20" step="1" min="0">
+            </div>
+          </div>
+
+          <p class="unit-note">
+            Pipe volumes are based on typical internal water content per metre for common heating pipe sizes. Final system volume should be verified against detailed design and manufacturer data.
+          </p>
+
+          <div class="button-row">
+            <button class="calc-button" onclick="calculateSystemVolume()">Calculate</button>
+            <button class="secondary-button" onclick="resetCalc()">Reset</button>
+          </div>
+
+          <h2 class="section-title">Result</h2>
+          <div class="result-box" id="result">
+            <div class="result-label">Estimated System Water Volume</div>
+            <div class="result-value-main">-</div>
+            <div class="result-value-secondary">Enter values and click calculate.</div>
+            <div class="result-extra"></div>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Method</h2>
+
+          <p>
+            Total system volume is estimated by summing pipework content, emitter allowances and plant allowances:
+          </p>
+
+          <div class="formula-block">
+            Vₜ = Vₚ + Vₑ + Vₚₗ
+          </div>
+
+          <p>
+            Pipework volume is estimated from length and typical water content per metre:
+          </p>
+
+          <div class="formula-block">
+            Vₚ = Σ (Pipe Length × Water Content per metre)
+          </div>
+
+          <div id="method">
+            <ul class="method-list">
+              <li><strong>Vₜ</strong> = total estimated system volume (L)</li>
+              <li><strong>Vₚ</strong> = total pipework water volume (L)</li>
+              <li><strong>Vₑ</strong> = total emitter / terminal allowance (L)</li>
+              <li><strong>Vₚₗ</strong> = total plant / equipment allowance (L)</li>
+              <li>Calculated result = -</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Reference</h2>
+          <ul class="reference-list">
+            <li>This estimator is intended for preliminary system water content checks where a detailed schedule is not yet available.</li>
+            <li>Pipework content is based on typical internal water volumes for common heating pipe sizes.</li>
+            <li>Emitter and plant allowances should be refined using project equipment schedules and manufacturer data where available.</li>
+            <li>Where applicable, final design should align with project specifications, manufacturer requirements and associated vessel / pressurisation calculations.</li>
+          </ul>
+
+          <div class="design-note">
+            <strong>Design note:</strong> This estimator provides indicative system water volume only. Final expansion vessel sizing and pressurisation design should be based on confirmed plant content, terminal content, detailed pipework lengths and manufacturer data.
+          </div>
+        </section>
+
+        <section class="content-card">
+          <h2 class="section-title">Related Calculators</h2>
+          <div class="related-links">
+            <a href="expansion-vessel-calculator.html">Expansion Vessel Calculator</a>
+            <a href="flow-rate-calculator.html">Flow Rate Calculator</a>
+            <a href="pipe-sizing-calculator.html">Pipe Sizing Calculator</a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="../script.js"></script>
+
+  <script>
+    const pipeContentPerMetre = {
+      15: 0.145,
+      22: 0.320,
+      28: 0.515,
+      35: 0.804,
+      42: 1.134,
+      54: 1.963
+    };
+
+    function getDefaultResultHtml() {
+      return `
+        <div class="result-label">Estimated System Water Volume</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Enter values and click calculate.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getInvalidResultHtml() {
+      return `
+        <div class="result-label">Estimated System Water Volume</div>
+        <div class="result-value-main">-</div>
+        <div class="result-value-secondary">Please enter valid zero or positive values.</div>
+        <div class="result-extra"></div>
+      `;
+    }
+
+    function getDefaultMethodHtml() {
+      return `
+        <ul class="method-list">
+          <li><strong>Vₜ</strong> = total estimated system volume (L)</li>
+          <li><strong>Vₚ</strong> = total pipework water volume (L)</li>
+          <li><strong>Vₑ</strong> = total emitter / terminal allowance (L)</li>
+          <li><strong>Vₚₗ</strong> = total plant / equipment allowance (L)</li>
+          <li>Calculated result = -</li>
+        </ul>
+      `;
+    }
+
+    function calculateSystemVolume() {
+      const length15 = parseFloat(document.getElementById("length15").value) || 0;
+      const length22 = parseFloat(document.getElementById("length22").value) || 0;
+      const length28 = parseFloat(document.getElementById("length28").value) || 0;
+      const length35 = parseFloat(document.getElementById("length35").value) || 0;
+      const length42 = parseFloat(document.getElementById("length42").value) || 0;
+      const length54 = parseFloat(document.getElementById("length54").value) || 0;
+
+      const radiatorCount = parseFloat(document.getElementById("radiatorCount").value) || 0;
+      const radiatorAllowance = parseFloat(document.getElementById("radiatorAllowance").value) || 0;
+      const ahuCount = parseFloat(document.getElementById("ahuCount").value) || 0;
+      const ahuAllowance = parseFloat(document.getElementById("ahuAllowance").value) || 0;
+
+      const boilerAllowance = parseFloat(document.getElementById("boilerAllowance").value) || 0;
+      const bufferAllowance = parseFloat(document.getElementById("bufferAllowance").value) || 0;
+      const miscAllowance = parseFloat(document.getElementById("miscAllowance").value) || 0;
+
+      const allValues = [
+        length15, length22, length28, length35, length42, length54,
+        radiatorCount, radiatorAllowance, ahuCount, ahuAllowance,
+        boilerAllowance, bufferAllowance, miscAllowance
+      ];
+
+      const resultBox = document.getElementById("result");
+      const methodBox = document.getElementById("method");
+
+      if (allValues.some(value => isNaN(value) || value < 0)) {
+        resultBox.innerHTML = getInvalidResultHtml();
+        methodBox.innerHTML = getDefaultMethodHtml();
+        return;
+      }
+
+      const pipeVolume15 = length15 * pipeContentPerMetre[15];
+      const pipeVolume22 = length22 * pipeContentPerMetre[22];
+      const pipeVolume28 = length28 * pipeContentPerMetre[28];
+      const pipeVolume35 = length35 * pipeContentPerMetre[35];
+      const pipeVolume42 = length42 * pipeContentPerMetre[42];
+      const pipeVolume54 = length54 * pipeContentPerMetre[54];
+
+      const totalPipeVolume =
+        pipeVolume15 +
+        pipeVolume22 +
+        pipeVolume28 +
+        pipeVolume35 +
+        pipeVolume42 +
+        pipeVolume54;
+
+      const totalEmitterVolume =
+        (radiatorCount * radiatorAllowance) +
+        (ahuCount * ahuAllowance);
+
+      const totalPlantVolume =
+        boilerAllowance +
+        bufferAllowance +
+        miscAllowance;
+
+      const totalSystemVolume =
+        totalPipeVolume +
+        totalEmitterVolume +
+        totalPlantVolume;
+
+      resultBox.innerHTML = `
+        <div class="result-label">Estimated System Water Volume</div>
+        <div class="result-value-main">${totalSystemVolume.toFixed(1)} L</div>
+        <div class="result-value-secondary">Indicative total system water content</div>
+        <div class="result-extra">
+          Pipework Volume: <strong>${totalPipeVolume.toFixed(1)} L</strong><br>
+          Emitters / Terminals: <strong>${totalEmitterVolume.toFixed(1)} L</strong><br>
+          Plant / Equipment: <strong>${totalPlantVolume.toFixed(1)} L</strong>
+        </div>
+      `;
+
+      methodBox.innerHTML = `
+        <ul class="method-list">
+          <li><strong>Vₜ</strong> = total estimated system volume (L)</li>
+          <li><strong>Vₚ</strong> = total pipework water volume (L)</li>
+          <li><strong>Vₑ</strong> = total emitter / terminal allowance (L)</li>
+          <li><strong>Vₚₗ</strong> = total plant / equipment allowance (L)</li>
+          <li>15 mm pipe volume = ${length15.toFixed(1)} × ${pipeContentPerMetre[15].toFixed(3)} = <span class="method-result">${pipeVolume15.toFixed(1)} L</span></li>
+          <li>22 mm pipe volume = ${length22.toFixed(1)} × ${pipeContentPerMetre[22].toFixed(3)} = <span class="method-result">${pipeVolume22.toFixed(1)} L</span></li>
+          <li>28 mm pipe volume = ${length28.toFixed(1)} × ${pipeContentPerMetre[28].toFixed(3)} = <span class="method-result">${pipeVolume28.toFixed(1)} L</span></li>
+          <li>35 mm pipe volume = ${length35.toFixed(1)} × ${pipeContentPerMetre[35].toFixed(3)} = <span class="method-result">${pipeVolume35.toFixed(1)} L</span></li>
+          <li>42 mm pipe volume = ${length42.toFixed(1)} × ${pipeContentPerMetre[42].toFixed(3)} = <span class="method-result">${pipeVolume42.toFixed(1)} L</span></li>
+          <li>54 mm pipe volume = ${length54.toFixed(1)} × ${pipeContentPerMetre[54].toFixed(3)} = <span class="method-result">${pipeVolume54.toFixed(1)} L</span></li>
+          <li>Total Pipework Volume = <span class="method-result">${totalPipeVolume.toFixed(1)} L</span></li>
+          <li>Emitter / Terminal Allowance = (${radiatorCount.toFixed(0)} × ${radiatorAllowance.toFixed(1)}) + (${ahuCount.toFixed(0)} × ${ahuAllowance.toFixed(1)}) = <span class="method-result">${totalEmitterVolume.toFixed(1)} L</span></li>
+          <li>Plant / Equipment Allowance = ${boilerAllowance.toFixed(1)} + ${bufferAllowance.toFixed(1)} + ${miscAllowance.toFixed(1)} = <span class="method-result">${totalPlantVolume.toFixed(1)} L</span></li>
+          <li>Total Estimated System Volume = ${totalPipeVolume.toFixed(1)} + ${totalEmitterVolume.toFixed(1)} + ${totalPlantVolume.toFixed(1)} = <span class="method-result">${totalSystemVolume.toFixed(1)} L</span></li>
+        </ul>
+      `;
+    }
+
+    function resetCalc() {
+      document.getElementById("length15").value = "40";
+      document.getElementById("length22").value = "80";
+      document.getElementById("length28").value = "30";
+      document.getElementById("length35").value = "15";
+      document.getElementById("length42").value = "10";
+      document.getElementById("length54").value = "5";
+
+      document.getElementById("radiatorCount").value = "20";
+      document.getElementById("radiatorAllowance").value = "4";
+      document.getElementById("ahuCount").value = "2";
+      document.getElementById("ahuAllowance").value = "12";
+
+      document.getElementById("boilerAllowance").value = "40";
+      document.getElementById("bufferAllowance").value = "0";
+      document.getElementById("miscAllowance").value = "20";
+
+      document.getElementById("result").innerHTML = getDefaultResultHtml();
+      document.getElementById("method").innerHTML = getDefaultMethodHtml();
+      document.getElementById("length15").focus();
+    }
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        calculateSystemVolume();
+      }
+    });
+  </script>
+</body>
+</html>
