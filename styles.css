@@ -85,9 +85,33 @@ textarea {
 }
 
 .section-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  margin: 0 0 14px 0;
+  font-size: 13px;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: #9ca3af;
+}
+
+.main-inner .content-card .section-title {
+  color: #c7cbd1;
+}
+
+.content-card:nth-of-type(1) .section-title {
+  color: #93c5fd;
+}
+
+.content-card:nth-of-type(2) .section-title {
+  color: #a7f3d0;
+}
+
+.content-card:nth-of-type(3) .section-title {
+  color: #fbcfe8;
+}
+
+.content-card:nth-of-type(4) .section-title {
+  color: #fde68a;
 }
 
 .section-icon {
