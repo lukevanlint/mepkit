@@ -114,6 +114,25 @@ textarea {
   color: #fde68a;
 }
 
+.content-card h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+
+body.mechanical .content-card h3 {
+  color: var(--mechanical);
+}
+
+body.electrical .content-card h3 {
+  color: var(--electrical);
+}
+
+body.public-health .content-card h3 {
+  color: var(--public-health);
+}
+
 .section-icon {
   display: inline-flex;
   align-items: center;
