@@ -609,27 +609,6 @@ body.public-health .content-card::before {
   background: var(--public-health);
 }
 
-/* Neutral informational pages such as About / Disclaimer / Contact */
-body:not(.mechanical):not(.electrical):not(.public-health) .content-card:nth-of-type(1) .section-title {
-  color: #a7f3d0;
-}
-
-body:not(.mechanical):not(.electrical):not(.public-health) .content-card:nth-of-type(2) .section-title {
-  color: #fbcfe8;
-}
-
-body:not(.mechanical):not(.electrical):not(.public-health) .content-card:nth-of-type(3) .section-title {
-  color: #fde68a;
-}
-
-body:not(.mechanical):not(.electrical):not(.public-health) .content-card:nth-of-type(4) .section-title {
-  color: #f87171;
-}
-
-body:not(.mechanical):not(.electrical):not(.public-health) .content-card:nth-of-type(5) .section-title {
-  color: #93c5fd;
-}
-
 /* =========================
    Forms and Inputs
 ========================= */
