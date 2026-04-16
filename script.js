@@ -66,4 +66,33 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Footer failed to load:", error);
       });
   }
+  // Calculator Search Filter
+const searchInput = document.getElementById("calculator-search");
+
+if (searchInput) {
+  searchInput.addEventListener("input", function () {
+    const query = this.value.toLowerCase();
+
+    const navGroups = document.querySelectorAll(".nav-group");
+
+    navGroups.forEach(group => {
+      const links = group.querySelectorAll(".nav-links a");
+      let hasVisibleLinks = false;
+
+      links.forEach(link => {
+        const text = link.textContent.toLowerCase();
+
+        if (text.includes(query)) {
+          link.style.display = "";
+          hasVisibleLinks = true;
+        } else {
+          link.style.display = "none";
+        }
+      });
+
+      // Hide entire group if no matches
+      group.style.display = hasVisibleLinks ? "" : "none";
+    });
+  });
+}
 });
