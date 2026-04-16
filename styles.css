@@ -451,8 +451,8 @@ body.public-health .nav-links a.active {
   line-height: 1.7;
 }
 
-.site-footer p {
-  margin: 0;
+.site-footer {
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 .footer-links {
@@ -462,13 +462,16 @@ body.public-health .nav-links a.active {
   flex-wrap: wrap;
 }
 
-.footer-links a {
-  color: var(--muted);
-  transition: color 0.2s ease;
+.footer-links {
+  margin-top: 6px; /* was 10px */
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
 }
 
 .footer-links a:hover {
   color: white;
+  text-decoration: underline;
 }
 
 /* =========================
