@@ -238,7 +238,6 @@ body.public-health .sidebar-search:focus {
   border-color: rgba(255, 127, 112, 0.35);
   color: #ffffff;
 }
-}
 
 .nav-links a.active {
   color: white;
@@ -575,7 +574,7 @@ body.public-health .nav-links a.active {
    Content Section Heading Colours
 ========================= */
 
-..section-title {
+.section-title {
   color: var(--muted);
 }
 
