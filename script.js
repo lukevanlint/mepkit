@@ -1,12 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
   const sidebarContainer = document.getElementById("sidebar-container");
+  const footerContainer = document.getElementById("footer-container");
   const currentPath = window.location.pathname;
 
   let sidebarPath = "sidebar.html";
+  let footerPath = "footer.html";
 
   if (currentPath.includes("/calculators/")) {
     const depthAfterCalculators = currentPath.split("/calculators/")[1].split("/").length - 1;
-    sidebarPath = "../".repeat(depthAfterCalculators + 1) + "sidebar.html";
+    const relativePrefix = "../".repeat(depthAfterCalculators + 1);
+
+    sidebarPath = relativePrefix + "sidebar.html";
+    footerPath = relativePrefix + "footer.html";
   }
 
   if (currentPath.includes("/calculators/electrical/")) {
@@ -43,6 +48,22 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.error("Sidebar failed to load:", error);
+      });
+  }
+
+  if (footerContainer) {
+    fetch(footerPath)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to load footer: ${response.status}`);
+        }
+        return response.text();
+      })
+      .then((data) => {
+        footerContainer.innerHTML = data;
+      })
+      .catch((error) => {
+        console.error("Footer failed to load:", error);
       });
   }
 });
