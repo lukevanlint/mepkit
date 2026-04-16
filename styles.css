@@ -455,6 +455,22 @@ body.public-health .nav-links a.active {
   margin: 0;
 }
 
+.footer-links {
+  margin-top: 10px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: white;
+}
+
 /* =========================
    Calculator Page Shell
 ========================= */
