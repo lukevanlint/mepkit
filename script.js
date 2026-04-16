@@ -66,7 +66,8 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Footer failed to load:", error);
       });
   }
-  // Calculator Search Filter
+}
+// Calculator Search Filter
 const searchInput = document.getElementById("calculator-search");
 
 if (searchInput) {
@@ -94,5 +95,4 @@ if (searchInput) {
       group.style.display = hasVisibleLinks ? "" : "none";
     });
   });
-}
 });
