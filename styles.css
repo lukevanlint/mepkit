@@ -91,55 +91,7 @@ textarea {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-weight: 700;
-  color: #9ca3af;
-}
-
-.main-inner .content-card .section-title {
-  color: #c7cbd1;
-}
-
-.content-card:nth-of-type(1) .section-title {
-  color: #93c5fd;
-}
-
-.content-card:nth-of-type(2) .section-title {
-  color: #a7f3d0;
-}
-
-.content-card:nth-of-type(3) .section-title {
-  color: #fbcfe8;
-}
-
-.content-card:nth-of-type(4) .section-title {
-  color: #fde68a;
-}
-
-.content-card h3 {
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-weight: 700;
-}
-
-body.mechanical .content-card h3 {
-  color: var(--mechanical);
-}
-
-body.electrical .content-card h3 {
-  color: var(--electrical);
-}
-
-body.public-health .content-card h3 {
-  color: var(--public-health);
-}
-
-.section-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  opacity: 0.7;
-  font-size: 13px;
+  color: var(--muted);
 }
 
 /* =========================
@@ -490,31 +442,33 @@ body.public-health .nav-links a.active {
   line-height: 1.7;
 }
 
+/* =========================
+   Footer
+========================= */
+
 .site-footer {
   margin-top: 28px;
   padding: 18px 4px 0;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   color: var(--muted);
   font-size: 13px;
   line-height: 1.7;
 }
 
-.site-footer {
-  border-top: 1px solid rgba(255,255,255,0.06);
+.site-footer p {
+  margin: 0;
 }
 
 .footer-links {
-  margin-top: 10px;
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.footer-links {
-  margin-top: 6px; /* was 10px */
+  margin-top: 6px;
   display: flex;
   gap: 18px;
   flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: var(--muted);
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
 }
 
 .footer-links a:hover {
@@ -523,7 +477,7 @@ body.public-health .nav-links a.active {
 }
 
 /* =========================
-   Calculator Page Shell
+   Calculator / Page Shell
 ========================= */
 
 .page-header {
@@ -589,14 +543,11 @@ body.public-health .nav-links a.active {
 }
 
 .content-card {
+  position: relative;
+  overflow: hidden;
   padding: 24px;
   margin-bottom: 18px;
   text-align: left;
-}
-
-.content-card {
-  position: relative;
-  overflow: hidden;
 }
 
 .content-card::before {
@@ -607,8 +558,8 @@ body.public-health .nav-links a.active {
   bottom: 20px;
   width: 3px;
   border-radius: 2px;
-  opacity: 0.6;
-  background: #3b4455; /* neutral default for About page */
+  opacity: 0.55;
+  background: #3b4455;
 }
 
 .content-card p {
@@ -624,6 +575,59 @@ body.public-health .nav-links a.active {
 
 .content-card strong {
   color: white;
+}
+
+/* =========================
+   Content Section Heading Colours
+========================= */
+
+.content-card .section-title {
+  color: #c7cbd1;
+}
+
+body.mechanical .content-card .section-title {
+  color: var(--mechanical);
+}
+
+body.electrical .content-card .section-title {
+  color: var(--electrical);
+}
+
+body.public-health .content-card .section-title {
+  color: var(--public-health);
+}
+
+body.mechanical .content-card::before {
+  background: var(--mechanical);
+}
+
+body.electrical .content-card::before {
+  background: var(--electrical);
+}
+
+body.public-health .content-card::before {
+  background: var(--public-health);
+}
+
+/* Neutral informational pages such as About / Disclaimer / Contact */
+body:not(.mechanical):not(.electrical):not(.public-health) .content-card:nth-of-type(1) .section-title {
+  color: #a7f3d0;
+}
+
+body:not(.mechanical):not(.electrical):not(.public-health) .content-card:nth-of-type(2) .section-title {
+  color: #fbcfe8;
+}
+
+body:not(.mechanical):not(.electrical):not(.public-health) .content-card:nth-of-type(3) .section-title {
+  color: #fde68a;
+}
+
+body:not(.mechanical):not(.electrical):not(.public-health) .content-card:nth-of-type(4) .section-title {
+  color: #f87171;
+}
+
+body:not(.mechanical):not(.electrical):not(.public-health) .content-card:nth-of-type(5) .section-title {
+  color: #93c5fd;
 }
 
 /* =========================
@@ -959,10 +963,6 @@ body.public-health .method-result {
     min-width: 0;
     border-right: none;
     border-bottom: 1px solid var(--border);
-  }
-
-  #sidebar-container:empty {
-    min-height: 0;
   }
 
   .sidebar {
