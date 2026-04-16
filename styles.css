@@ -546,6 +546,23 @@ body.public-health .nav-links a.active {
   text-align: left;
 }
 
+.content-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.content-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20px;
+  bottom: 20px;
+  width: 3px;
+  border-radius: 2px;
+  opacity: 0.6;
+  background: #3b4455; /* neutral default for About page */
+}
+
 .content-card p {
   margin: 0 0 14px 0;
   color: var(--muted-2);
