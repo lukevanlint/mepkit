@@ -19,6 +19,7 @@
   --mechanical: #60a5fa;
   --electrical: #39ab63;
   --public-health: #f28b82;
+  --accent-neutral: #e5c07b;
 }
 
 /* =========================
@@ -581,8 +582,13 @@ body.public-health .nav-links a.active {
    Content Section Heading Colours
 ========================= */
 
-.content-card .section-title {
-  color: #c7cbd1;
+..section-title {
+  color: var(--muted);
+}
+
+/* Neutral headings (About, Contact, etc.) */
+body:not(.mechanical):not(.electrical):not(.public-health) .content-card .section-title {
+  color: var(--accent-neutral);
 }
 
 body.mechanical .content-card .section-title {
